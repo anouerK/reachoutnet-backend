@@ -7,7 +7,7 @@ npm install
 
 ## to make a new branch 
 
-git checkout -b <branchname>
+git checkout -b "branchname"
 
 ## add changes
 
@@ -19,7 +19,7 @@ git commit -m "message"
 
 ## push changes
 
-git push --set-upstream origin <branchname>
+git push --set-upstream origin "branchname"
 
 ## switch to main branch
 
