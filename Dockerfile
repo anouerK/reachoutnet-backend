@@ -10,7 +10,7 @@ RUN yarn install --production
 
 COPY  . .
 
-CMD [ "yarn", "start" ]
+CMD [ "yarn", "run", "deploy" ]
 
 
 
