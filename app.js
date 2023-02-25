@@ -10,7 +10,7 @@ var logger = require("morgan");
 mongoose.connect("mongodb://127.0.0.1:27017/reachoutet");
 
 var router = require("./routes/index");
-var app = expess();
+var app = express();
 app.use(compression({ level: 1 }));
 app.use(logger("dev"));
 app.use(express.json());
