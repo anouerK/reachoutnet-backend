@@ -3,12 +3,14 @@ version: '3.9'
 services:
   app:
     container_name: pi-backend
-    restart: always
+    # restart: always
     build: .
     ports:
       - 3000:3000
     links:
       - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo/reachoutnet
   mongo:
     container_name: pi-mongo
     image: mongo
