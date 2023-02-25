@@ -1,9 +1,13 @@
 var express = require("express");
 var compression = require("compression");
+var mongoose = require("mongoose");
 var path = require("path");
 
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+
+
+mongoose.connect("mongodb://127.0.0.1:27017/reachoutet");
 
 var router = require("./routes/index");
 var app = express();

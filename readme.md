@@ -5,6 +5,10 @@ https://github.com/ReachOutNet/backend.git
 
 npm install
 
+## pull changes
+
+git pull
+
 ## to make a new branch 
 
 git checkout -b "branchname"
@@ -30,3 +34,4 @@ git checkout main
 git pull
 
 
+#### 2023 turboEasy
