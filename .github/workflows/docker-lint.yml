@@ -29,12 +29,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install modules
-        run: yarn
-      - name: eslint
-        uses: stefanoeb/eslint-action@1.0.2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Run ESLint
-        run: eslint . --ext .js,.jsx,.ts,.tsx
+        run: npx eslint --ext .js .
 
       # Build the Docker image
       - name: Build Docker image
