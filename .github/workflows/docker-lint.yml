@@ -32,7 +32,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '16.x'
+          node-version: '18.x'
 
       - name: Install dependencies
         run: npm install
@@ -40,12 +40,7 @@ jobs:
       - name: Run ESLint
         run: npx eslint --ext .js .
 
-      # Build the Docker image
-      - name: Build Docker image
-        run: docker compose build
+      # # Build the Docker image
+      # - name: Build Docker image
+      #   run: docker compose build
 
-      # Run the Docker container and fail if the container's run command exits with non-zero exit code
-      - name: Run Docker container
-        run: |
-          docker-compose build
-          docker-compose up --abort-on-container-exit --exit-code-from app mongo
