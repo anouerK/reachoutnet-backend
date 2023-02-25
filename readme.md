@@ -29,6 +29,10 @@ git push --set-upstream origin "branchname"
 
 git checkout main
 
+## delete the branch
+
+git branch -D "branchname"
+
 ## pull changes
 
 git pull
