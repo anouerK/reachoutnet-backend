@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../gestion_user/user");
-const jwtSecret = "66f707e2e002cc546232bdaa3c8d3e59b77e90f517a5923c5a53a0c9c1262605";
+const jwtSecret = process.env.JWT_SECRET;
 
 // eslint-disable-next-line complexity
 const auth = async (req, res, next) => {
@@ -20,9 +20,8 @@ const auth = async (req, res, next) => {
     res.status(401).json({ error: "Authentication failed" });
   }
 };
-// eslint-disable-next-line no-unused-vars
 function generateToken(user) {
   const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: "1h" });
   return token;
 }
-module.exports = [auth,generateToken];
+module.exports = [auth, generateToken];

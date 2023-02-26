@@ -3,12 +3,9 @@ var compression = require("compression");
 var mongoose = require("mongoose");
 var path = require("path");
 require("dotenv").config();
-var usersRouter = require("./routes/users");
-
 
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-
 
 //mongoose.connect(process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI)
@@ -29,7 +26,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 
 app.use("/", router);
-app.use("/users", usersRouter);
+
 
 
 module.exports = app;
