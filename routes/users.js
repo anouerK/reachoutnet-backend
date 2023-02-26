@@ -6,7 +6,7 @@ const saltRounds = 10;
 const { graphqlHTTP } = require("express-graphql");
 var schema = require("../models/gestion_user/schema");
 const [auth, generateToken] = require("../models/gestion_user/auth");
-
+const { body,validationResult } = require("express-validator");
 
 router.use("/graphql", graphqlHTTP({
   schema: schema,
@@ -23,7 +23,11 @@ router.get("/", auth,async (req, res)=> {
 });
 
 // eslint-disable-next-line complexity
-router.post("/login", async (req, res) => {
+router.post("/login",[ body("email").isEmail(), body("password").notEmpty(),], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -39,8 +43,20 @@ router.post("/login", async (req, res) => {
     res.status(401).json({ error: "Authentication failed" });
   }
 });
-router.post("/add", auth,async (req, res) => {
+router.post("/add", [
+  body("username").notEmpty(),
+  body("first_name").notEmpty(),
+  body("last_name").notEmpty(),
+  body("age").isInt({ min: 1 }),
+  body("email").isEmail(),
+  body("password").isLength({ min: 6 }),
+// eslint-disable-next-line complexity
+],auth,async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     const user = new User({
       username: req.body.username,
@@ -63,6 +79,10 @@ router.post("/add", auth,async (req, res) => {
 // eslint-disable-next-line complexity
 router.get("/:id", async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const user = await User.findById(req.params.id);
     if (!user) {
       res.status(404).send("User not found");
@@ -79,6 +99,10 @@ router.get("/:id", async (req, res) => {
 // eslint-disable-next-line complexity
 router.patch("/:id", async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const updates = Object.keys(req.body);
     const allowedUpdates = ["username", "email", "password","first_name","last_name","age"];
     const isValidOperation = updates.every((update) =>
@@ -115,6 +139,10 @@ router.patch("/:id", async (req, res) => {
 // eslint-disable-next-line complexity
 router.delete("/:id", async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
       return res.status(404).send("User not found");
