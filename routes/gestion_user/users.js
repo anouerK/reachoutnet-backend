@@ -7,12 +7,12 @@ const { graphqlHTTP } = require("express-graphql");
 var schema = require("../../models/gestion_user/schema");
 const [auth, generateToken] = require("../../models/gestion_user/auth");
 const { body,validationResult } = require("express-validator");
-
+const { UserPermission, authorize } = require("../../models/gestion_user/userpermission");
 router.use("/graphql", graphqlHTTP({
   schema: schema,
   graphiql: true, // Set this to false if you don't want to use the GraphiQL web interface
 }));
-router.get("/", auth,async (req, res)=> {
+router.get("/", auth, authorize("VIEW_USER_MODULE"),async (req, res)=> {
   try {
     const users = await User.find();
     res.status(200).send(users);
@@ -43,15 +43,15 @@ router.post("/login",[ body("email").isEmail(), body("password").notEmpty(),], a
     res.status(401).json({ error: "Authentication failed" });
   }
 });
-router.post("/add", [
+router.post("/add", auth,authorize(UserPermission.USER_MODULE_CRUDS),[
   body("username").notEmpty(),
   body("first_name").notEmpty(),
   body("last_name").notEmpty(),
   body("age").isInt({ min: 1 }),
   body("email").isEmail(),
-  body("password").isLength({ min: 6 }),
+  body("password").isLength({ min: 4 }),
 // eslint-disable-next-line complexity
-],auth,async (req, res) => {
+],async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -77,7 +77,7 @@ router.post("/add", [
 
 // Get a single user by ID
 // eslint-disable-next-line complexity
-router.get("/:id", async (req, res) => {
+router.get("/:id",auth, authorize("VIEW_USER_MODULE"),async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -97,7 +97,7 @@ router.get("/:id", async (req, res) => {
 
 // Update a user by ID
 // eslint-disable-next-line complexity
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", auth,authorize("USER_MODULE_CRUDS"),async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -137,7 +137,7 @@ router.patch("/:id", async (req, res) => {
 
 // Delete a user by ID
 // eslint-disable-next-line complexity
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",auth,authorize("USER_MODULE_CRUDS"), async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

@@ -5,10 +5,13 @@ const {
   GraphQLNonNull,
   GraphQLList,
   GraphQLSchema,
+  GraphQLBoolean,
 } = require("graphql");
 const bcrypt = require("bcryptjs");
 const User = require("./user");
-  
+const jwt = require("jsonwebtoken");
+const UserPermission = require("./userpermission");
+
 const UserType = new GraphQLObjectType({
   name: "user",
   fields: () => ({
@@ -18,17 +21,30 @@ const UserType = new GraphQLObjectType({
     last_name: { type: GraphQLNonNull(GraphQLString) },
     age: { type: GraphQLNonNull(GraphQLInt) },
     email: { type: GraphQLNonNull(GraphQLString) },
-    role: { type: GraphQLNonNull(GraphQLString) },
+    permissions: { type: GraphQLNonNull(GraphQLInt) },
     creation_date: { type: GraphQLNonNull(GraphQLString) },
     last_login: { type: GraphQLString },
+    is_verified: { type: GraphQLNonNull(GraphQLBoolean) }
   }),
 });
+
+const LoginType = new GraphQLObjectType({
+  name: "Login",
+  fields: () => ({
+    user: { type: UserType },
+    token: { type: GraphQLString },
+  }),
+  
+});
+
+
   
 const RootQueryType = new GraphQLObjectType({
   name: "Query",
   fields: {
     users: {
       type: GraphQLList(UserType),
+      extensions: { directive: { hasPermission: { permission: UserPermission.VIEW_USER_MODULE } } },
       resolve: async () => {
         const users = await User.find();
         return users;
@@ -36,6 +52,7 @@ const RootQueryType = new GraphQLObjectType({
     },
     user: {
       type: UserType,
+      extensions: { directive: { hasPermission: { permission: UserPermission.VIEW_USER_MODULE } } },
       args: {
         id: { type: GraphQLNonNull(GraphQLString) },
       },
@@ -52,6 +69,7 @@ const RootMutationType = new GraphQLObjectType({
   fields: {
     addUser: {
       type: UserType,
+      extensions: { directive: { hasPermission: { permission: UserPermission.POST_MODULE_CRUDS } } },
       args: {
         username: { type: GraphQLNonNull(GraphQLString) },
         first_name: { type: GraphQLNonNull(GraphQLString) },
@@ -59,9 +77,9 @@ const RootMutationType = new GraphQLObjectType({
         age: { type: GraphQLNonNull(GraphQLInt) },
         email: { type: GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLNonNull(GraphQLString) },
-        role: { type: GraphQLString },
+        permissions: { type: GraphQLInt },
       },
-      resolve: async (_, { username, first_name, last_name, age, email, password, role }) => {
+      resolve: async (_, { username, first_name, last_name, age, email, password, permissions }) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({
           username,
@@ -70,7 +88,7 @@ const RootMutationType = new GraphQLObjectType({
           age,
           email,
           password: hashedPassword,
-          role: role || "user",
+          permissions,
         });
         await user.save();
         return user;
@@ -78,6 +96,7 @@ const RootMutationType = new GraphQLObjectType({
     },
     updateUser: {
       type: UserType,
+      extensions: { directive: { hasPermission: { permission: UserPermission.POST_MODULE_CRUDS } } },
       args: {
         id: { type: GraphQLNonNull(GraphQLString) },
         username: { type: GraphQLString },
@@ -86,7 +105,7 @@ const RootMutationType = new GraphQLObjectType({
         age: { type: GraphQLInt },
         email: { type: GraphQLString },
         password: { type: GraphQLString },
-        role: { type: GraphQLString },
+        permissions: { type: GraphQLInt },
       },
       resolve: async (_, args) => {
         const { id, ...updateData } = args;
@@ -99,6 +118,7 @@ const RootMutationType = new GraphQLObjectType({
     },
     deleteUser: {
       type: UserType,
+      extensions: { directive: { hasPermission: { permission: UserPermission.POST_MODULE_CRUDS } } },
       args: {
         id: { type: GraphQLNonNull(GraphQLString) },
       },
@@ -116,11 +136,39 @@ const RootMutationType = new GraphQLObjectType({
         }
       },
     },
+    login : {
+      type: LoginType,
+      args: {
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      // eslint-disable-next-line complexity
+      async resolve(parent, args) {
+        try {
+          const { email, password } = args;
+          const user = await User.findOne({ email });
+          if (!user) {
+            throw new Error("Invalid login credentials");
+          }
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
+            throw new Error("Invalid login credentials");
+          }
+          const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+          });
+          return { user, token };
+        } catch (error) {
+          console.error(error);
+          throw new Error("Authentication failed");
+        }
+      },
+    },
   },
 });
 const schema = new GraphQLSchema({
   query: RootQueryType,
-  mutation: RootMutationType,
+  mutation: RootMutationType
 });
   
 module.exports = schema;
