@@ -7,7 +7,7 @@ require("dotenv").config();
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
-//mongoose.connect(process.env.MONGO_URI);
+//console.log(process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected!");
