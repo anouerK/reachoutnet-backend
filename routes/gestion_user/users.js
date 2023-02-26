@@ -1,11 +1,11 @@
 var express = require("express");
 var router = express.Router();
-var User = require("../models/gestion_user/user");
+var User = require("../../models/gestion_user/user");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const { graphqlHTTP } = require("express-graphql");
-var schema = require("../models/gestion_user/schema");
-const [auth, generateToken] = require("../models/gestion_user/auth");
+var schema = require("../../models/gestion_user/schema");
+const [auth, generateToken] = require("../../models/gestion_user/auth");
 const { body,validationResult } = require("express-validator");
 
 router.use("/graphql", graphqlHTTP({
