@@ -3,6 +3,7 @@ const User = require("../models/user");
 
 const jwtSecret = process.env.JWT_SECRET;
 
+// eslint-disable-next-line complexity
 const auth = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
