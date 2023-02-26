@@ -3,6 +3,15 @@ var router = express.Router();
 var User = require("../models/gestion_user/user");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const { graphqlHTTP } = require("express-graphql");
+var schema = require("../models/gestion_user/schema");
+
+
+
+router.use("/graphql", graphqlHTTP({
+  schema: schema,
+  graphiql: true, // Set this to false if you don't want to use the GraphiQL web interface
+}));
 router.get("/", async (req, res)=> {
   try {
     const users = await User.find();
@@ -12,6 +21,7 @@ router.get("/", async (req, res)=> {
     res.status(500).send("Server error");
   }
 });
+
 router.post("/add", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
@@ -33,6 +43,7 @@ router.post("/add", async (req, res) => {
 });
 
 // Get a single user by ID
+// eslint-disable-next-line complexity
 router.get("/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -48,6 +59,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update a user by ID
+// eslint-disable-next-line complexity
 router.patch("/:id", async (req, res) => {
   try {
     const updates = Object.keys(req.body);
@@ -76,6 +88,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 // Delete a user by ID
+// eslint-disable-next-line complexity
 router.delete("/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
