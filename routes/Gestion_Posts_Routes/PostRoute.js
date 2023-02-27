@@ -1,4 +1,3 @@
-
 const Post = require("../../models/Gestion_Posts/Post");
 var express = require("express");
 var router = express.Router();

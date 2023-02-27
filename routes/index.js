@@ -8,7 +8,6 @@ const posts_router = require("./Gestion_Posts_Routes/PostRoute");
 const comments_router = require("./Gestion_Posts_Routes/CommentRoute");
 const likes_router = require("./Gestion_Posts_Routes/LikeRoute");
 
-
 const attachUserToReq = async (req, res, next) => {
   
   const token_before_replace = req.header("Authorization");
@@ -39,6 +38,7 @@ router.use("/users", user_router);
 router.use("/post",posts_router);
 router.use("/comment",comments_router);
 router.use("/like",likes_router);
+
 
 
 module.exports = router;

@@ -6,7 +6,7 @@ require("dotenv").config();
 
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-
+const cors = require("cors");
 //console.log(process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-
+app.use(cors());
 app.use("/", router);
 
 
