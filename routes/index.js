@@ -5,8 +5,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/gestion_user/user");
 const user_router = require("./gestion_user/users");
 const posts_router = require("./Gestion_Posts_Routes/PostRoute");
-const comments_router=require("./Gestion_Posts_Routes/CommentRoute");
-const likes_router=require("./Gestion_Posts_Routes/LikeRoute");
+const comments_router = require("./Gestion_Posts_Routes/CommentRoute");
+const likes_router = require("./Gestion_Posts_Routes/LikeRoute");
+
 
 const attachUserToReq = async (req, res, next) => {
   
