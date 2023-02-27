@@ -1,4 +1,5 @@
 
+/*
 const Comment = require("../../models/Gestion_Posts/Comment");
 var express = require("express");
 var router = express.Router();
@@ -42,3 +43,5 @@ router.post("/add",
   });
 
 module.exports = router;
+*/
+
