@@ -1,4 +1,4 @@
-const UserPermission = {
+const userpermission = {
   NONE:0,
   VIEW_DASHBOARD:1,
   VIEW_USER_MODULE:2,
@@ -12,21 +12,29 @@ const UserPermission = {
   ALL: 511, // All permissions*/
  
 };
+/*
 const authorize = (permission) => {
-  return (req, res, next) => {
-    //console.log(req.user.permissions);
+  // eslint-disable-next-line complexity
+  return async (req) => {
     // Check if the user has the required permission
-    console.log(req.user);
-    if ((req.user.permissions & permission) !== permission) {
-      return res.status(403).json({ error: "Forbidden" });
+    console.log("\n 1: "+permission);
+    if (!req.user || ((!req.user.permissions & permission)!== permission) ) {
+      throw new Error("Forbidden");
     }
-    // If the user has the required permission, call the next middleware function
-    next();
+  };
+};
+*/
+const authorize = (permission) => {
+  // eslint-disable-next-line complexity
+  return async (req) => {
+    // Check if the user has the required permission
+    if (!req.user || ((req.user.permissions & permission) !== permission)) {
+      throw new Error("Forbidden");
+    }
   };
 };
 
+Object.freeze(userpermission);
 
-Object.freeze(UserPermission);
-
-module.exports.UserPermission = UserPermission;
+module.exports.userpermission = userpermission;
 module.exports.authorize = authorize;
