@@ -5,16 +5,16 @@ var schema = mongoose.Schema;
 var Like= new schema({
 
     
-  ReactedOn: {
+  reactedOn: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    refPath: "Reaction"
+    refPath: "ReactedOnType"
   },
  
-  Reaction: {
+  reactedOnType: {
     type: String,
     required: true,
-    enum: ["Post","Comment","ReplyComment"]
+    enum: ["Post","Comment"]
   },
 
   authorLike: {
@@ -23,7 +23,7 @@ var Like= new schema({
     refPath: "authorType"
   },
 
-  authorType: {
+  authorLikeType: {
     type: String,
     required: true,
     enum: ["users"]

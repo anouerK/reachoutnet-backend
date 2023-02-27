@@ -1,5 +1,4 @@
 
-/*
 const Comment = require("../../models/Gestion_Posts/Comment");
 var express = require("express");
 var router = express.Router();
@@ -7,13 +6,13 @@ const { body,validationResult } = require("express-validator");
 
 
 
-router.post("/add",
+router.post("/add", // add comment 
   [
-    body("authorPost").notEmpty(),
-    body("authorTypePost").notEmpty(),
+    body("postId").notEmpty(),
+    body("authorComment").notEmpty(),
+    body("authorTypeComment").notEmpty(),
     body("content").notEmpty(),
-    body("AttachedFiles").notEmpty(),
-    body("tags").notEmpty()
+    body("AttachedFilesComment").notEmpty()
     // eslint-disable-next-line complexity
   ], async (req, res) =>{
 
@@ -24,12 +23,11 @@ router.post("/add",
       }
 
       var comment = new Comment ( {
-        authorPost: req.body.authorPost, // replace with a valid author ID
-        authorTypePost: req.body.authorTypePost,
+        postId: req.body.postId, // replace with a valid author ID
+        authorComment: req.body.authorComment,
+        authorTypeComment: req.body.authorTypeComment,
         content: req.body.content,
-        AttachedFiles: req.body.AttachedFiles,
-        tags: req.body.tags,
-        ModificationDate: Date.now() 
+        AttachedFilesComment: req.body.AttachedFilesComment,
       });
 
       await comment.save();
@@ -43,5 +41,3 @@ router.post("/add",
   });
 
 module.exports = router;
-*/
-
