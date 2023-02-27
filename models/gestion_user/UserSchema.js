@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable complexity */
 const {
   GraphQLObjectType,
   GraphQLString,
@@ -10,7 +12,15 @@ const {
 const bcrypt = require("bcryptjs");
 const User = require("./user");
 const jwt = require("jsonwebtoken");
-const UserPermission = require("./userpermission");
+//const userpermission = require("./userpermission");
+// eslint-disable-next-line no-unused-vars
+//const authorize = require("./userpermission");
+const { userpermission, authorize } = require("./userpermission");
+
+// eslint-disable-next-line no-unused-vars
+var [auth,auth_permission_checker] = require("./auth");
+// eslint-disable-next-line no-unused-vars
+//const { SchemaDirectiveVisitor } = require("graphql-tools");
 
 const UserType = new GraphQLObjectType({
   name: "user",
@@ -44,19 +54,21 @@ const RootQueryType = new GraphQLObjectType({
   fields: {
     users: {
       type: GraphQLList(UserType),
-      extensions: { directive: { hasPermission: { permission: UserPermission.VIEW_USER_MODULE } } },
-      resolve: async () => {
+      resolve: async (_, __, { req }) => {
+        await authorize(userpermission.VIEW_USER_MODULE)(req);
         const users = await User.find();
         return users;
       },
     },
+    
     user: {
       type: UserType,
-      extensions: { directive: { hasPermission: { permission: UserPermission.VIEW_USER_MODULE } } },
+      
       args: {
         id: { type: GraphQLNonNull(GraphQLString) },
       },
-      resolve: async (_, { id }) => {
+      resolve: async (_, { id }, { req }) => {
+        await authorize(userpermission.VIEW_USER_MODULE)(req);
         const user = await User.findById(id);
         return user;
       },
@@ -69,7 +81,6 @@ const RootMutationType = new GraphQLObjectType({
   fields: {
     addUser: {
       type: UserType,
-      extensions: { directive: { hasPermission: { permission: UserPermission.POST_MODULE_CRUDS } } },
       args: {
         username: { type: GraphQLNonNull(GraphQLString) },
         first_name: { type: GraphQLNonNull(GraphQLString) },
@@ -79,7 +90,7 @@ const RootMutationType = new GraphQLObjectType({
         password: { type: GraphQLNonNull(GraphQLString) },
         permissions: { type: GraphQLInt },
       },
-      resolve: async (_, { username, first_name, last_name, age, email, password, permissions }) => {
+      resolve: async (_, { username, first_name, last_name, age, email, password, permissions },{ req }) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({
           username,
@@ -90,13 +101,14 @@ const RootMutationType = new GraphQLObjectType({
           password: hashedPassword,
           permissions,
         });
+        await authorize(userpermission.POST_MODULE_CRUDS)(req);
         await user.save();
         return user;
       },
     },
     updateUser: {
       type: UserType,
-      extensions: { directive: { hasPermission: { permission: UserPermission.POST_MODULE_CRUDS } } },
+      //extensions: { directive: { hasPermission: { permission: userpermission.POST_MODULE_CRUDS } } },
       args: {
         id: { type: GraphQLNonNull(GraphQLString) },
         username: { type: GraphQLString },
@@ -107,7 +119,8 @@ const RootMutationType = new GraphQLObjectType({
         password: { type: GraphQLString },
         permissions: { type: GraphQLInt },
       },
-      resolve: async (_, args) => {
+      resolve: async (_, args,{ req }) => {
+        await authorize(userpermission.POST_MODULE_CRUDS)(req);
         const { id, ...updateData } = args;
         if (updateData.password) {
           updateData.password = await bcrypt.hash(updateData.password, 10);
@@ -118,13 +131,14 @@ const RootMutationType = new GraphQLObjectType({
     },
     deleteUser: {
       type: UserType,
-      extensions: { directive: { hasPermission: { permission: UserPermission.POST_MODULE_CRUDS } } },
+      extensions: { directive: { hasPermission: { permission: userpermission.POST_MODULE_CRUDS } } },
       args: {
         id: { type: GraphQLNonNull(GraphQLString) },
       },
       // eslint-disable-next-line complexity
-      resolve: async (_, { id }) => {
+      resolve: async (_, { id },{ req }) => {
         try {
+          await authorize(userpermission.POST_MODULE_CRUDS)(req);
           const user = await User.findByIdAndDelete(id);
           if (!user) {
             throw new Error("User not found");

@@ -1,18 +1,27 @@
+/* eslint-disable complexity */
+/* eslint-disable no-unused-vars */
 var express = require("express");
 var router = express.Router();
 var User = require("../../models/gestion_user/user");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const { graphqlHTTP } = require("express-graphql");
-var schema = require("../../models/gestion_user/schema");
+var schema = require("../../models/gestion_user/UserSchema");
 const [auth, generateToken] = require("../../models/gestion_user/auth");
 const { body,validationResult } = require("express-validator");
-const { UserPermission, authorize } = require("../../models/gestion_user/userpermission");
-router.use("/graphql", graphqlHTTP({
-  schema: schema,
-  graphiql: true, // Set this to false if you don't want to use the GraphiQL web interface
-}));
-router.get("/", auth, authorize("VIEW_USER_MODULE"),async (req, res)=> {
+const { userpermission, authorize } = require("../../models/gestion_user/userpermission");
+const jwt = require("jsonwebtoken");
+// eslint-disable-next-line complexity
+
+//router.use(attachUserToReq);
+
+router.use("/graphql", graphqlHTTP((req) => ({
+  schema,
+  context: { req },
+  graphiql: true
+})));
+
+router.get("/", authorize("VIEW_USER_MODULE"),async (req, res)=> {
   try {
     const users = await User.find();
     res.status(200).send(users);
@@ -43,7 +52,7 @@ router.post("/login",[ body("email").isEmail(), body("password").notEmpty(),], a
     res.status(401).json({ error: "Authentication failed" });
   }
 });
-router.post("/add", auth,authorize(UserPermission.USER_MODULE_CRUDS),[
+router.post("/add",authorize(userpermission.USER_MODULE_CRUDS),[
   body("username").notEmpty(),
   body("first_name").notEmpty(),
   body("last_name").notEmpty(),
