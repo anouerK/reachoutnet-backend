@@ -1,5 +1,5 @@
 
-const Post = require("../../models/Gestion_Posts/Comment");
+const Comment = require("../../models/Gestion_Posts/Comment");
 var express = require("express");
 var router = express.Router();
 const { body,validationResult } = require("express-validator");
