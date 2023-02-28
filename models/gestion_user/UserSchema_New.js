@@ -13,7 +13,7 @@ const typeDefs = loadSchemaSync("./**/*.graphql", {
   loaders: [new GraphQLFileLoader()],
 });
 
-const resolvers = {
+const userresolvers = {
   Query: {
     users: async (_, __, { req }) => {
       await authorize(userpermission.VIEW_USER_MODULE)(req);
@@ -87,4 +87,4 @@ const resolvers = {
     // Add any other mutation resolvers here
   },
 };
-module.exports = { typeDefs, resolvers };
+module.exports = { typeDefs, userresolvers };

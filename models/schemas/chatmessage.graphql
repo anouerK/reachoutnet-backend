@@ -1,0 +1,21 @@
+type Chat {
+  id: ID!
+  title: String!
+  participants: [String]!
+}
+
+type Message {
+  id: ID!
+  chat_id: String!
+  sender_id: String!
+  content: String!
+  created_at: String!
+}
+
+type Query {
+  chats: [Chat]!
+}
+
+type Mutation {
+  addChat(title: String!, participants: [String]): Chat!
+}

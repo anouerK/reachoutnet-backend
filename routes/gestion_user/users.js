@@ -7,15 +7,19 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const { graphqlHTTP } = require("express-graphql");
 //var schema = require("../../models/gestion_user/UserSchema");
-const { typeDefs, resolvers } = require("../../models/gestion_user/UserSchema_New");
+const { typeDefs, userresolvers } = require("../../models/gestion_user/UserSchema_New");
+const {  resolvers_chat } = require("../../routes/gestion_chat/ChatResolvers");
 const [auth, generateToken] = require("../../models/gestion_user/auth");
 const { body,validationResult } = require("express-validator");
 const { userpermission, authorize } = require("../../models/gestion_user/userpermission");
 const jwt = require("jsonwebtoken");
 const { makeExecutableSchema } = require("graphql-tools");
+const { merge } = require("lodash");
 // eslint-disable-next-line complexity
 
 //router.use(attachUserToReq);
+const resolvers = merge(userresolvers, resolvers_chat);
+
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
