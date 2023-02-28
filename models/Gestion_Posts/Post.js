@@ -44,7 +44,7 @@ var Post = new schema({
   },
   status: {
     type: String,
-    enum: ["published", "draft", "deleted"],
+    enum: ["published", "draft", "updated", "deleted"],
     default: "draft"
   },
   tags:{

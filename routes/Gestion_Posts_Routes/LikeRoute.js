@@ -36,6 +36,82 @@ router.post("/add",
 
   });
 
+
+router.get("/:id", async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const like= await Like.findById(req.params.id);
+    if (!like) {
+      res.status(404).send("Like not found");
+    } else {
+      res.status(200).send(like);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
+    
+    
+router.get("/", async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const like= await Like.find();
+    if (!like) {
+      res.status(404).send("Likes not found");
+    } else {
+      res.status(200).send(like);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
+
+router.patch("/:id",async(req,res)=>{
+
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const updates = Object.keys(req.body);
+    const allowedupdates=["reactionType"];
+    const isValidOperation= updates.every((update)=>
+      allowedupdates.includes(update)
+    );
+    
+    if (!isValidOperation) {
+      return res.status(400).send({ error: "Invalid updates" });
+    }
+        
+    const like = await Like.findById(req.params.id);
+    if (!like) {
+      return res.status(404).send("Like not found");
+    }
+    
+    updates.forEach((update)=>
+      like[update]= req.body[update]
+    );
+ 
+    
+    await like.save();
+    
+    res.status(200).send(like);
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+    
+});
+
 router.delete("/:id",async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -44,7 +120,7 @@ router.delete("/:id",async (req, res) => {
     }
     const like = await Like.findByIdAndDelete(req.params.id);
     if (!like) {
-      return res.status(404).send("User not found");
+      return res.status(404).send("Like not found");
     }
     
     res.status(200).send(like);
