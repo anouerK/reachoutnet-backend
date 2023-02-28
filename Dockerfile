@@ -1,6 +1,6 @@
 FROM node:18.14.2-alpine3.17
 
-ENV NODE_ENV=production NODE_PORT=3000
+ENV NODE_ENV=production NODE_PORT=3010
 
 WORKDIR /app
 
