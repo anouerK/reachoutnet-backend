@@ -1,17 +1,10 @@
 /* eslint-disable complexity */
 /* eslint-disable no-unused-vars */
-const { ApolloServer, gql } = require("apollo-server");
+
 const bcrypt = require("bcryptjs");
-const User = require("./user");
+const User = require("../models/gestion_user/user");
 const jwt = require("jsonwebtoken");
-const { userpermission, authorize } = require("./userpermission");
-const [auth, auth_permission_checker] = require("./auth");
-const { loadSchemaSync } = require("@graphql-tools/load");
-const { GraphQLFileLoader } = require("@graphql-tools/graphql-file-loader");
-//var r = require("../../models/schemas/userschema.graphql");
-const typeDefs = loadSchemaSync("./**/*.graphql", {
-  loaders: [new GraphQLFileLoader()],
-});
+const { userpermission, authorize } = require("../middleware/userpermission");
 
 const userresolvers = {
   Query: {
@@ -87,4 +80,4 @@ const userresolvers = {
     // Add any other mutation resolvers here
   },
 };
-module.exports = { typeDefs, userresolvers };
+module.exports =  userresolvers ;
