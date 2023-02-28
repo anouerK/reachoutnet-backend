@@ -37,7 +37,7 @@ var Comment= new schema({
 
   status: {
     type: String,
-    enum: ["approved", "pending", "spam", "deleted"],
+    enum: ["approved", "pending","updated", "spam", "deleted"],
     default: "pending"
   },
 
@@ -60,7 +60,6 @@ var Comment= new schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Comment"
   }],
-
 
 });
 
