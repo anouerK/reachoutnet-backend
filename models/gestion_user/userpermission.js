@@ -12,6 +12,16 @@ const userpermission = {
   ALL: 511, // All permissions*/
  
 };
+
+const authorize = (permission) => {
+  // eslint-disable-next-line complexity
+  return async (req) => {
+    // Check if the user has the required permission
+    if (!req.user || ((req.user.permissions & permission) !== permission)) {
+      throw new Error("Forbidden");
+    }
+  };
+};
 /*
 const authorize = (permission) => {
   // eslint-disable-next-line complexity
@@ -24,16 +34,6 @@ const authorize = (permission) => {
   };
 };
 */
-const authorize = (permission) => {
-  // eslint-disable-next-line complexity
-  return async (req) => {
-    // Check if the user has the required permission
-    if (!req.user || ((req.user.permissions & permission) !== permission)) {
-      throw new Error("Forbidden");
-    }
-  };
-};
-
 Object.freeze(userpermission);
 
 module.exports.userpermission = userpermission;
