@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 
 const Comment = require("../../models/Gestion_Posts/Comment");
 var express = require("express");
@@ -12,7 +13,6 @@ router.post("/add", // add comment
     body("authorComment").notEmpty(),
     body("authorTypeComment").notEmpty(),
     body("content").notEmpty(),
-    body("AttachedFilesComment").notEmpty()
     // eslint-disable-next-line complexity
   ], async (req, res) =>{
 
@@ -39,5 +39,24 @@ router.post("/add", // add comment
     }
 
   });
+
+router.delete("/:id",async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const comment = await Comment.findByIdAndDelete(req.params.id);
+    if (!comment) {
+      return res.status(404).send("User not found");
+    }
+    
+    res.status(200).send(comment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
+
 
 module.exports = router;

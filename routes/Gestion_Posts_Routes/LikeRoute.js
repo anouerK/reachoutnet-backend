@@ -36,6 +36,23 @@ router.post("/add",
 
   });
 
+router.delete("/:id",async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const like = await Like.findByIdAndDelete(req.params.id);
+    if (!like) {
+      return res.status(404).send("User not found");
+    }
+    
+    res.status(200).send(like);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router;
 
