@@ -6,7 +6,7 @@ services:
     # restart: always
     build: .
     ports:
-      - 3000:3000
+      - 3000:3010
     links:
       - mongo
     environment:
@@ -16,3 +16,5 @@ services:
     image: mongo
     ports:
       - 27017:27017
+    volumes:
+      - ./data:/data/db

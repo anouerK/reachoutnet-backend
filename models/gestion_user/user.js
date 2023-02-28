@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 // eslint-disable-next-line no-unused-vars
-var userpermission = require("./userpermission");
+var userpermission = require("../../middleware/userpermission");
 var schema = mongoose.Schema;
 mongoose.set("strictQuery", false);
 

@@ -1,5 +1,6 @@
+/* eslint-disable complexity */
 const jwt = require("jsonwebtoken");
-const User = require("../gestion_user/user");
+const User = require("../models/gestion_user/user");
 const jwtSecret = process.env.JWT_SECRET;
 
 // eslint-disable-next-line complexity
@@ -45,4 +46,24 @@ function generateToken(user) {
   const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: "24h" });
   return token;
 }
-module.exports = [auth, generateToken,auth_permission_checker];
+
+const attachUserToReq = async (req, res, next) => {
+  
+  const token_before_replace = req.header("Authorization");
+  if(token_before_replace!=null)
+  {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (token) {
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decodedToken;
+      const user = await User.findOne({ _id: decodedToken.userId });
+      if (user) 
+        req.user = user;
+      else
+        req.user=null;
+    }
+  }
+  
+  next();
+};
+module.exports = [auth, generateToken,auth_permission_checker,attachUserToReq];

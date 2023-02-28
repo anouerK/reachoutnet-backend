@@ -1,39 +1,52 @@
 /* eslint-disable complexity */
-/* eslint-disable no-unused-vars */
 var express = require("express");
 var router = express.Router();
 var User = require("../../models/gestion_user/user");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const { graphqlHTTP } = require("express-graphql");
-//var schema = require("../../models/gestion_user/UserSchema");
-const { typeDefs, userresolvers } = require("../../models/gestion_user/UserSchema_New");
-const {  resolvers_chat } = require("../../routes/gestion_chat/ChatResolvers");
-const [auth, generateToken] = require("../../models/gestion_user/auth");
+const [auth, generateToken] = require("../../middleware/auth");
 const { body,validationResult } = require("express-validator");
-const { userpermission, authorize } = require("../../models/gestion_user/userpermission");
-const jwt = require("jsonwebtoken");
-const { makeExecutableSchema } = require("graphql-tools");
-const { merge } = require("lodash");
-// eslint-disable-next-line complexity
+const { userpermission, authorize } = require("../../middleware/userpermission");
 
-//router.use(attachUserToReq);
-const resolvers = merge(userresolvers, resolvers_chat);
-
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
-router.use("/graphql", graphqlHTTP((req) => ({
-  schema,
-  context: { req },
-  graphiql: true
-})));
 
 router.get("/", authorize("VIEW_USER_MODULE"),async (req, res)=> {
   try {
     const users = await User.find();
     res.status(200).send(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
+
+//sign up user
+router.post("/signup",[ 
+  body("username").notEmpty(),
+  body("first_name").notEmpty(),
+  body("last_name").notEmpty(),
+  body("age").isInt({ min: 1 }),
+  body("email").isEmail(),
+  body("password").isLength({ min: 4 }),
+],async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { username, first_name, last_name, age, email, password, permissions } = req.body;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const user = new User({
+      username,
+      first_name,
+      last_name,
+      age,
+      email,
+      password: hashedPassword,
+      permissions
+    });
+    await user.save();
+
+    res.status(201).send(user);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");

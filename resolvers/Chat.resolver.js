@@ -1,6 +1,6 @@
-const { ChatType } = require("../../models/gestion_chat/Typedef");
+const { ChatType } = require("../models/gestion_chat/Typedef");
 const { GraphQLList, GraphQLNonNull, GraphQLString} = require("graphql");
-const Chat = require("../../models/gestion_chat/chat");
+const Chat = require("../models/gestion_chat/chat");
 
 const resolvers_chat = {
   Query: {
@@ -32,4 +32,4 @@ const resolvers_chat = {
   },
 };
 
-module.exports = { resolvers_chat };
+module.exports =  resolvers_chat ;
