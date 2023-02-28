@@ -66,4 +66,4 @@ const attachUserToReq = async (req, res, next) => {
   
   next();
 };
-module.exports = [auth, generateToken,auth_permission_checker,attachUserToReq];
+module.exports = {auth, generateToken,auth_permission_checker,attachUserToReq};

@@ -4,7 +4,7 @@ var router = express.Router();
 var User = require("../../models/gestion_user/user");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const [auth, generateToken] = require("../../middleware/auth");
+const {auth, generateToken} = require("../../middleware/auth");
 const { body,validationResult } = require("express-validator");
 const { userpermission, authorize } = require("../../middleware/userpermission");
 
