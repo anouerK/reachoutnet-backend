@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 const Post = require("../../models/Gestion_Posts/Post");
 var express = require("express");
 var router = express.Router();
@@ -9,9 +10,7 @@ router.post("/add",
   [
     body("authorPost").notEmpty(),
     body("authorTypePost").notEmpty(),
-    body("content").notEmpty(),
-    body("AttachedFiles").notEmpty(),
-    body("tags").notEmpty()
+    body("content").notEmpty()
     // eslint-disable-next-line complexity
   ], async (req, res) =>{
 
@@ -39,5 +38,25 @@ router.post("/add",
     }
 
   });
+
+
+router.delete("/:id",async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const post = await Post.findByIdAndDelete(req.params.id);
+    if (!post) {
+      return res.status(404).send("User not found");
+    }
+  
+    res.status(200).send(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
+
 
 module.exports = router;
