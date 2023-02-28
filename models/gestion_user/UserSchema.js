@@ -12,15 +12,9 @@ const {
 const bcrypt = require("bcryptjs");
 const User = require("./user");
 const jwt = require("jsonwebtoken");
-//const userpermission = require("./userpermission");
-// eslint-disable-next-line no-unused-vars
-//const authorize = require("./userpermission");
 const { userpermission, authorize } = require("./userpermission");
-
-// eslint-disable-next-line no-unused-vars
 var [auth,auth_permission_checker] = require("./auth");
-// eslint-disable-next-line no-unused-vars
-//const { SchemaDirectiveVisitor } = require("graphql-tools");
+
 
 const UserType = new GraphQLObjectType({
   name: "user",
