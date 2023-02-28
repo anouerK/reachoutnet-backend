@@ -3,7 +3,7 @@ var express = require("express");
 // const attachUserToReq = require("../middleware/attachUserToReq");
 var router = express.Router();
 const {attachUserToReq}= require("../middleware/auth");
-//const { loadFilesSync } = require("@graphql-tools/load-files");
+const { loadFilesSync } = require("@graphql-tools/load-files");
 const { GraphQLFileLoader } = require("@graphql-tools/graphql-file-loader");
 const { loadSchemaSync } = require("@graphql-tools/load");
 const { makeExecutableSchema } = require("graphql-tools");
@@ -20,19 +20,18 @@ const comments_router = require("./Gestion_Posts_Routes/CommentRoute");
 const likes_router = require("./Gestion_Posts_Routes/LikeRoute");
 
 
-const  resolvers_chat = require("../resolvers/Chatresolver");
-const   userresolvers  = require("../resolvers/UserResolver");
+
 
 
 // router.use(attachUserToReq);
 
-const typeDefs = loadSchemaSync("./**/*.graphql", {
+const typeDefs = loadSchemaSync("./schemas/*.graphql", {
   loaders: [new GraphQLFileLoader()],
 });
 
-//const resolverFiles = loadFilesSync("./**/*.resolver.*");
+const resolverFiles = loadFilesSync("./resolvers/*.resolver.*");
 
-const resolvers = merge(resolvers_chat,userresolvers);
+const resolvers = merge(resolverFiles);
 
 
 
