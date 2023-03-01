@@ -48,7 +48,7 @@ var Post = new schema({
     default: "draft"
   },
   tags:{
-    type: [String]
+    type: [String],
   }
 });
 

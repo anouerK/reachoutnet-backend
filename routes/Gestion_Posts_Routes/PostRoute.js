@@ -27,7 +27,6 @@ router.post("/add",
         content: req.body.content,
         AttachedFiles: req.body.AttachedFiles,
         tags: req.body.tags,
-        ModificationDate: Date.now() 
       });
 
       await poste.save();

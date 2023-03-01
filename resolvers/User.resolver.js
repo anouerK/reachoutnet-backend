@@ -34,7 +34,6 @@ const userresolvers = {
     await user.save();
     return user;
   },
-
   updateUser: async (_, args, { req }) => {
     await authorize(userpermission.POST_MODULE_CRUDS)(req);
     const { id, ...updateData } = args;
