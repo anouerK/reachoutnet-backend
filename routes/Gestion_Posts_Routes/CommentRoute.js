@@ -40,6 +40,53 @@ router.post("/add", // add comment
 
   });
 
+router.post("/addReplyComment/:commentId", // add comment 
+  [
+    body("postId").notEmpty(),
+    body("authorComment").notEmpty(),
+    body("authorTypeComment").notEmpty(),
+    body("content").notEmpty(),
+    // eslint-disable-next-line complexity
+  ], async (req, res) =>{
+
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      var ParentComment = await Comment.findById(req.params.commentId);
+
+      if(!ParentComment)
+      {res.status(404).send("Parent Comment not found");}
+      else
+      {
+
+        var comment = new Comment ( {
+          postId: req.body.postId, // replace with a valid author ID
+          authorComment: req.body.authorComment,
+          authorTypeComment: req.body.authorTypeComment,
+          parentComment:req.params.commentId,
+          content: req.body.content,
+          AttachedFilesComment: req.body.AttachedFilesComment,
+        });
+
+        await comment.save();
+    
+        ParentComment["replies"].push( comment["_id"]);
+        await ParentComment.save();
+        
+        res.status(201).send(comment);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server error");
+    }
+
+  });
+
+
+
 
 router.get("/:id", async (req, res) => {
   try {
@@ -124,11 +171,21 @@ router.delete("/:id",async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+
     const comment = await Comment.findByIdAndDelete(req.params.id);
+
     if (!comment) {
       return res.status(404).send("Comment not found");
     }
-    
+    if(comment["parentComment"]!=null){ 
+      const parentComment = await Comment.findOneAndUpdate(
+        {_id:comment["parentComment"]},
+        {$pull:{replies : comment["_id"] }},
+        {new:true}
+      );
+      await parentComment.save();
+    }
+
     res.status(200).send(comment);
   } catch (error) {
     console.error(error);
