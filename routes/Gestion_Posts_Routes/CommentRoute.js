@@ -172,25 +172,57 @@ router.delete("/:id",async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const comment = await Comment.findByIdAndDelete(req.params.id);
+    const comment = await Comment.findById(req.params.id);
 
     if (!comment) {
       return res.status(404).send("Comment not found");
     }
-    if(comment["parentComment"]!=null){ 
-      const parentComment = await Comment.findOneAndUpdate(
+
+    //delete all replies related with this parent comment 
+
+    if(comment["replies"].length > 0) /// check if replies  field is not empty 
+    {
+      var comments = await Comment.find(); // return all comments 
+
+      Comment.findById(comment["_id"]).populate("replies").exec((err, comment) => { // The populate() method is used to populate the replies field of the comment object with the actual reply comment objects instead of just their IDs. This is achieved by passing the string "replies" as an argument to the populate() method. The exec() method is used to execute the query and fetch the comment object.
+       
+        if (err) {
+          console.log(err);
+          return res.status(500).send(err);
+        }
+
+        comments.forEach((c) => { // loop comments
+
+          var parentCommentId = c["_id"].toString(); // the id of each comment.
+          const repliesIds = comment.replies.map(reply => reply._id.toString()); 
+          repliesIds.forEach(async (rep)=> {     // loop  replies      
+            if(parentCommentId === rep) /// if the commentReply exists in the replies array
+              await Comment.findByIdAndDelete(parentCommentId);    // delete reply 
+          }); // end foreach repliesId 
+        }); // end foreach comments
+      });
+    }
+  
+    // remove relation between the deleted commnt and the parent comment 
+
+    if(comment["parentComment"]!=null){  // check  if the comment is a reply 
+
+      const parentComment = await Comment.findOneAndUpdate( // delete relation betwen reply and parent comment
         {_id:comment["parentComment"]},
         {$pull:{replies : comment["_id"] }},
         {new:true}
       );
       await parentComment.save();
+
     }
 
+    await Comment.findByIdAndDelete(req.params.id);
     res.status(200).send(comment);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
   }
+
 });
 
 
