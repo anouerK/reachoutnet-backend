@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { userpermission, authorize } = require("./middleware/userpermission");
@@ -19,6 +20,16 @@ const resolvers = {
 
     },
     Mutation: {
+        addFollow: async (_, { followerId, followingId }, { dataSources, req }) => {
+            const Follow = dataSources.userAPI;
+            const follow = {
+                followerId,
+                followingId
+            };
+            const savedFollow = await Follow.createFollow(follow);
+
+            return savedFollow;
+        },
 
         addUser: async (_, { username, firstname, lastname, age, email, password, permissions }, { dataSources, req }) => {
             const hashedPassword = await bcrypt.hash(password, 10);

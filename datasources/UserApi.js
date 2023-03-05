@@ -1,8 +1,10 @@
 const User = require("./user.js");
+const Follow = require("./follow");
 
 class UserAPI {
     constructor () {
         this.model_user = User;
+        this.model_follow = Follow;
     }
 
     getAllUsers () {
@@ -28,5 +30,18 @@ class UserAPI {
     deleteUser (id) {
         return this.model_user.findByIdAndDelete(id);
     }
+
+    createFollow (follow) {
+        return this.model_follow.create(follow);
+    }
+
+    updateFollow (id, follow) {
+        return this.model_follow.findByIdAndUpdate(id, follow);
+    }
+
+    deleteFollow (id) {
+        return this.model_follow.findByIdAndDelete(id);
+    }
 }
+
 module.exports = UserAPI;

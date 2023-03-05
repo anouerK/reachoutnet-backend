@@ -1,5 +1,6 @@
 # extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
 # @key(fields: "id")
+
 type User  {
     id: ID!
     username: String!
@@ -13,6 +14,13 @@ type User  {
     is_verified: Boolean!
   }
 
+  type Follow {
+  id: ID!
+  followerId: String!
+  followingId: String!
+  createdAt: String!
+}
+
   type Login {
     user: User
     token: String
@@ -24,6 +32,11 @@ type User  {
   }
 
   type Mutation {
+  
+    addFollow(
+     followerId: String!
+     followingId: String!
+    ): Follow!
     addUser(
       username: String!
       first_name: String!
