@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon . -e js,graphql"
+    "start": "nodemon . -e js,graphql --exec \"eslint . && node\""
+
   },
   "keywords": [],
   "author": "",
@@ -20,14 +21,14 @@
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.1.0",
-    "nodemon": "^2.0.13"
+    "mongoose": "^6.1.0"
   },
   "devDependencies": {
     "eslint": "^8.0.1",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0",
-    "eslint-plugin-promise": "^6.0.0"
+    "eslint-plugin-promise": "^6.0.0",
+    "nodemon": "^2.0.13"
   }
 }

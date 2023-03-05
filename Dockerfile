@@ -11,19 +11,3 @@ RUN yarn install --production
 COPY  . .
 
 CMD [ "yarn", "run", "deploy" ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
