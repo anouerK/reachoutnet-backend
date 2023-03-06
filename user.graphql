@@ -16,9 +16,16 @@ type User  {
 
   type Follow {
   id: ID!
-  followerId: String!
-  followingId: String!
+  followerId: ID!
+  followerType: followTypeEnum!
+  followingId: ID!
+  followingType: followTypeEnum!
   createdAt: String!
+}
+
+enum followTypeEnum  {
+  users 
+  associations
 }
 
   type Login {
@@ -34,9 +41,12 @@ type User  {
   type Mutation {
   
     addFollow(
-     followerId: String!
-     followingId: String!
+      followerId: ID!
+      followerType: followTypeEnum!
+      followingId: ID!
+      followingType: followTypeEnum!
     ): Follow!
+    unFollow(id: ID!): Follow!
     addUser(
       username: String!
       first_name: String!
