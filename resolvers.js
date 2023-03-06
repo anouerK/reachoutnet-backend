@@ -20,15 +20,33 @@ const resolvers = {
 
     },
     Mutation: {
-        addFollow: async (_, { followerId, followingId }, { dataSources, req }) => {
+        addFollow: async (_, { followerId, followerType, followingId, followingType }, { dataSources, req }) => {
             const Follow = dataSources.userAPI;
             const follow = {
                 followerId,
-                followingId
+                followerType,
+                followingId,
+                followingType
             };
             const savedFollow = await Follow.createFollow(follow);
 
             return savedFollow;
+        },
+
+        unFollow: async (_, { id }, { dataSources, req }) => { // delete Follow
+            try {
+                // await authorize(userpermission.POST_MODULE_CRUDS)(req);
+                const Follow = dataSources.userAPI;
+
+                const follow = await Follow.deleteFollow(id);
+                if (!follow) {
+                    throw new GraphQLError("Follow not found");
+                }
+                return follow;
+            } catch (error) {
+                console.error(error);
+                throw new GraphQLError("Failed to delete Follow");
+            }
         },
 
         addUser: async (_, { username, firstname, lastname, age, email, password, permissions }, { dataSources, req }) => {
