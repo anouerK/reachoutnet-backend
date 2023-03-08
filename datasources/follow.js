@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-// eslint-disable-next-line no-unused-vars
-
 require("dotenv").config();
 
 const Schema = mongoose.Schema;

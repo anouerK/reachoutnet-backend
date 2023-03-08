@@ -1,6 +1,8 @@
 /* eslint-disable complexity */
 const bcrypt = require("bcryptjs");
+const { isValidObjectId } = require("mongoose");
 const jwt = require("jsonwebtoken");
+const speakeasy = require("speakeasy");
 const { userpermission, authorize } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
@@ -117,6 +119,88 @@ const resolvers = {
                 throw new GraphQLError("Authentication failed");
             }
         },
+        generateOtp: async (_, { id }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
+            if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
+
+            const user = await dataSources.userAPI.findOne({ _id: id });
+            if (user.has_otp) { return new GraphQLError("OTP already exists for this user"); }
+            const { base32 } = speakeasy.generateSecret({
+                issuer: "ReachOutNet",
+                name: "ReachOutNet",
+                length: 20
+            });
+            const otp = await dataSources.userAPI.createOtp(id, base32);
+            if (!otp) { return new GraphQLError("Failed to create OTP"); }
+            const updated_user = await dataSources.userAPI.updateUser(id, { has_otp: true });
+            if (!updated_user) { return new GraphQLError("Failed to update user"); }
+            return otp;
+        },
+
+        verifyOtp: async (_, { id, token }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
+            if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
+            if (!token || isNaN(token)) { return new GraphQLError("Invalid Token"); }
+
+            const otp = await dataSources.userAPI.findOneOtp({ userId: id });
+            if (!otp) { return new GraphQLError("OTP not found"); }
+
+            const verified = speakeasy.totp.verify({
+                secret: otp.base32,
+                encoding: "base32",
+                token
+            });
+
+            if (!verified) {
+                return new GraphQLError("Invalid OTP");
+            }
+            const updated_otp = await dataSources.userAPI.updateOtp(otp._id, { verified: true, last_modified: Date.now() });
+
+            if (!updated_otp) { return new GraphQLError("Failed to update OTP"); }
+
+            return updated_otp;
+        },
+        validateOtp: async (_, { id, token }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
+            if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
+            if (!token || isNaN(token)) { return new GraphQLError("Invalid Token"); }
+            const otp = await dataSources.userAPI.findOneOtp({ userId: id });
+            if (!otp) { return new GraphQLError("OTP not found"); }
+            const valid_token = speakeasy.totp.verify({
+                secret: otp.base32,
+                encoding: "base32",
+                token,
+                window: 1
+            });
+            if (!valid_token) { return new GraphQLError("Invalid OTP"); }
+            return valid_token;
+        },
+        disableOtp: async (_, { id }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
+            if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
+            const user = await dataSources.userAPI.findOne({ _id: id });
+            if (!user) { return new GraphQLError("User not found"); }
+
+            const otp = await dataSources.userAPI.updateOtp(id, { enabled: false, last_modified: Date.now() });
+            if (!otp) { return new GraphQLError("OTP not found"); }
+
+            const updated_user = await dataSources.userAPI.updateUser(id, { has_otp: false });
+            if (!updated_user) { return new GraphQLError("Failed to update user"); }
+            return updated_user;
+        },
+        deleteOtp: async (_, { id }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
+            if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
+            const user = await dataSources.userAPI.findOne({ _id: id });
+            if (!user) { return new GraphQLError("User not found"); }
+
+            const otp = await dataSources.userAPI.deleteOtp(id);
+            if (!otp) { return new GraphQLError("OTP not found"); }
+
+            const updated_user = await dataSources.userAPI.updateUser(id, { has_otp: false });
+            if (!updated_user) { return new GraphQLError("Failed to update user"); }
+            return updated_user;
+          },
         sendEmail: async (_, { name, email, link }) => {
             const transporter = nodemailer.createTransport({
                 host: "sandbox.smtp.mailtrap.io",
@@ -143,7 +227,6 @@ const resolvers = {
                 return false;
             }
         }
-        //   // Add any other mutation resolvers here
     }
 
 };

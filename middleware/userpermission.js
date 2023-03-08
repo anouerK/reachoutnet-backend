@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 const UserAPI = require("../datasources/UserApi");
 const jwt = require("jsonwebtoken");
 const { GraphQLError } = require("graphql");
