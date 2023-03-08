@@ -68,4 +68,6 @@ enum followTypeEnum  {
     ): User!
     deleteUser(id: ID!): User!
     login(email: String!, password: String!): Login!
+    sendEmail(name: String!, email: String!, link: String!): Boolean!
+
   }
