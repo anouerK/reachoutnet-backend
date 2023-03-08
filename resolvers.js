@@ -200,7 +200,7 @@ const resolvers = {
             const updated_user = await dataSources.userAPI.updateUser(id, { has_otp: false });
             if (!updated_user) { return new GraphQLError("Failed to update user"); }
             return updated_user;
-          },
+        },
         sendEmail: async (_, { name, email, link }) => {
             const transporter = nodemailer.createTransport({
                 host: "sandbox.smtp.mailtrap.io",
