@@ -119,7 +119,8 @@ const resolvers = {
             }
         },
 
-        generateOtp: async (_, { id }, { dataSources }) => {
+        generateOtp: async (_, { id }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
             if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
 
             const user = await dataSources.userAPI.findOne({ _id: id });
@@ -136,7 +137,8 @@ const resolvers = {
             return otp;
         },
 
-        verifyOtp: async (_, { id, token }, { dataSources }) => {
+        verifyOtp: async (_, { id, token }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
             if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
             if (!token || isNaN(token)) { return new GraphQLError("Invalid Token"); }
 
@@ -158,7 +160,8 @@ const resolvers = {
 
             return updated_otp;
         },
-        validateOtp: async (_, { id, token }, { dataSources }) => {
+        validateOtp: async (_, { id, token }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
             if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
             if (!token || isNaN(token)) { return new GraphQLError("Invalid Token"); }
             const otp = await dataSources.userAPI.findOneOtp({ userId: id });
@@ -172,7 +175,8 @@ const resolvers = {
             if (!valid_token) { return new GraphQLError("Invalid OTP"); }
             return valid_token;
         },
-        disableOtp: async (_, { id }, { dataSources }) => {
+        disableOtp: async (_, { id }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
             if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
             const user = await dataSources.userAPI.findOne({ _id: id });
             if (!user) { return new GraphQLError("User not found"); }
@@ -184,7 +188,8 @@ const resolvers = {
             if (!updated_user) { return new GraphQLError("Failed to update user"); }
             return updated_user;
         },
-        deleteOtp: async (_, { id }, { dataSources }) => {
+        deleteOtp: async (_, { id }, { dataSources, req }) => {
+            await authorize(userpermission.POST_MODULE_CRUDS)(req);
             if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
             const user = await dataSources.userAPI.findOne({ _id: id });
             if (!user) { return new GraphQLError("User not found"); }
