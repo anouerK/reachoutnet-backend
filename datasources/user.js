@@ -17,7 +17,9 @@ const User = new Schema({
     permissions: { type: Number, default: userpermission.NONE },
     creation_date: { type: Date, default: Date.now },
     last_login: { type: Date },
-    is_verified: { type: Boolean }
+    is_verified: { type: Boolean },
+    has_otp: { type: Boolean, default: false }
+
     // active: { type: Date },
 });
 // db name in lowercase only

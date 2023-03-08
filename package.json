@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon . -e js,graphql --exec \"eslint . && node\""
-
   },
   "keywords": [],
   "author": "",
@@ -21,7 +20,8 @@
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.1.0"
+    "mongoose": "^6.1.0",
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^8.0.1",
