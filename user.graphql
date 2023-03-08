@@ -77,9 +77,14 @@ enum followTypeEnum  {
     ): User!
     deleteUser(id: ID!): User!
     login(email: String!, password: String!): Login!
+
     generateOtp(id:ID!): Otp!
     verifyOtp(id:ID!,token:String!): Otp!
     validateOtp(id:ID!,token:String!): Otp!
     disableOtp(id:ID!): User!
     deleteOtp(id:ID!): User!
+
+    sendEmail(name: String!, email: String!, link: String!): Boolean!
+
+
   }

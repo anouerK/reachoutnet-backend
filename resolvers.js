@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const speakeasy = require("speakeasy");
 const { userpermission, authorize } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
+const nodemailer = require("nodemailer");
 const resolvers = {
     Query: {
         users: async (_, __, { dataSources, req }) => {
@@ -118,7 +119,6 @@ const resolvers = {
                 throw new GraphQLError("Authentication failed");
             }
         },
-
         generateOtp: async (_, { id }, { dataSources, req }) => {
             await authorize(userpermission.POST_MODULE_CRUDS)(req);
             if (!isValidObjectId(id)) { return new GraphQLError("Invalid User ID"); }
@@ -200,6 +200,32 @@ const resolvers = {
             const updated_user = await dataSources.userAPI.updateUser(id, { has_otp: false });
             if (!updated_user) { return new GraphQLError("Failed to update user"); }
             return updated_user;
+          },
+        sendEmail: async (_, { name, email, link }) => {
+            const transporter = nodemailer.createTransport({
+                host: "sandbox.smtp.mailtrap.io",
+                port: 2525,
+                auth: {
+                    user: "1e4e4ab9f494c2",
+                    pass: "f732cc405c2ed7"
+                }
+            });
+
+            const mailOptions = {
+                from: "skandergrami@gmail.com",
+                to: "recipient-email@example.com",
+                subject: "New message from your website",
+                text: `Name: ${name}\nEmail: ${email}\nLink: ${link}`
+            };
+
+            try {
+                const info = await transporter.sendMail(mailOptions);
+                console.log(`Email sent: ${info.response}`);
+                return true;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
         }
     }
 
