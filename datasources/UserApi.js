@@ -80,8 +80,12 @@ class UserAPI {
         return this.model_interest.findByIdAndDelete(id);
     }
 
-    updateInterest (id) {
+    updateInterest (id, interest) {
         return this.model_interest.findByIdAndUpdate(id, interest);
+    }
+
+    getInterest (id) {
+        return this.model_interest.findOneAndUpdate(id);
     }
 }
 
