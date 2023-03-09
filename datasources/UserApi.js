@@ -2,13 +2,18 @@ const User = require("./user.js");
 const Follow = require("./follow");
 const Otp = require("./otp.js");
 const Skill = require("./skill.js");
+const interest = require("./interest.js");
 
 class UserAPI {
     constructor () {
         this.model_user = User;
         this.model_follow = Follow;
         this.model_otp = Otp;
+
         this.model_skill = Skill;
+
+        this.model_interest = interest;
+
     }
 
     getAllUsers () {
@@ -51,6 +56,14 @@ class UserAPI {
         return this.model_follow.findByIdAndDelete(id);
     }
 
+    getFollower (id, followinId) {
+        return this.model_follow.findOne({ followerId: id, followingId: followinId });
+    }
+
+    getFollowingRelation (followingId, id) {
+        return this.model_follow.findOne({ followerId: followingId, followingId: id });
+    }
+
     createOtp (userId, base32) {
         return this.model_otp.create({
             userId,
@@ -72,8 +85,24 @@ class UserAPI {
         return this.model_otp.findOneAndDelete({ userId: id });
     }
 
+
     addSkill (skill) {
         return this.model_skill.create(skill);
+}
+    createInterest (interest) {
+        return this.model_interest.create(interest);
+    }
+
+    deleteInterest (id) {
+        return this.model_interest.findByIdAndDelete(id);
+    }
+
+    updateInterest (id, interest) {
+        return this.model_interest.findByIdAndUpdate(id, interest);
+    }
+
+    getInterest (id) {
+        return this.model_interest.findOneAndUpdate(id);
     }
 }
 

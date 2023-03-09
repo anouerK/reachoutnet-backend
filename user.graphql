@@ -61,6 +61,11 @@ enum followTypeEnum  {
   type Query {
     users: [User]!
     user(id: ID!): User
+    follows(id: ID!): String
+    follow(
+      id1: ID!
+      id2: ID!
+    ): String
   }
 
   type Mutation {
@@ -116,6 +121,11 @@ enum followTypeEnum  {
       description: String!
       ): Interest!
     deleteInterest(id: ID!): Interest
+    updateInterest(
+      id: ID!
+      nameInterest: String!
+      description: String!
+      ): Interest
 
     addSkill(
       name: String!
