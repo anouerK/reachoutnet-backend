@@ -23,6 +23,12 @@ type User  {
   createdAt: String!
 }
 
+  type Interest{
+    id: ID!
+    nameInterest: String!
+    description: String!  
+  }
+
 enum followTypeEnum  {
   users 
   associations
@@ -69,5 +75,10 @@ enum followTypeEnum  {
     deleteUser(id: ID!): User!
     login(email: String!, password: String!): Login!
     sendEmail(name: String!, email: String!, link: String!): Boolean!
-
+    addInterest(
+      id: ID!
+      nameInterest: String!
+      description: String!
+      ): Interest!
+    deleteInterest(id: ID!): Interest
   }

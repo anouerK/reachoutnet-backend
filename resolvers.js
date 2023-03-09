@@ -142,6 +142,34 @@ const resolvers = {
                 console.error(error);
                 return false;
             }
+        },
+        addInterest: async (_, { id, nameInterest, description }, { dataSources, req }) => {
+            // await authorize(userpermission.POST_MODULE_CRUDS)(req);
+            const Interest = dataSources.userAPI;
+            const interest = {
+                id,
+                nameInterest,
+                description
+            };
+            const savedInterest = await Interest.createInterest(interest);
+
+            return savedInterest;
+        },
+        deleteInterest: async (_, { id }, { dataSources, req }) => {
+            try {
+                // await authorize(userpermission.POST_MODULE_CRUDS)(req);
+                const Interest = dataSources.userAPI;
+
+                const interest = await Interest.deleteInterest(id);
+                if (!interest) {
+                    throw new GraphQLError("Interest not found");
+                }
+                console.log(interest);
+                return interest;
+            } catch (error) {
+                console.error(error);
+                throw new GraphQLError("Failed to delete Interest");
+            }
         }
         //   // Add any other mutation resolvers here
     }
