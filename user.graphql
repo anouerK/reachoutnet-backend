@@ -111,6 +111,7 @@ enum followTypeEnum  {
       description: String!
       ): Interest!
     deleteInterest(id: ID!): Interest
+    updateInterest(id: ID!): Interest
 
 
 

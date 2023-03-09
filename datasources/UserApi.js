@@ -1,12 +1,14 @@
 const User = require("./user.js");
 const Follow = require("./follow");
 const Otp = require("./otp.js");
+const interest = require("./interest.js");
 
 class UserAPI {
     constructor () {
         this.model_user = User;
         this.model_follow = Follow;
         this.model_otp = Otp;
+        this.model_interest = interest;
     }
 
     getAllUsers () {
@@ -76,6 +78,18 @@ class UserAPI {
 
     deleteOtp (id) {
         return this.model_otp.findOneAndDelete({ userId: id });
+    }
+
+    createInterest (interest) {
+        return this.model_interest.create(interest);
+    }
+
+    deleteInterest (id) {
+        return this.model_interest.findByIdAndDelete(id);
+    }
+
+    updateInterest (id) {
+        return this.model_interest.findByIdAndUpdate(id, interest);
     }
 }
 
