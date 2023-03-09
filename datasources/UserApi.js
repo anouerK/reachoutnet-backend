@@ -77,7 +77,7 @@ class UserAPI {
     }
 
     updateOtp (id, otp) {
-        return this.model_otp.findOneAndUpdate({ userId: id }, otp, { upsert: true, new: true });
+        return this.model_otp.findOneAndUpdate({ _id: id }, otp, { upsert: true, new: true });
     }
 
     deleteOtp (id) {
