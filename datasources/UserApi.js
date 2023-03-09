@@ -13,7 +13,6 @@ class UserAPI {
         this.model_skill = Skill;
 
         this.model_interest = interest;
-
     }
 
     getAllUsers () {
@@ -85,10 +84,10 @@ class UserAPI {
         return this.model_otp.findOneAndDelete({ userId: id });
     }
 
-
     addSkill (skill) {
         return this.model_skill.create(skill);
-}
+    }
+
     createInterest (interest) {
         return this.model_interest.create(interest);
     }

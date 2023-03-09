@@ -319,7 +319,7 @@ const resolvers = {
             };
             const savedSkill = await dataSources.userAPI.createSkill(skill);
             return savedSkill;
-}
+        },
         updateInterest: async (_, args, { dataSources, req }) => {
             const User = dataSources.userAPI;
             const { id, ...updateData } = args;
@@ -330,7 +330,6 @@ const resolvers = {
             const interest = await User.updateInterest(id, updateData);
 
             return interest;
-
         }
     }
 
