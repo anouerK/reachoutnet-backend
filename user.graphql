@@ -32,6 +32,12 @@ type Otp {
     enabled: Boolean!
 }
 
+  type Interest{
+    id: ID!
+    nameInterest: String!
+    description: String!  
+  }
+
 enum followTypeEnum  {
   users 
   associations
@@ -93,6 +99,15 @@ enum followTypeEnum  {
     deleteOtp(id:ID!): User!
 
     sendEmail(name: String!, email: String!, link: String!): Boolean!
+
+    addInterest(
+      id: ID!
+      nameInterest: String!
+      description: String!
+      ): Interest!
+    deleteInterest(id: ID!): Interest
+
+
 
 
   }
