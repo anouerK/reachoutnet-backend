@@ -52,19 +52,35 @@ const resolvers = {
             }
         },
 
-        addUser: async (_, { username, firstname, lastname, age, email, password, permissions }, { dataSources, req }) => {
+        addUser: async (_, { username, first_name, last_name, age, email, password, permissions }, { dataSources, req }) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const User = dataSources.userAPI;
             const user = {
                 username,
-                firstname,
-                lastname,
+                first_name,
+                last_name,
                 age,
                 email,
                 password: hashedPassword,
                 permissions
             };
             await authorize(userpermission.POST_MODULE_CRUDS)(req);
+            const saveduser = await User.createUser(user);
+
+            return saveduser;
+        },
+        Signup: async (_, { username, first_name, last_name, age, email, password }, { dataSources, req }) => {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const User = dataSources.userAPI;
+            const user = {
+                username,
+                first_name,
+                last_name,
+                age,
+                email,
+                password: hashedPassword,
+                permissions: 0
+            };
             const saveduser = await User.createUser(user);
 
             return saveduser;
