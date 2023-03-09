@@ -49,6 +49,14 @@ class UserAPI {
         return this.model_follow.findByIdAndDelete(id);
     }
 
+    getFollower (id, followinId) {
+        return this.model_follow.findOne({ followerId: id, followingId: followinId });
+    }
+
+    getFollowingRelation (followingId, id) {
+        return this.model_follow.findOne({ followerId: followingId, followingId: id });
+    }
+
     createOtp (userId, base32) {
         return this.model_otp.create({
             userId,
