@@ -226,7 +226,8 @@ const resolvers = {
                 window: 1
             });
             if (!valid_token) { return new GraphQLError("Invalid OTP"); }
-            return valid_token;
+            ;
+            return otp;
         },
         disableOtp: async (_, { id }, { dataSources, req }) => {
             await authorize(userpermission.POST_MODULE_CRUDS)(req);
