@@ -1,12 +1,14 @@
 const User = require("./user.js");
 const Follow = require("./follow");
 const Otp = require("./otp.js");
+const Skill = require("./skill.js");
 
 class UserAPI {
     constructor () {
         this.model_user = User;
         this.model_follow = Follow;
         this.model_otp = Otp;
+        this.model_skill = Skill;
     }
 
     getAllUsers () {
@@ -68,6 +70,10 @@ class UserAPI {
 
     deleteOtp (id) {
         return this.model_otp.findOneAndDelete({ userId: id });
+    }
+
+    addSkill (skill) {
+        return this.model_skill.create(skill);
     }
 }
 

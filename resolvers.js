@@ -270,6 +270,17 @@ const resolvers = {
                 console.error(error);
                 throw new GraphQLError("Failed to delete Interest");
             }
+        },
+        addSkill: async (_, { name, description, level, last_modified, verified }, { dataSources, req }) => {
+            const skill = {
+                name,
+                description,
+                level,
+                last_modified,
+                verified
+            };
+            const savedSkill = await dataSources.userAPI.createSkill(skill);
+            return savedSkill;
         }
     }
 
