@@ -45,6 +45,11 @@ enum followTypeEnum  {
   type Query {
     users: [User]!
     user(id: ID!): User
+    follows(id: ID!): String
+    follow(
+      id1: ID!
+      id2: ID!
+    ): String
   }
 
   type Mutation {
