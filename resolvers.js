@@ -270,6 +270,30 @@ const resolvers = {
                 console.error(error);
                 throw new GraphQLError("Failed to delete Interest");
             }
+        },
+        updateInterest: async (_, { id, nameInterest, description }, { dataSources, req }) => {
+            try {
+                // await authorize(userpermission.POST_MODULE_CRUDS)(req);
+                const Interest = dataSources.userAPI;
+
+                const existingInterest = await Interest.getInterest(id);
+                if (!existingInterest) {
+                    throw new GraphQLError("Interest not found");
+                }
+
+                const updatedInterest = {
+                    ...existingInterest,
+                    nameInterest: nameInterest || existingInterest.nameInterest,
+                    description: description || existingInterest.description
+                };
+
+                const savedInterest = await Interest.updateInterest(updatedInterest);
+
+                return savedInterest;
+            } catch (error) {
+                console.error(error);
+                throw new GraphQLError("Failed to update Interest");
+            }
         }
     }
 
