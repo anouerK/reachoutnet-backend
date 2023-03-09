@@ -1,10 +1,12 @@
 const User = require("./user.js");
 const Follow = require("./follow");
+const Otp = require("./otp.js");
 
 class UserAPI {
     constructor () {
         this.model_user = User;
         this.model_follow = Follow;
+        this.model_otp = Otp;
     }
 
     getAllUsers () {
@@ -19,12 +21,16 @@ class UserAPI {
         return this.model_user.findOne(id);
     }
 
+    findOneUserByIdPopulateOtp (id) {
+        return this.model_user.findOne(id);
+    }
+
     createUser (user) {
         return this.model_user.create(user);
     }
 
     updateUser (id, user) {
-        return this.model_user.findByIdAndUpdate(id, user);
+        return this.model_user.findByIdAndUpdate(id, user, { upsert: true, new: true });
     }
 
     deleteUser (id) {
@@ -41,6 +47,27 @@ class UserAPI {
 
     deleteFollow (id) {
         return this.model_follow.findByIdAndDelete(id);
+    }
+
+    createOtp (userId, base32) {
+        return this.model_otp.create({
+            userId,
+            enabled: true,
+            verified: false,
+            base32
+        });
+    }
+
+    findOneOtp (id) {
+        return this.model_otp.findOne(id);
+    }
+
+    updateOtp (id, otp) {
+        return this.model_otp.findOneAndUpdate({ userId: id }, otp, { upsert: true, new: true });
+    }
+
+    deleteOtp (id) {
+        return this.model_otp.findOneAndDelete({ userId: id });
     }
 }
 

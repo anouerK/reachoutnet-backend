@@ -12,6 +12,7 @@ type User  {
     creation_date: String!
     last_login: String
     is_verified: Boolean!
+    has_otp:Boolean!
   }
 
   type Follow {
@@ -21,6 +22,14 @@ type User  {
   followingId: ID!
   followingType: followTypeEnum!
   createdAt: String!
+}
+type Otp {
+    id: ID!
+    userId: ID!
+    base32: String 
+    verified: Boolean!
+    last_modified: String!
+    enabled: Boolean!
 }
 
   type Interest{
@@ -62,6 +71,14 @@ enum followTypeEnum  {
       password: String!
       permissions: Int
     ): User!
+     Signup(
+      username: String!
+      first_name: String!
+      last_name: String!
+      age: Int!
+      email: String!
+      password: String!
+    ): User!
     updateUser(
       id: ID!
       username: String
@@ -74,11 +91,23 @@ enum followTypeEnum  {
     ): User!
     deleteUser(id: ID!): User!
     login(email: String!, password: String!): Login!
+
+    generateOtp(id:ID!): Otp!
+    verifyOtp(id:ID!,token:String!): Otp!
+    validateOtp(id:ID!,token:String!): Otp!
+    disableOtp(id:ID!): User!
+    deleteOtp(id:ID!): User!
+
     sendEmail(name: String!, email: String!, link: String!): Boolean!
+
     addInterest(
       id: ID!
       nameInterest: String!
       description: String!
       ): Interest!
     deleteInterest(id: ID!): Interest
+
+
+
+
   }
