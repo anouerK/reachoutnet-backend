@@ -13,6 +13,7 @@ specifiers:
   graphql-tag: ^2.12.6
   jsonwebtoken: ^9.0.0
   mongoose: ^6.1.0
+  nodemailer: ^6.9.1
   nodemon: ^2.0.13
   speakeasy: ^2.0.0
 
@@ -24,6 +25,7 @@ dependencies:
   graphql-tag: 2.12.6_graphql@16.6.0
   jsonwebtoken: 9.0.0
   mongoose: 6.10.1
+  nodemailer: 6.9.1
   speakeasy: 2.0.0
 
 devDependencies:
@@ -2723,6 +2725,11 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    dev: false
+
+  /nodemailer/6.9.1:
+    resolution: {integrity: sha512-qHw7dOiU5UKNnQpXktdgQ1d3OFgRAekuvbJLcdG5dnEo/GtcTHRYM7+UfJARdOFU9WUQO8OiIamgWPmiSFHYAA==}
+    engines: {node: '>=6.0.0'}
     dev: false
 
   /nodemon/2.0.21:

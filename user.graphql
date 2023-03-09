@@ -13,6 +13,7 @@ type User  {
     last_login: String
     is_verified: Boolean!
     has_otp:Boolean!
+    skills: [skill]
   }
 
   type Follow {
@@ -46,6 +47,15 @@ enum followTypeEnum  {
   type Login {
     user: User
     token: String
+  }
+
+  type skill{
+    id: ID!
+    name: String!
+    description: String!
+    level: Int
+    last_modified: String
+    verified: Boolean!
   }
 
   type Query {
@@ -116,6 +126,16 @@ enum followTypeEnum  {
       nameInterest: String!
       description: String!
       ): Interest
+
+    addSkill(
+      name: String!
+      description: String!
+      level: String!
+      last_modified: Int!
+      verified: String!
+    ): skill!
+
+
 
 
 

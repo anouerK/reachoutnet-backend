@@ -18,7 +18,8 @@ const User = new Schema({
     creation_date: { type: Date, default: Date.now },
     last_login: { type: Date },
     is_verified: { type: Boolean },
-    has_otp: { type: Boolean, default: false }
+    has_otp: { type: Boolean, default: false },
+    skills: [{ type: Schema.Types.ObjectId }]
 
     // active: { type: Date },
 });

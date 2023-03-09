@@ -1,6 +1,7 @@
 const User = require("./user.js");
 const Follow = require("./follow");
 const Otp = require("./otp.js");
+const Skill = require("./skill.js");
 const interest = require("./interest.js");
 
 class UserAPI {
@@ -8,7 +9,11 @@ class UserAPI {
         this.model_user = User;
         this.model_follow = Follow;
         this.model_otp = Otp;
+
+        this.model_skill = Skill;
+
         this.model_interest = interest;
+
     }
 
     getAllUsers () {
@@ -80,6 +85,10 @@ class UserAPI {
         return this.model_otp.findOneAndDelete({ userId: id });
     }
 
+
+    addSkill (skill) {
+        return this.model_skill.create(skill);
+}
     createInterest (interest) {
         return this.model_interest.create(interest);
     }
