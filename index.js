@@ -11,13 +11,30 @@ const resolvers = require("./resolvers");
 const UserAPI = require("./datasources/UserApi");
 
 async function startApolloServer () {
-    const server = new ApolloServer({ typeDefs, resolvers, cache: new InMemoryLRUCache() });
+    // const app = express();
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        cache: new InMemoryLRUCache()
+        /*  cors: {
+            origin: ["http://localhost:3000/register"],
+            Credentials: true
+        } */
+
+    });
     mongoose.connect(process.env.MONGO_URI)
         .then(() => {
             console.log("MongoDB connected!");
         })
         .catch(err => console.log(err));
-
+    /* app.use(
+        cors < cors.CorsRequest > ({
+            origin: "*",
+            credentials: true
+        }),
+        expressMiddleware(server)
+    ); */
+    // applyMiddleware(server, ...app);
     const port = 4001;
     const subgraphName = "user";
 
