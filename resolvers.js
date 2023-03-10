@@ -35,6 +35,7 @@ const resolvers = {
             }
         },
         follows: async (_, { id }, { dataSources, req }) => {
+            await authorize(userpermission.LOGGED)(req);
             const Follow = dataSources.userAPI;
             const followingIds = await Follow.getAllUsers();
 
