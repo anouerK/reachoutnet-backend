@@ -21,10 +21,21 @@ const userpermission = {
 const authorize = (permission) => {
     // eslint-disable-next-line complexity
     return async (req) => {
-        const token = req.headers.authorization;
+        const authorizationHeader = req.headers.authorization;
 
-        if (!token) {
+        if (!authorizationHeader) {
             throw new GraphQLError("NO TOKEN WAS PROVIDED", {
+                extensions: {
+                    code: "UNAUTHENTICATED",
+                    http: { status: 401 }
+                }
+            });
+        }
+
+        const [bearer, token] = authorizationHeader.split(" ");
+
+        if (bearer !== "Bearer" || !token) {
+            throw new GraphQLError("INVALID TOKEN FORMAT", {
                 extensions: {
                     code: "UNAUTHENTICATED",
                     http: { status: 401 }
