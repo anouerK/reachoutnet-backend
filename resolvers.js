@@ -6,6 +6,13 @@ const speakeasy = require("speakeasy");
 const { userpermission, authorize } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
+// const { RecaptchaV2 } = require("@google/recaptcha");
+
+// create a new instance of the reCAPTCHA client with your site key and secret key
+/* const recaptcha = new RecaptchaV2({
+    siteKey: "YOUR_SITE_KEY",
+    secretKey: "YOUR_SECRET_KEY"
+}); */
 const resolvers = {
     Query: {
         users: async (_, __, { dataSources, req }) => {
@@ -151,7 +158,7 @@ const resolvers = {
             }
         },
 
-        async login (_, { email, password }, { dataSources }) {
+        async login (_, { email, password }, { res, dataSources }) {
             try {
                 const User = dataSources.userAPI;
 
@@ -166,10 +173,11 @@ const resolvers = {
                 const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
                     expiresIn: "24h"
                 });
-
+                console.log(res);
+                // res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
                 return { user, token };
             } catch (error) {
-                console.error(error);
+                // console.error(error);
                 throw new GraphQLError("Authentication failed");
             }
         },
