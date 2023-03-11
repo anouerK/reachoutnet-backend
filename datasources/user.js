@@ -17,7 +17,8 @@ const User = new Schema({
     permissions: { type: Number, default: userpermission.NONE },
     creation_date: { type: Date, default: Date.now },
     last_login: { type: Date },
-    is_verified: { type: Boolean },
+    is_verified: { type: Boolean, default: 0 },
+    banned: { type: Boolean, default: 0 },
     has_otp: { type: Boolean, default: false },
     skills: [{
         skill: { type: mongoose.Schema.Types.ObjectId, ref: "skill", required: true },
