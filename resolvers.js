@@ -1,3 +1,5 @@
+/* eslint-disable no-unreachable-loop */
+/* eslint-disable no-undef */
 /* eslint-disable complexity */
 const bcrypt = require("bcryptjs");
 const { isValidObjectId } = require("mongoose");
@@ -6,6 +8,8 @@ const speakeasy = require("speakeasy");
 const { userpermission, authorize } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
+// eslint-disable-next-line no-unused-vars
+const user = require("./datasources/user");
 const resolvers = {
     Query: {
         users: async (_, __, { dataSources, req }) => {
@@ -20,6 +24,25 @@ const resolvers = {
             const user = await User.findOnebyId(id);
             return user;
         },
+        // Skill query //
+        skillId: async (_, { id }, { dataSources, req }) => {
+            const Skill = dataSources.userAPI;
+            const skill = await Skill.getSkillById(id);
+            return skill;
+        },
+        skillName: async (_, { name }, { dataSources, req }) => {
+            const Skill = dataSources.userAPI;
+            const skill = await Skill.getSkillByName(name);
+            return skill;
+        },
+        skills: async (_, __, { dataSources, req }) => {
+            const Skill = dataSources.userAPI;
+            const skills = await Skill.getAllSkills();
+            return skills;
+        },
+        // end Skill query //
+
+        // follow qury //
         follow: async (_, { id1, id2 }, { dataSources, req }) => {
             const Follow = dataSources.userAPI;
             const follower1 = await Follow.getFollower(id1, id2);
@@ -73,7 +96,6 @@ const resolvers = {
 
             return savedFollow;
         },
-
         unFollow: async (_, { id }, { dataSources, req }) => { // delete Follow
             try {
                 // await authorize(userpermission.POST_MODULE_CRUDS)(req);
@@ -89,8 +111,93 @@ const resolvers = {
                 throw new GraphQLError("Failed to delete Follow");
             }
         },
+        // end follow mutaion //
 
-        addUser: async (_, { username, first_name, last_name, age, email, password, permissions }, { dataSources, req }) => {
+        /// /////////////// Skill mutations  ///////////////////////////
+
+        addSkill: async (_, { name, description }, { dataSources, req }) => { // allow admins to add skill
+            const skill = {
+                name,
+                description
+            };
+            const savedSkill = await dataSources.userAPI.addSkill(skill);
+            return savedSkill;
+        },
+        updateSkill: async (_, args, { dataSources, req }) => { // allow admins to update skill
+            const Skill = dataSources.userAPI;
+            const { id, ...updateData } = args;
+            const skill = await Skill.updateSkill(id, updateData, { new: true });
+            return skill;
+        },
+        deleteSkill: async (_, { id }, { dataSources, req }) => { // allow admins to update skill and delete the skills in users
+            try {
+                const User = dataSources.userAPI;
+                const Skill = dataSources.userAPI;
+                const skill = await Skill.deleteSkill(id);
+                const users = await User.getAllUsers();
+                if (!skill) {
+                    throw new GraphQLError("Skill not found");
+                }
+
+                users.forEach(async (user) => {
+                    user.skills = await user.skills.filter(skill => skill.skill.toString() !== id);
+                    await user.save();
+                });
+
+                return skill;
+            } catch (error) {
+                console.error(error);
+                throw new GraphQLError("Failed to delete Skill");
+            }
+        },
+
+        addUserSkill: async (_, { id, skillsToAdd }, { dataSources, req }) => { // allow users to add a skill
+            const User = dataSources.userAPI;
+            try {
+                const user = await User.findOnebyId(id).populate("skills.skill");
+                if (!user) {
+                    throw new Error("User not found");
+                }
+                skillsToAdd.forEach((skillToAdd) => {
+                    if (skillToAdd.skill != null) {
+                        // eslint-disable-next-line no-unused-vars
+                        const existingSkill = user.skills.find(
+                            (skill) => skill.skill._id.toString() === skillToAdd.skill);
+
+                        /* if (existingSkill) {
+                       existingSkill.level = skillToAdd.level;
+                        existingSkill.verified = skillToAdd.verified;
+                        existingSkill.last_modified = new Date(); */
+                        if (!existingSkill) {
+                            user.skills.push({
+                                skill: skillToAdd.skill
+                            });
+                        }
+                    }
+                });
+                await user.save();
+                return user;
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+        },
+        deleteUserSkill: async (_, { id, skillId }, { dataSources, req }) => { // allow users to delete a skill
+            try {
+                const User = dataSources.userAPI;
+                const user = await User.findOnebyId(id);
+                if (!user) throw new Error("User not found");
+                // Filter out the skill with the given skillId
+                user.skills = user.skills.filter(skill => skill.skill.toString() !== skillId);
+                await user.save();
+                return user;
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        },
+        /// /////////////// end of  Skill mutations  ///////////////////////////
+
+        addUser: async (_, { username, first_name, last_name, age, email, password, skills, permissions }, { dataSources, req }) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const User = dataSources.userAPI;
             const user = {
@@ -100,6 +207,7 @@ const resolvers = {
                 age,
                 email,
                 password: hashedPassword,
+                skills,
                 permissions
             };
             await authorize(userpermission.POST_MODULE_CRUDS)(req);
@@ -107,7 +215,7 @@ const resolvers = {
 
             return saveduser;
         },
-        Signup: async (_, { username, first_name, last_name, age, email, password }, { dataSources, req }) => {
+        Signup: async (_, { username, first_name, last_name, age, email, password, skills }, { dataSources, req }) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const User = dataSources.userAPI;
             const user = {
@@ -117,6 +225,7 @@ const resolvers = {
                 age,
                 email,
                 password: hashedPassword,
+                skills,
                 permissions: 0
             };
             const saveduser = await User.createUser(user);
@@ -150,7 +259,6 @@ const resolvers = {
                 throw new GraphQLError("Failed to delete user");
             }
         },
-
         async login (_, { email, password }, { dataSources }) {
             try {
                 const User = dataSources.userAPI;
@@ -309,18 +417,6 @@ const resolvers = {
                 console.error(error);
                 throw new GraphQLError("Failed to delete Interest");
             }
-        },
-
-        addSkill: async (_, { name, description, level, last_modified, verified }, { dataSources, req }) => {
-            const skill = {
-                name,
-                description,
-                level,
-                last_modified,
-                verified
-            };
-            const savedSkill = await dataSources.userAPI.createSkill(skill);
-            return savedSkill;
         },
         updateInterest: async (_, args, { dataSources, req }) => {
             const User = dataSources.userAPI;

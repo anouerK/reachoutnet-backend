@@ -19,8 +19,13 @@ const User = new Schema({
     last_login: { type: Date },
     is_verified: { type: Boolean },
     has_otp: { type: Boolean, default: false },
-    skills: [{ type: Schema.Types.ObjectId }]
-
+    skills: [{
+        skill: { type: mongoose.Schema.Types.ObjectId, ref: "skill", required: true },
+        level: { type: Number, required: true, default: 0 },
+        verified: { type: Boolean, required: true, default: false },
+        last_modified: { type: Date, default: Date.now }
+    }],
+    default: { skills: [] }
     // active: { type: Date },
 });
 // db name in lowercase only

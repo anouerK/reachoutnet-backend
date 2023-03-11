@@ -43,6 +43,8 @@ class UserAPI {
         return this.model_user.findByIdAndDelete(id);
     }
 
+    /// / ///////// follow section /////////
+
     createFollow (follow) {
         return this.model_follow.create(follow);
     }
@@ -55,13 +57,15 @@ class UserAPI {
         return this.model_follow.findByIdAndDelete(id);
     }
 
-    getFollower (id, followinId) {
+    getFollower (id, followinId) { // check if this user is  following another user
         return this.model_follow.findOne({ followerId: id, followingId: followinId });
     }
 
-    getFollowingRelation (followingId, id) {
+    getFollowingRelation (followingId, id) { // check if  other user is  following the current user
         return this.model_follow.findOne({ followerId: followingId, followingId: id });
     }
+
+    /// / ///////// end follow section /////////
 
     createOtp (userId, base32) {
         return this.model_otp.create({
@@ -84,9 +88,32 @@ class UserAPI {
         return this.model_otp.findOneAndDelete({ userId: id });
     }
 
+    /// / ///////// Skill section /////////
+
     addSkill (skill) {
         return this.model_skill.create(skill);
     }
+
+    updateSkill (id, skill) {
+        return this.model_skill.findOneAndUpdate(id, skill);
+    }
+
+    deleteSkill (id) {
+        return this.model_skill.findOneAndDelete(id);
+    }
+
+    getSkillById (id) {
+        return this.model_skill.findById(id);
+    }
+
+    getSkillByName (nom) {
+        return this.model_skill.findOne({ name: nom });
+    }
+
+    getAllSkills () {
+        return this.model_skill.find();
+    }
+    /// / ///////// end Skill section /////////
 
     createInterest (interest) {
         return this.model_interest.create(interest);

@@ -13,7 +13,7 @@ type User  {
     last_login: String
     is_verified: Boolean!
     has_otp:Boolean!
-    skills: [skill]
+    skills: [Skill]
   }
 
   type Follow {
@@ -49,14 +49,21 @@ enum followTypeEnum  {
     token: String
   }
 
+  type Skill {
+  id: ID!
+  skill: String!
+  level: Int!
+  verified: Boolean!
+  }
+
   type skill{
     id: ID!
     name: String!
     description: String!
-    level: Int
-    last_modified: String
-    verified: Boolean!
+
   }
+
+
 
   type Query {
     users: [User]!
@@ -66,6 +73,9 @@ enum followTypeEnum  {
       id1: ID!
       id2: ID!
     ): String
+    skillId(id: ID!): skill!
+    skillName(name : String!): skill!
+    skills: [skill]!
   }
 
   type Mutation {
@@ -85,6 +95,7 @@ enum followTypeEnum  {
       email: String!
       password: String!
       permissions: Int
+      skills: [SkillInput]
     ): User!
      Signup(
       username: String!
@@ -93,6 +104,7 @@ enum followTypeEnum  {
       age: Int!
       email: String!
       password: String!
+      skills: [SkillInput]
     ): User!
     updateUser(
       id: ID!
@@ -102,6 +114,7 @@ enum followTypeEnum  {
       age: Int
       email: String
       password: String
+      skills: [SkillInput]
       permissions: Int
     ): User!
     deleteUser(id: ID!): User!
@@ -127,17 +140,30 @@ enum followTypeEnum  {
       description: String!
       ): Interest
 
+    
     addSkill(
       name: String!
       description: String!
-      level: String!
-      last_modified: Int!
-      verified: String!
+    
     ): skill!
 
-
-
-
-
-
+     updateSkill(
+       id: ID!
+       name: String!
+       description: String!
+     ): skill!
+     deleteSkill(
+      id: ID!
+     ): skill!
+     addUserSkill(
+      id: ID!
+      skillsToAdd: [SkillInput!]!): User!
+      deleteUserSkill(id: ID!, skillId: ID!): User!
   }
+
+  input SkillInput {
+  skill: String!,
+  level: Int,
+  verified: Boolean
+}
+
