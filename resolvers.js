@@ -267,7 +267,6 @@ const resolvers = {
             }
         },
         async login (_, { email, password }, { res, dataSources }) {
-
             try {
                 const User = dataSources.userAPI;
 
