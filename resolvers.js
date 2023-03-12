@@ -6,6 +6,7 @@ const speakeasy = require("speakeasy");
 const { userpermission, authorize } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
+const send_email = require("./middleware/send_email");
 // const { RecaptchaV2 } = require("@google/recaptcha");
 
 // create a new instance of the reCAPTCHA client with your site key and secret key
@@ -127,6 +128,8 @@ const resolvers = {
                 permissions: 0
             };
             const saveduser = await User.createUser(user);
+
+            await send_email({ email, name: first_name, subject: "Welcome to the app", text: "Welcome to the app" });
 
             return saveduser;
         },
