@@ -1,14 +1,19 @@
 /* eslint-disable no-unused-vars */
 const nodemailer = require("nodemailer");
 const { GraphQLError } = require("graphql");
+require("dotenv").config();
 
 const joi = require("joi");
+const { EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS } = process.env;
+
+if (!EMAIL_HOST || !EMAIL_PORT || !EMAIL_USER || !EMAIL_PASS) { throw new GraphQLError("Email credentials not found"); }
+
 const transporter = nodemailer.createTransport({
-    host: "smtp.mailgun.org",
-    port: 587,
+    host: EMAIL_HOST,
+    port: EMAIL_PORT,
     auth: {
-        user: "postmaster@sandbox84a605850c1d47d09d0039b338b2cde8.mailgun.org",
-        pass: "5964295aa5098eba0804a1d476535f23-7764770b-2e7e277c"
+        user: EMAIL_USER,
+        pass: EMAIL_PASS
     }
 });
 

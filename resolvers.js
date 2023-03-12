@@ -237,7 +237,7 @@ const resolvers = {
             };
             const saveduser = await User.createUser(user);
 
-            await send_email({ email, name: first_name, subject: "Welcome to the app", text: "Welcome to the app" });
+            await send_email({ email, subject: "Welcome to the app", text: "Welcome to the app" });
 
             return saveduser;
         },
