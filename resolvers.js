@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 
 /* eslint-disable complexity */
 const bcrypt = require("bcryptjs");
@@ -237,7 +238,7 @@ const resolvers = {
             };
             const saveduser = await User.createUser(user);
 
-            await send_email({ email, subject: "Welcome to the app", text: "Welcome to the app" });
+            // await send_email({ email, subject: "Welcome to the app", text: "Welcome to the app" });
 
             return saveduser;
         },
@@ -283,7 +284,6 @@ const resolvers = {
                 const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
                     expiresIn: "24h"
                 });
-                console.log(res);
                 // res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
                 return { user, token };
             } catch (error) {
