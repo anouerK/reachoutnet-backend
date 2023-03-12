@@ -1,5 +1,4 @@
-/* eslint-disable no-unreachable-loop */
-/* eslint-disable no-undef */
+
 /* eslint-disable complexity */
 const bcrypt = require("bcryptjs");
 const { isValidObjectId } = require("mongoose");
@@ -8,8 +7,9 @@ const speakeasy = require("speakeasy");
 const { userpermission, authorize } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
-// eslint-disable-next-line no-unused-vars
-const user = require("./datasources/user");
+
+const send_email = require("./middleware/send_email");
+
 // const { RecaptchaV2 } = require("@google/recaptcha");
 // create a new instance of the reCAPTCHA client with your site key and secret key
 /* const recaptcha = new RecaptchaV2({
@@ -236,6 +236,8 @@ const resolvers = {
                 permissions: 0
             };
             const saveduser = await User.createUser(user);
+
+            await send_email({ email, name: first_name, subject: "Welcome to the app", text: "Welcome to the app" });
 
             return saveduser;
         },
