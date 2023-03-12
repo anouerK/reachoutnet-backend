@@ -1,5 +1,4 @@
-/* eslint-disable no-unreachable-loop */
-/* eslint-disable no-undef */
+
 /* eslint-disable complexity */
 const bcrypt = require("bcryptjs");
 const { isValidObjectId } = require("mongoose");
@@ -10,9 +9,6 @@ const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
 
 const send_email = require("./middleware/send_email");
-
-// eslint-disable-next-line no-unused-vars
-const user = require("./datasources/user");
 
 // const { RecaptchaV2 } = require("@google/recaptcha");
 // create a new instance of the reCAPTCHA client with your site key and secret key
