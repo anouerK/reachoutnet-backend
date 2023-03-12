@@ -65,7 +65,7 @@ const resolvers = {
             }
         },
         follows: async (_, { id }, { dataSources, req }) => {
-            await authorize(userpermission.LOGGED)(req);
+            // await authorize(userpermission.LOGGED)(req);
             const Follow = dataSources.userAPI;
             const followingIds = await Follow.getAllUsers();
 
@@ -87,8 +87,49 @@ const resolvers = {
                     console.log("no follow relation between 2 users");
                 }
             });
+        },
+        followBacks: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are following this user.
+            // await authorize(userpermission.LOGGED)(req);
+            const Follow = dataSources.userAPI;
+            const followingIds = await Follow.getAllUsers();
+            const followBack = [];
+            for (const followingId of followingIds) {
+                const follower = await Follow.getFollower(id, followingId);
+                const followingRelation = await Follow.getFollowingRelation(followingId, id);
+                if (followingRelation && !follower) {
+                    followBack.push(followingId);
+                }
+            }
+            return followBack;
+        },
+        following: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are followed by this user and are also following this user.
+            // await authorize(userpermission.LOGGED)(req);
+            const Follow = dataSources.userAPI;
+            const followingIds = await Follow.getAllUsers();
+            const followings = [];
+            for (const followingId of followingIds) {
+                const follower = await Follow.getFollower(id, followingId);
+                const followingRelation = await Follow.getFollowingRelation(followingId, id);
+                if (followingRelation && follower) {
+                    followings.push(followingId);
+                }
+            }
+            return followings;
+        },
+        OnlyFollowedBythisUser: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are only followed by this user
+            // await authorize(userpermission.LOGGED)(req);
+            const Follow = dataSources.userAPI;
+            const followingIds = await Follow.getAllUsers();
+            const followedByThis = [];
+            for (const followingId of followingIds) {
+                const follower = await Follow.getFollower(id, followingId);
+                const followingRelation = await Follow.getFollowingRelation(followingId, id);
+                if (!followingRelation && follower) {
+                    followedByThis.push(followingId);
+                }
+            }
+            return followedByThis;
         }
-
     },
     Mutation: {
         addFollow: async (_, { followerId, followerType, followingId, followingType }, { dataSources, req }) => {
