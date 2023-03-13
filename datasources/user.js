@@ -26,6 +26,7 @@ const User = new Schema({
         verified: { type: Boolean, required: true, default: false },
         last_modified: { type: Date, default: Date.now }
     }],
+    activationCode: { type: String },
     default: { skills: [] }
     // active: { type: Date },
 });

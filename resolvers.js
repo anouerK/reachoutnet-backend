@@ -17,6 +17,8 @@ const send_email = require("./middleware/send_email");
     siteKey: "YOUR_SITE_KEY",
     secretKey: "YOUR_SECRET_KEY"
 }); */
+const { sendConfirmationEmail } = require("../backend/datasources/nodemailer.config");
+const { v4: uuidv4 } = require("uuid");
 
 const resolvers = {
     Query: {
@@ -266,7 +268,13 @@ const resolvers = {
         },
         Signup: async (_, { username, first_name, last_name, age, email, password, skills }, { dataSources, req }) => {
             const hashedPassword = await bcrypt.hash(password, 10);
-            const User = dataSources.userAPI;
+            // const User = dataSources.userAPI;
+            const activationCode = uuidv4();
+            // const characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            // let confirmationCode = "";
+            // for (let i = 0; i < 25; i++) {
+            //     confirmationCode += characters[Math.floor(Math.random() * characters.length)];
+            // }
             const user = {
                 username,
                 first_name,
@@ -275,15 +283,45 @@ const resolvers = {
                 email,
                 password: hashedPassword,
                 skills,
-                permissions: 0
+                permissions: 0,
+                activationCode
             };
+
+            await sendConfirmationEmail(email, activationCode);
+            // const saveduser = await User.createUser(user);
+            // nodemailer.sendConfirmationEmail(
+            //     saveduser.sendConfirmationEmail.username,
+            //     saveduser.sendConfirmationEmail.email,
+            //     saveduser.sendConfirmationEmail.activationCode,
+            //     nodemailer.sendConfirmationEmail.password);
+            return user;
+            // Send the verification email to the user
+            // await sendConfirmationEmail(email, activationCode);
+            // return saveduser;
+        },
+        activate: async (_, { activationCode }) => {
+            try {
+                // Trouver l'utilisateur avec le code de confirmation donné
+                const user = await findUserByConfirmationCode(activationCode);
+
+                // Si l'utilisateur existe, mettre à jour le champ "confirmed"
+                if (user) {
+                    user.confirmed = true;
+                    await updateUser(user);
+                    return true;
+                }
+            } catch (error) {
+                console.error(error);
+                throw new Error("Failed to activate user account.");
+            }
+
             const saveduser = await User.createUser(user);
 
             // await send_email({ email, subject: "Welcome to the app", text: "Welcome to the app" });
 
             return saveduser;
-        },
 
+        },
         updateUser: async (_, args, { dataSources, req }) => {
             const User = dataSources.userAPI;
             await authorize(userpermission.POST_MODULE_CRUDS)(req);
