@@ -225,14 +225,9 @@ const resolvers = {
             return saveduser;
         },
         Signup: async (_, { username, first_name, last_name, age, email, password, skills }, { dataSources, req }) => {
+            const User = dataSources.userAPI;
             const hashedPassword = await bcrypt.hash(password, 10);
-            // const User = dataSources.userAPI;
-            const activationCode = uuidv4();
-            // const characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            // let confirmationCode = "";
-            // for (let i = 0; i < 25; i++) {
-            //     confirmationCode += characters[Math.floor(Math.random() * characters.length)];
-            // }
+            const activationCode = uuidv4(); // generate activation code
             const user = {
                 username,
                 first_name,
@@ -242,30 +237,26 @@ const resolvers = {
                 password: hashedPassword,
                 skills,
                 permissions: 0,
-                activationCode
+                is_verified: false,
+                activationCode // add activation code to user object
             };
-            await sendConfirmationEmail(email, activationCode);
-            // const saveduser = await User.createUser(user);
-            // nodemailer.sendConfirmationEmail(
-            //     saveduser.sendConfirmationEmail.username,
-            //     saveduser.sendConfirmationEmail.email,
-            //     saveduser.sendConfirmationEmail.activationCode,
-            //     nodemailer.sendConfirmationEmail.password);
-            return user;
-            // Send the verification email to the user
-            // await sendConfirmationEmail(email, activationCode);
-            // return saveduser;
-        },
-        activate: async (_, { activationCode }) => {
-            try {
-                // Trouver l'utilisateur avec le code de confirmation donné
-                const user = await findUserByConfirmationCode(activationCode);
+            await sendConfirmationEmail(email, activationCode); // send confirmation email
+            const saveduser = await User.createUser(user);
 
+            return saveduser; // return user object
+        },
+        activate: async (_, { activationCode }, { dataSources, req }) => {
+            try {
+                const User = dataSources.userAPI;
+                // Trouver l'utilisateur avec le code de confirmation donné
+                const user = await User.findUserByConfirmationCode(activationCode);
                 // Si l'utilisateur existe, mettre à jour le champ "confirmed"
                 if (user) {
-                    user.confirmed = true;
-                    await updateUser(user);
-                    return true;
+                    user.is_verified = true;
+                    const updateduser = await User.updateUser(user.id, user);
+                    return updateduser;
+                } else {
+                    console.log("User NOT FOUND");
                 }
             } catch (error) {
                 console.error(error);
