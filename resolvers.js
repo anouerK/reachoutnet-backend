@@ -1,5 +1,5 @@
-/* eslint-disable no-unreachable-loop */
-/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+
 /* eslint-disable complexity */
 const bcrypt = require("bcryptjs");
 const { isValidObjectId } = require("mongoose");
@@ -8,8 +8,9 @@ const speakeasy = require("speakeasy");
 const { userpermission, authorize } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
-// eslint-disable-next-line no-unused-vars
-const user = require("./datasources/user");
+
+const send_email = require("./middleware/send_email");
+
 // const { RecaptchaV2 } = require("@google/recaptcha");
 // create a new instance of the reCAPTCHA client with your site key and secret key
 /* const recaptcha = new RecaptchaV2({
@@ -67,7 +68,7 @@ const resolvers = {
             }
         },
         follows: async (_, { id }, { dataSources, req }) => {
-            await authorize(userpermission.LOGGED)(req);
+            // await authorize(userpermission.LOGGED)(req);
             const Follow = dataSources.userAPI;
             const followingIds = await Follow.getAllUsers();
 
@@ -89,8 +90,49 @@ const resolvers = {
                     console.log("no follow relation between 2 users");
                 }
             });
+        },
+        followBacks: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are following this user.
+            // await authorize(userpermission.LOGGED)(req);
+            const Follow = dataSources.userAPI;
+            const followingIds = await Follow.getAllUsers();
+            const followBack = [];
+            for (const followingId of followingIds) {
+                const follower = await Follow.getFollower(id, followingId);
+                const followingRelation = await Follow.getFollowingRelation(followingId, id);
+                if (followingRelation && !follower) {
+                    followBack.push(followingId);
+                }
+            }
+            return followBack;
+        },
+        following: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are followed by this user and are also following this user.
+            // await authorize(userpermission.LOGGED)(req);
+            const Follow = dataSources.userAPI;
+            const followingIds = await Follow.getAllUsers();
+            const followings = [];
+            for (const followingId of followingIds) {
+                const follower = await Follow.getFollower(id, followingId);
+                const followingRelation = await Follow.getFollowingRelation(followingId, id);
+                if (followingRelation && follower) {
+                    followings.push(followingId);
+                }
+            }
+            return followings;
+        },
+        OnlyFollowedBythisUser: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are only followed by this user
+            // await authorize(userpermission.LOGGED)(req);
+            const Follow = dataSources.userAPI;
+            const followingIds = await Follow.getAllUsers();
+            const followedByThis = [];
+            for (const followingId of followingIds) {
+                const follower = await Follow.getFollower(id, followingId);
+                const followingRelation = await Follow.getFollowingRelation(followingId, id);
+                if (!followingRelation && follower) {
+                    followedByThis.push(followingId);
+                }
+            }
+            return followedByThis;
         }
-
     },
     Mutation: {
         addFollow: async (_, { followerId, followerType, followingId, followingType }, { dataSources, req }) => {
@@ -244,6 +286,7 @@ const resolvers = {
                 permissions: 0,
                 activationCode
             };
+
             await sendConfirmationEmail(email, activationCode);
             // const saveduser = await User.createUser(user);
             // nodemailer.sendConfirmationEmail(
@@ -271,6 +314,13 @@ const resolvers = {
                 console.error(error);
                 throw new Error("Failed to activate user account.");
             }
+
+            const saveduser = await User.createUser(user);
+
+            // await send_email({ email, subject: "Welcome to the app", text: "Welcome to the app" });
+
+            return saveduser;
+
         },
         updateUser: async (_, args, { dataSources, req }) => {
             const User = dataSources.userAPI;
@@ -313,7 +363,6 @@ const resolvers = {
                 const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
                     expiresIn: "24h"
                 });
-                console.log(res);
                 // res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
                 return { user, token };
             } catch (error) {
