@@ -68,6 +68,47 @@ const authorize = (permission) => {
         }
     };
 };
+
+const isauthenticated = () => {
+    // eslint-disable-next-line complexity
+    return async (req) => {
+        console.log(req);
+        const authorizationHeader = req.headers.authorization;
+        if (!authorizationHeader) {
+            throw new GraphQLError("NO TOKEN WAS PROVIDED", {
+                extensions: {
+                    code: "UNAUTHENTICATED",
+                    http: { status: 401 }
+                }
+            });
+        }
+
+        const [bearer, token] = authorizationHeader.split(" ");
+
+        if (bearer !== "Bearer" || !token) {
+            throw new GraphQLError("INVALID TOKEN FORMAT", {
+                extensions: {
+                    code: "UNAUTHENTICATED",
+                    http: { status: 401 }
+                }
+            });
+        }
+
+        const userapi = new UserAPI();
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await userapi.findOne({ _id: decoded.userId });
+
+        if (!user) {
+            throw new GraphQLError("User is not authenticated", {
+                extensions: {
+                    code: "UNAUTHENTICATED",
+                    http: { status: 401 }
+                }
+            });
+        } else return user;
+    };
+};
 /*
 const authorize = (permission) => {
   // eslint-disable-next-line complexity
@@ -84,3 +125,4 @@ Object.freeze(userpermission);
 
 module.exports.userpermission = userpermission;
 module.exports.authorize = authorize;
+module.exports.isauthenticated = isauthenticated;
