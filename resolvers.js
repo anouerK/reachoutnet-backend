@@ -88,7 +88,7 @@ const resolvers = {
                 }
             });
         },
-        followBacks: async (_, { dataSources, req }) => { // Return the user(s) who are following this user.
+        followBacks: async (_, { __ }, { dataSources, req }) => {
             const user = await isauthenticated()(req);
             const id = user.id;
 

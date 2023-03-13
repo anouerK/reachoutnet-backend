@@ -72,7 +72,6 @@ const authorize = (permission) => {
 const isauthenticated = () => {
     // eslint-disable-next-line complexity
     return async (req) => {
-        console.log(req);
         const authorizationHeader = req.headers.authorization;
         if (!authorizationHeader) {
             throw new GraphQLError("NO TOKEN WAS PROVIDED", {
