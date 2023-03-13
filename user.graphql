@@ -14,6 +14,7 @@ type User  {
     is_verified: Boolean!
     has_otp:Boolean!
     skills: [Skill]
+    activationCode: String!
   }
 
   type Follow {
@@ -105,6 +106,7 @@ enum followTypeEnum  {
       email: String!
       password: String!
       skills: [SkillInput]
+      activationCode: String!
     ): User!
     updateUser(
       id: ID!
@@ -117,6 +119,7 @@ enum followTypeEnum  {
       skills: [SkillInput]
       permissions: Int
     ): User!
+    activate(activationCode:String!): User!
     deleteUser(id: ID!): User!
     login(email: String!, password: String!): Login!
 
@@ -126,7 +129,10 @@ enum followTypeEnum  {
     disableOtp(id:ID!): User!
     deleteOtp(id:ID!): User!
 
-    sendEmail(name: String!, email: String!, link: String!): Boolean!
+    sendEmail(
+      name: String!,
+      email: String!,
+      link: String!): Boolean!
 
     addInterest(
       id: ID!
@@ -139,7 +145,7 @@ enum followTypeEnum  {
       nameInterest: String!
       description: String!
       ): Interest
-
+    
     
     addSkill(
       name: String!
@@ -155,6 +161,7 @@ enum followTypeEnum  {
      deleteSkill(
       id: ID!
      ): skill!
+    #  findUserByConfirmationCode(activationCode: String!):User!
      addUserSkill(
       id: ID!
       skillsToAdd: [SkillInput!]!): User!

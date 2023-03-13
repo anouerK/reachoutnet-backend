@@ -3,13 +3,14 @@ const Follow = require("./follow");
 const Otp = require("./otp.js");
 const Skill = require("./skill.js");
 const interest = require("./interest.js");
+const nodemailer = require("../datasources/nodemailer.config");
 
 class UserAPI {
     constructor () {
         this.model_user = User;
         this.model_follow = Follow;
         this.model_otp = Otp;
-
+        this.model_nodmailer = nodemailer;
         this.model_skill = Skill;
 
         this.model_interest = interest;
@@ -129,6 +130,14 @@ class UserAPI {
 
     getInterest (id) {
         return this.model_interest.findOneAndUpdate(id);
+    }
+
+    sendConfirmationEmail (email, activationCode) {
+        return this.model_nodmailer.sendConfirmationEmail(email, activationCode);
+    }
+
+    findUserByConfirmationCode (activationCode) {
+        return this.model_nodmailer.findUserByConfirmationCode(activationCode);
     }
 }
 
