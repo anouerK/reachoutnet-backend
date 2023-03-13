@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const { isValidObjectId } = require("mongoose");
 const jwt = require("jsonwebtoken");
 const speakeasy = require("speakeasy");
-const { userpermission, authorize } = require("./middleware/userpermission");
+const { userpermission, authorize, isauthenticated } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
 
@@ -88,8 +88,10 @@ const resolvers = {
                 }
             });
         },
-        followBacks: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are following this user.
-            // await authorize(userpermission.LOGGED)(req);
+        followBacks: async (_, { dataSources, req }) => { // Return the user(s) who are following this user.
+            const user = await isauthenticated()(req);
+            const id = user.id;
+
             const Follow = dataSources.userAPI;
             const followingIds = await Follow.getAllUsers();
             const followBack = [];
