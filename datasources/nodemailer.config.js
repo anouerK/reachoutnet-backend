@@ -4,8 +4,8 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "skanderromdhani59@gmail.com",
-        pass: "skander11032023"
+        user: "skandergrami@gmail.com",
+        pass: "dordizexeosvibui"
     }
 });
 
@@ -30,85 +30,3 @@ exports.sendConfirmationEmail = async (email, confirmationCode) => {
         console.log(error);
     }
 };
-
-// const nodemailer = require("nodemailer");
-
-// const user = "skandergrami@gmail.com"; // hedhi t7ot feha l email
-// const pass = "skander27699"; // houni lazmek ta3mel generation lel code hedha gmail apps
-
-// const transport = nodemailer.createTransport({
-//     service: "Gmail",
-//     auth: {
-//         user,
-//         pass
-//     }
-// });
-// // fonction te5ou 3 parametres
-// module.exports.sendConfirmationEmail = (
-//     username,
-//     email,
-//     activationCode,
-//     password
-// ) => {
-//     // transport houwa jesr from chkoun to amal  html body message chnouwa f wostou
-//     transport
-//         .sendMail({
-//             from: user,
-//             to: email,
-//             subject: "Veuillez activer votre compte ",
-//             html: `
-//       <div>
-//       <h1>Activation du compte </h1>
-//         <h2>Bonjour ${username}</h2>
-//         <p>Veuillez confirmer votre email en cliquant sur le lien suivant
-// </p>
-//         <a href=http://localhost:3000/confirm/${activationCode}>Cliquez ici
-// </a>
-// <ul>
-// <li> votre nom d'utilisateur ${username}  </li>
-// <li> votre mot de passe ${password}  </li>
-// </ul>
-//         </div>`
-//         })
-//         .catch((err) => console.log(err));
-// };
-
-// module.exports.sendResetPasswordEmail = (email, activationCode) => {
-//     // transport houwa jesr from chkoun to amal  html body message chnouwa f wostou
-//     transport
-//         .sendMail({
-//             from: user,
-//             to: email,
-//             subject: "Demande reinitialisation du mot de passe  ",
-//             html: `
-//       <div>
-//       <h1> Réinitialisation du mot de passe </h1>
-
-//         <p>reinitialiser votre  mot de passe en cliquant sur le lien suivant
-// </p>
-//         <a href=http://localhost:3000/reset_password/${activationCode}>Cliquez ici
-// </a>
-
-//         </div>`
-//         })
-//         .catch((err) => console.log(err));
-// };
-
-// module.exports.sendWinElectionEMail = (email) => {
-//     // transport houwa jesr from chkoun to amal  html body message chnouwa f wostou
-//     transport
-//         .sendMail({
-//             from: user,
-//             to: email,
-//             subject: "Résultat élection",
-//             html: `
-//       <div>
-//       <h1> Vous avez ganger dans cette élection et vous serez syndic </h1>
-
-//         <p>ous avez ganger dans cette élection et vous serez syndic
-// </p>
-
-//         </div>`
-//         })
-//         .catch((err) => console.log(err));
-// };

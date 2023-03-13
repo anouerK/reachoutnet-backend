@@ -137,7 +137,8 @@ class UserAPI {
     }
 
     findUserByConfirmationCode (activationCode) {
-        return this.model_nodmailer.findUserByConfirmationCode(activationCode);
+        const user = this.model_user.findOne({ activationCode });
+        return user;
     }
 }
 

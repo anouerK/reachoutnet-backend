@@ -109,7 +109,6 @@ enum followTypeEnum  {
       email: String!
       password: String!
       skills: [SkillInput]
-      activationCode: String!
     ): User!
     updateUser(
       id: ID!
