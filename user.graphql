@@ -6,7 +6,8 @@ type User  {
     username: String!
     first_name: String!
     last_name: String!
-    age: Int!
+    birthdate: String!
+    country: String!
     email: String!
     permissions: Int!
     creation_date: String!
@@ -105,7 +106,8 @@ enum followTypeEnum  {
       username: String!
       first_name: String!
       last_name: String!
-      age: Int!
+      birthdate: String!
+      country: String!
       email: String!
       password: String!
       skills: [SkillInput]
@@ -118,6 +120,8 @@ enum followTypeEnum  {
       age: Int
       email: String
       password: String
+      birthdate: String!
+      country: String!
       skills: [SkillInput]
       permissions: Int
     ): User!

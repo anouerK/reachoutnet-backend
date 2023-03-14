@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 
 /* eslint-disable complexity */
 const bcrypt = require("bcryptjs");
@@ -248,25 +249,26 @@ const resolvers = {
         },
         /// /////////////// end of  Skill mutations  ///////////////////////////
 
-        addUser: async (_, { username, first_name, last_name, age, email, password, skills, permissions }, { dataSources, req }) => {
+        addUser: async (_, { username, first_name, last_name, birthdate, email, password, skills, permissions, country }, { dataSources, req }) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const User = dataSources.userAPI;
             const user = {
                 username,
                 first_name,
                 last_name,
-                age,
+                birthdate,
                 email,
                 password: hashedPassword,
                 skills,
-                permissions
+                permissions,
+                country
             };
             await authorize(userpermission.POST_MODULE_CRUDS)(req);
             const saveduser = await User.createUser(user);
 
             return saveduser;
         },
-        Signup: async (_, { username, first_name, last_name, age, email, password, skills }, { dataSources, req }) => {
+        Signup: async (_, { username, first_name, last_name, birthdate, email, password, skills, country }, { dataSources, req }) => {
             const User = dataSources.userAPI;
             const hashedPassword = await bcrypt.hash(password, 10);
             const activationCode = uuidv4(); // generate activation code
@@ -274,12 +276,13 @@ const resolvers = {
                 username,
                 first_name,
                 last_name,
-                age,
+                birthdate,
                 email,
                 password: hashedPassword,
                 skills,
                 permissions: 0,
                 is_verified: false,
+                country,
                 activationCode // add activation code to user object
             };
             await sendConfirmationEmail(email, activationCode); // send confirmation email
@@ -289,6 +292,7 @@ const resolvers = {
         },
         activate: async (_, { activationCode }, { dataSources, req }) => {
             try {
+                console.log("zakeoak");
                 const User = dataSources.userAPI;
                 // Trouver l'utilisateur avec le code de confirmation donné
                 const user = await User.findUserByConfirmationCode(activationCode);
@@ -343,15 +347,22 @@ const resolvers = {
                 if (!isMatch) {
                     throw new GraphQLError("Invalid login credentials");
                 }
+                if (!user.is_verified) { throw new GraphQLError("Please Verify Your Email"); }
+                if (user.banned) { throw new GraphQLError("Your Account is Banned"); }
+
                 const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
                     expiresIn: "24h"
                 });
-                console.log(res);
+                // console.log(res);
                 // res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
                 return { user, token };
             } catch (error) {
                 // console.error(error);
-                throw new GraphQLError("Authentication failed");
+                if (error.message === "Please Verify Your Email") {
+                    throw new GraphQLError("Please Verify Your Email.");
+                } else if (error.message === "Your Account is Banned") { throw new GraphQLError("Your Account is Banned"); } else {
+                    throw new GraphQLError("Authentication failed");
+                }
             }
         },
         generateOtp: async (_, { id }, { dataSources, req }) => {
