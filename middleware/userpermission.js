@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const { GraphQLError } = require("graphql");
 
 const userpermission = {
-    NONE: 0,
     VIEW_DASHBOARD: 1,
     VIEW_USER_MODULE: 2,
     USER_MODULE_CRUDS: 4,
@@ -53,6 +52,14 @@ const authorize = (permission) => {
                 extensions: {
                     code: "UNAUTHENTICATED",
                     http: { status: 401 }
+                }
+            });
+        }
+        if (user.banned) {
+            throw new GraphQLError("BANNED", {
+                extensions: {
+                    code: "FORBIDDEN",
+                    http: { status: 403 }
                 }
             });
         }
