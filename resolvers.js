@@ -475,7 +475,8 @@ const resolvers = {
                 console.error(error);
                 return false;
             }
-        },
+        }
+        /*
         addInterest: async (_, { id, nameInterest, description }, { dataSources, req }) => {
             // await authorize(userpermission.POST_MODULE_CRUDS)(req);
             const Interest = dataSources.userAPI;
