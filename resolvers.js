@@ -475,6 +475,42 @@ const resolvers = {
                 console.error(error);
                 return false;
             }
+        },
+        RequestResetPassword: async (_, { email }, { dataSources, req }) => {
+            const joischema = Joi.object({
+                email: Joi.string().email().required()
+            });
+            const { error, value } = joischema.validate({ email });
+
+            if (error) { return new GraphQLError(error.message); }
+            const user = await dataSources.userAPI.findOne({ email: value.email });
+            if (!user) { return new GraphQLError("User not found"); }
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+            await send_email({ email: user.email, subject: "Reset Password", html: "click this link to reset your password link:http://localhost:4001/?token=" + token });
+            return user;
+        },
+        ResetPassword: async (_, { password, token }, { dataSources }) => {
+            const joischema = Joi.object({
+                password: Joi.string().min(8).required(),
+                token: Joi.string().required()
+            });
+
+            const { error, value } = joischema.validate({ password, token });
+
+            if (error) { return new GraphQLError(error); }
+
+            const validatetoken = jwt.verify(value.token, process.env.JWT_SECRET);
+
+            if (!validatetoken) { return new GraphQLError("Invalid Token"); }
+
+            const user = await dataSources.userAPI.findOne({ _id: validatetoken.id });
+            if (!user) { return new GraphQLError("User not found"); }
+
+            const hashed_password = await bcrypt.hash(value.password, 10);
+            const updated_user = await dataSources.userAPI.updateUser(user._id, { password: hashed_password });
+            if (!updated_user) { return new GraphQLError("Failed to update user"); }
+            return updated_user;
         }
         /*
         addInterest: async (_, { id, nameInterest, description }, { dataSources, req }) => {
@@ -515,43 +551,7 @@ const resolvers = {
             const interest = await User.updateInterest(id, updateData);
 
             return interest;
-        },
-        RequestResetPassword: async (_, { email }, { dataSources, req }) => {
-            const joischema = Joi.object({
-                email: Joi.string().email().required()
-            });
-            const { error, value } = joischema.validate({ email });
-
-            if (error) { return new GraphQLError(error.message); }
-            const user = await dataSources.userAPI.findOne({ email: value.email });
-            if (!user) { return new GraphQLError("User not found"); }
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-            await send_email({ email: user.email, subject: "Reset Password", html: "click this link to reset your password link:http://localhost:4001/?token=" + token });
-            return user;
-        },
-        ResetPassword: async (_, { password, token }, { dataSources }) => {
-            const joischema = Joi.object({
-                password: Joi.string().min(8).required(),
-                token: Joi.string().required()
-            });
-
-            const { error, value } = joischema.validate({ password, token });
-
-            if (error) { return new GraphQLError(error); }
-
-            const validatetoken = jwt.verify(value.token, process.env.JWT_SECRET);
-
-            if (!validatetoken) { return new GraphQLError("Invalid Token"); }
-
-            const user = await dataSources.userAPI.findOne({ _id: validatetoken.id });
-            if (!user) { return new GraphQLError("User not found"); }
-
-            const hashed_password = await bcrypt.hash(value.password, 10);
-            const updated_user = await dataSources.userAPI.updateUser(user._id, { password: hashed_password });
-            if (!updated_user) { return new GraphQLError("Failed to update user"); }
-            return updated_user;
-        }
+        }, */
 
     }
 
