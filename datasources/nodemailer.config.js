@@ -13,8 +13,8 @@ const transporter = nodemailer.createTransport({
 exports.sendConfirmationEmail = async (email, confirmationCode) => {
     try {
     // Créer le lien d'activation
-        //  const activationLink = `http://localhost:4001/activate/${confirmationCode}`;
-        const activationLink = `http://localhost:4001/graphql?query=mutation+{activate(activationCode:%22${confirmationCode}%22){id,email,is_verified}}`;
+        const activationLink = `http://localhost:3001/verification/${confirmationCode}`;
+        //  const activationLink = `http://localhost:4001/graphql?query=mutation+{activate(activationCode:%22${confirmationCode}%22){id,email,is_verified}}`;
 
         // Envoyer l'email
         await transporter.sendMail({
