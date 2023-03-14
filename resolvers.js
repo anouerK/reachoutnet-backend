@@ -8,6 +8,7 @@ const speakeasy = require("speakeasy");
 const { userpermission, authorize, isauthenticated } = require("./middleware/userpermission");
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
+const Follows = require("./datasources/follow");
 
 // const { RecaptchaV2 } = require("@google/recaptcha");
 // create a new instance of the reCAPTCHA client with your site key and secret key
@@ -105,8 +106,9 @@ const resolvers = {
             }
             return followBack;
         },
-        following: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are followed by this user and are also following this user.
-            // await authorize(userpermission.LOGGED)(req);
+        following: async (_, { __ }, { dataSources, req }) => { // Return the user(s) who are followed by this user and are also following this user.
+            const user = await isauthenticated()(req);
+            const id = user.id;
             const Follow = dataSources.userAPI;
             const followingIds = await Follow.getAllUsers();
             const followings = [];
@@ -119,8 +121,9 @@ const resolvers = {
             }
             return followings;
         },
-        OnlyFollowedBythisUser: async (_, { id }, { dataSources, req }) => { // Return the user(s) who are only followed by this user
-            // await authorize(userpermission.LOGGED)(req);
+        OnlyFollowedBythisUser: async (_, { __ }, { dataSources, req }) => { // Return the user(s) who are only followed by this user
+            const user = await isauthenticated()(req);
+            const id = user.id;
             const Follow = dataSources.userAPI;
             const followingIds = await Follow.getAllUsers();
             const followedByThis = [];
@@ -136,7 +139,10 @@ const resolvers = {
 
     },
     Mutation: {
-        addFollow: async (_, { followerId, followerType, followingId, followingType }, { dataSources, req }) => {
+        addFollow: async (_, { followingId, followingType }, { dataSources, req }) => {
+            const user = await isauthenticated()(req);
+            const followerId = user.id;
+            const followerType = "users";
             const Follow = dataSources.userAPI;
             const follow = {
                 followerId,
@@ -148,16 +154,20 @@ const resolvers = {
 
             return savedFollow;
         },
-        unFollow: async (_, { id }, { dataSources, req }) => { // delete Follow
+        unFollow: async (_, { followingId }, { dataSources, req }) => { // delete Follow
+            const user = await isauthenticated()(req);
+            const id = user.id;
             try {
                 // await authorize(userpermission.POST_MODULE_CRUDS)(req);
                 const Follow = dataSources.userAPI;
-
-                const follow = await Follow.deleteFollow(id);
-                if (!follow) {
-                    throw new GraphQLError("Follow not found");
+                const follower = await Follow.getFollower(id, followingId);
+                if (follower) {
+                    const follow = await Follow.deleteFollow(follower.id);
+                    if (!follow) {
+                        throw new GraphQLError("Follow not found");
+                    }
+                    return follow;
                 }
-                return follow;
             } catch (error) {
                 console.error(error);
                 throw new GraphQLError("Failed to delete Follow");

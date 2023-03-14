@@ -72,8 +72,8 @@ enum followTypeEnum  {
     user(id: ID!): User
     follows(id: ID!): String
      followBacks: [User!]!
-     following(id: ID!): [User!]!
-     OnlyFollowedBythisUser(id: ID!): [User!]!
+     following: [User!]!
+     OnlyFollowedBythisUser: [User!]!
     follow(
       id1: ID!
       id2: ID!
@@ -86,12 +86,10 @@ enum followTypeEnum  {
   type Mutation {
   
     addFollow(
-      followerId: ID!
-      followerType: followTypeEnum!
       followingId: ID!
-      followingType: followTypeEnum!
+      followingType: String!
     ): Follow!
-    unFollow(id: ID!): Follow!
+    unFollow(followingId: ID!): Follow!
     addUser(
       username: String!
       first_name: String!
