@@ -497,8 +497,8 @@ const resolvers = {
             if (!user) { return new GraphQLError("User not found"); }
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-            await send_email({ email: user.email, subject: "Reset Password", html: "click this link to reset your password link:http://localhost:4001/?token=" + token });
-            return user;
+            await send_email({ email: user.email, subject: "Reset Password", html: "click this link to reset your password link:http://localhost:3001/forgot?token=" + token });
+            return true;
         },
         ResetPassword: async (_, { password, token }, { dataSources }) => {
             const joischema = Joi.object({
@@ -520,7 +520,7 @@ const resolvers = {
             const hashed_password = await bcrypt.hash(value.password, 10);
             const updated_user = await dataSources.userAPI.updateUser(user._id, { password: hashed_password });
             if (!updated_user) { return new GraphQLError("Failed to update user"); }
-            return updated_user;
+            return true;
         }
         /*
         addInterest: async (_, { id, nameInterest, description }, { dataSources, req }) => {

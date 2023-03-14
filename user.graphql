@@ -84,8 +84,8 @@ enum followTypeEnum  {
   }
 
   type Mutation {
-    RequestResetPassword(email: String!):User!
-    ResetPassword(password: String!,token: String!):User!
+    RequestResetPassword(email: String!):Boolean!
+    ResetPassword(password: String!,token: String!):Boolean!
     addFollow(
       followingId: ID!
       followingType: String!
