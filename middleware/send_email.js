@@ -24,8 +24,8 @@ const validate_data = (data) => {
         subject: joi.string().min(1).max(100).required(),
         // non required
         from: joi.string().email(),
-        text: joi.string().min(1)
-        // html: joi.string().min(1)
+        text: joi.string().min(1),
+        html: joi.string().min(1)
     });
     const { error, value } = schema.validate(data);
 
