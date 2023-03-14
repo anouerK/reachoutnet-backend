@@ -6,12 +6,14 @@ specifiers:
   bcryptjs: ^2.4.3
   cookie-parser: ^1.4.6
   cors: ^2.8.5
+  csv-parser: ^3.0.0
   dotenv: ^16.0.3
   eslint: ^8.0.1
   eslint-config-standard: ^17.0.0
   eslint-plugin-import: ^2.25.2
   eslint-plugin-n: ^15.0.0
   eslint-plugin-promise: ^6.0.0
+  fs: ^0.0.1-security
   graphql: ^16.6.0
   graphql-tag: ^2.12.6
   joi: ^17.8.3
@@ -28,7 +30,9 @@ dependencies:
   bcryptjs: 2.4.3
   cookie-parser: 1.4.6
   cors: 2.8.5
+  csv-parser: 3.0.0
   dotenv: 16.0.3
+  fs: 0.0.1-security
   graphql: 16.6.0
   graphql-tag: 2.12.6_graphql@16.6.0
   joi: 17.8.3
@@ -1757,6 +1761,14 @@ packages:
       which: 2.0.2
     dev: true
 
+  /csv-parser/3.0.0:
+    resolution: {integrity: sha512-s6OYSXAK3IdKqYO33y09jhypG/bSDHPuyCme/IdEHfWpLf/jKcpitVFyOC6UemgGk8v7Q5u2XE0vvwmanxhGlQ==}
+    engines: {node: '>= 10'}
+    hasBin: true
+    dependencies:
+      minimist: 1.2.8
+    dev: false
+
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     peerDependencies:
@@ -2388,6 +2400,10 @@ packages:
 
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
+
+  /fs/0.0.1-security:
+    resolution: {integrity: sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w==}
+    dev: false
 
   /fsevents/2.3.2:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
