@@ -72,8 +72,10 @@ enum followTypeEnum  {
     user(id: ID!): User
     follows(id: ID!): String
      followBacks: [User!]!
+     ThreefollowBacks: [User!]!
      following: [User!]!
      OnlyFollowedBythisUser: [User!]!
+     NotFollowing: [User!]!
     follow(
       id1: ID!
       id2: ID!

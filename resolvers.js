@@ -95,7 +95,6 @@ const resolvers = {
         followBacks: async (_, { __ }, { dataSources, req }) => {
             const user = await isauthenticated()(req);
             const id = user.id;
-
             const Follow = dataSources.userAPI;
             const followingIds = await Follow.getAllUsers();
             const followBack = [];
@@ -104,6 +103,26 @@ const resolvers = {
                 const followingRelation = await Follow.getFollowingRelation(followingId, id);
                 if (followingRelation && !follower) {
                     followBack.push(followingId);
+                }
+            }
+            return followBack;
+        },
+        ThreefollowBacks: async (_, { __ }, { dataSources, req }) => {
+            const user = await isauthenticated()(req);
+            const id = user.id;
+            let counter = 0;
+            const Follow = dataSources.userAPI;
+            const followingIds = await Follow.getAllUsers();
+            const followBack = [];
+            for (const followingId of followingIds) {
+                const follower = await Follow.getFollower(id, followingId);
+                const followingRelation = await Follow.getFollowingRelation(followingId, id);
+                if (followingRelation && !follower) {
+                    followBack.push(followingId);
+                    counter++;
+                    if (counter === 3) {
+                        break;
+                    }
                 }
             }
             return followBack;
@@ -137,6 +156,21 @@ const resolvers = {
                 }
             }
             return followedByThis;
+        },
+        NotFollowing: async (_, { __ }, { dataSources, req }) => { // Return the user(s) who are only followed by this user
+            const user = await isauthenticated()(req);
+            const id = user.id;
+            const Follow = dataSources.userAPI;
+            const followingIds = await Follow.getAllUsers();
+            const NotFollowing = [];
+            for (const followingId of followingIds) {
+                const follower = await Follow.getFollower(id, followingId);
+                const followingRelation = await Follow.getFollowingRelation(followingId, id);
+                if (!followingRelation && !follower) {
+                    NotFollowing.push(followingId);
+                }
+            }
+            return NotFollowing;
         }
 
     },
