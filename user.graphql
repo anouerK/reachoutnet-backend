@@ -70,12 +70,13 @@ enum followTypeEnum  {
   type Query {
     users: [User]!
     user(id: ID!): User
+    getUserInfo: User
     follows(id: ID!): String
-     followBacks: [User!]!
-     ThreefollowBacks: [User!]!
-     following: [User!]!
-     OnlyFollowedBythisUser: [User!]!
-     NotFollowing: [User!]!
+     followBacks: [User]!
+     ThreefollowBacks: [User]!
+     following: [User]!
+     OnlyFollowedBythisUser: [User]!
+     NotFollowing: [User]!
     follow(
       id1: ID!
       id2: ID!
@@ -126,6 +127,15 @@ enum followTypeEnum  {
       skills: [SkillInput]
       permissions: Int
     ): User!
+
+updatePersonal(
+      username: String!
+      first_name: String!
+      last_name: String!
+      birthdate: String!
+      country: String!
+    ): User!
+
     activate(activationCode:String!): User!
     deleteUser(id: ID!): User!
     login(email: String!, password: String!): Login!
