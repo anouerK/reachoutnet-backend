@@ -9,8 +9,7 @@ const { EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS } = process.env;
 if (!EMAIL_HOST || !EMAIL_PORT || !EMAIL_USER || !EMAIL_PASS) { throw new GraphQLError("Email credentials not found"); }
 
 const transporter = nodemailer.createTransport({
-    host: EMAIL_HOST,
-    port: EMAIL_PORT,
+    service: EMAIL_HOST,
     auth: {
         user: EMAIL_USER,
         pass: EMAIL_PASS
