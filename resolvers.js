@@ -54,6 +54,18 @@ const resolvers = {
         },
         // end Skill query //
 
+        // personal information //
+
+        getUserInfo: async (_, { __ }, { dataSources, req }) => {
+            const users = await isauthenticated()(req);
+            const id = users.id;
+            const User = dataSources.userAPI;
+            const user = await User.findOnebyId(id);
+            return user;
+        },
+
+        // end personal information //
+
         // follow qury //
         follow: async (_, { id1, id2 }, { dataSources, req }) => {
             const Follow = dataSources.userAPI;
@@ -363,6 +375,15 @@ const resolvers = {
             if (updateData.password) {
                 updateData.password = await bcrypt.hash(updateData.password, 10);
             }
+            const user = await User.updateUser(id, updateData, { new: true });
+            return user;
+        },
+
+        updatePersonal: async (_, args, { dataSources, req }) => {
+            const users = await isauthenticated()(req);
+            const id = users.id;
+            const User = dataSources.userAPI;
+            const updateData = args;
             const user = await User.updateUser(id, updateData, { new: true });
             return user;
         },
