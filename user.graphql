@@ -122,8 +122,8 @@ enum followTypeEnum  {
       age: Int
       email: String
       password: String
-      birthdate: String!
-      country: String!
+      birthdate: String
+      country: String
       skills: [SkillInput]
       permissions: Int
     ): User!
