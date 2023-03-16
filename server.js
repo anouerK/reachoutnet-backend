@@ -35,17 +35,15 @@ req.on("error", error => {
 
 req.end();
 */
-console.log(resolvers);
 async function startApolloServer () {
-    // const app = express();
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        cache: new InMemoryLRUCache()
-        /*  cors: {
-            origin: ["http://localhost:3000/register"],
+        cache: new InMemoryLRUCache(),
+        cors: {
+            origin: ["http://localhost:3001/", "http://localhost:3000"],
             Credentials: true
-        } */
+        }
 
     });
     mongoose.connect(process.env.MONGO_URI)
