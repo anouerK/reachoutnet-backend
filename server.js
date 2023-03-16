@@ -7,7 +7,7 @@ const gql = require("graphql-tag");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const typeDefs = gql(readFileSync("./user.graphql", { encoding: "utf-8" }));
-const resolvers = require("./resolvers");
+const resolvers = require("./src/index");
 const UserAPI = require("./datasources/UserApi");
 /*
 const https = require("https");
@@ -35,6 +35,7 @@ req.on("error", error => {
 
 req.end();
 */
+console.log(resolvers);
 async function startApolloServer () {
     // const app = express();
     const server = new ApolloServer({
