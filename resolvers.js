@@ -9,7 +9,8 @@ const { userpermission, authorize, isauthenticated } = require("./middleware/use
 const { GraphQLError } = require("graphql");
 const nodemailer = require("nodemailer");
 const Follows = require("./datasources/follow");
-
+const https = require("https");
+const { LINKEDIN_CLIENT_ID, LINKEDIN_CLIENT_SECRET } = process.env;
 // const { RecaptchaV2 } = require("@google/recaptcha");
 // create a new instance of the reCAPTCHA client with your site key and secret key
 /* const recaptcha = new RecaptchaV2({
@@ -409,6 +410,102 @@ const resolvers = {
                 } else if (error.message === "Your Account is Banned") { throw new GraphQLError("Your Account is Banned"); } else {
                     throw new GraphQLError("Authentication failed");
                 }
+            }
+        },
+        async loginLinkedin (_, { authorization }, { res, dataSources }) {
+            const options = {
+                hostname: "www.linkedin.com",
+                path: `https://www.linkedin.com/oauth/v2/accessToken?code=${authorization}&grant_type=authorization_code&client_id=${LINKEDIN_CLIENT_ID}&client_secret=${LINKEDIN_CLIENT_SECRET}&redirect_uri=http://localhost:3001/linkedin`,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            };
+            let first_name = "";
+            let last_name = "";
+            // Make the first request to get the access token
+            const access_token = await new Promise((resolve, reject) => {
+                const req = https.request(options, res => {
+                    let data = "";
+                    res.on("data", d => {
+                        data += d;
+                    });
+                    res.on("end", () => {
+                        const parsedData = JSON.parse(data);
+                        resolve(parsedData.access_token);
+                    });
+                });
+
+                req.on("error", error => {
+                    console.error(error);
+                    reject(error);
+                });
+
+                req.end();
+            });
+
+            // Make the second request using the access token
+            const options2 = {
+                hostname: "api.linkedin.com",
+                path: "/v2/me",
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${access_token}`
+                }
+            };
+
+            const parsedData = await new Promise((resolve, reject) => {
+                const req2 = https.request(options2, res => {
+                    let data = "";
+                    res.on("data", d => {
+                        data += d;
+                    });
+                    res.on("end", () => {
+                        const parsedData = JSON.parse(data);
+                        console.log(parsedData);
+                        resolve(parsedData);
+                    });
+                });
+
+                req2.on("error", error => {
+                    console.error(error);
+                    reject(error);
+                });
+
+                req2.end();
+            });
+
+            // Extract data from the second request
+            first_name = parsedData.localizedFirstName;
+            last_name = parsedData.localizedLastName;
+
+            const email = parsedData.id;
+            const User = dataSources.userAPI;
+            const fullname = first_name + last_name;
+            const dnt = Date.now;
+            const user = await User.findOne({ email });
+            const hashed_password = await bcrypt.hash(fullname + email, 10);
+
+            if (!user) {
+                const usersave = {
+                    username: fullname,
+                    first_name,
+                    last_name,
+                    email,
+                    password: hashed_password,
+                    permissions: 0,
+                    is_verified: true
+                };
+
+                const saveduser = await User.createUser(usersave);
+                const token = jwt.sign({ userId: saveduser._id }, process.env.JWT_SECRET, {
+                    expiresIn: "24h"
+                });
+                return { saveduser, token }; // return user object
+            } else {
+                const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "24h" });
+                return { user, token };
             }
         },
         generateOtp: async (_, { id }, { dataSources, req }) => {

@@ -24,6 +24,10 @@ class UserAPI {
         return this.model_user.findById(id);
     }
 
+    findByEmail (email) {
+        return this.model_user.findOne({ email });
+    }
+
     findOne (id) {
         return this.model_user.findOne(id);
     }
