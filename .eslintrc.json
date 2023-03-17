@@ -17,7 +17,7 @@
             4
         ],
         "prefer-const": "error",
-        "complexity":["warn",2],
+        // "complexity":["warn",2],
         "quotes": [
             "error",
             "double"

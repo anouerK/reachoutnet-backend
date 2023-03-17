@@ -7,7 +7,7 @@ const gql = require("graphql-tag");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const typeDefs = gql(readFileSync("./user.graphql", { encoding: "utf-8" }));
-const resolvers = require("./resolvers");
+const resolvers = require("./src/index");
 const UserAPI = require("./datasources/UserApi");
 /*
 const https = require("https");
@@ -36,15 +36,14 @@ req.on("error", error => {
 req.end();
 */
 async function startApolloServer () {
-    // const app = express();
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        cache: new InMemoryLRUCache()
-        /*  cors: {
-            origin: ["http://localhost:3000/register"],
+        cache: new InMemoryLRUCache(),
+        cors: {
+            origin: ["http://localhost:3001/", "http://localhost:3000"],
             Credentials: true
-        } */
+        }
 
     });
     mongoose.connect(process.env.MONGO_URI)

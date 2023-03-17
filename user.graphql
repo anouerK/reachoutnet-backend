@@ -140,7 +140,7 @@ updatePersonal(
     deleteUser(id: ID!): User!
     login(email: String!, password: String!): Login!
     loginLinkedin(authorization: String!): Login!
-    generateOtp(id:ID!): Otp!
+    generateOtp:Otp!
     verifyOtp(id:ID!,token:String!): Otp!
     validateOtp(id:ID!,token:String!): Otp!
     disableOtp(id:ID!): User!
