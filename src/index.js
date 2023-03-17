@@ -6,7 +6,7 @@ const user_query = require("./query/user");
 const interest_mutation = require("./mutation/interest");
 const skill_mutation = require("./mutation/skill");
 const user_mutation = require("./mutation/user");
-/// //
+
 const resolvers = {
     Query: {
         ...follow_query,
