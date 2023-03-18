@@ -102,18 +102,36 @@ const isauthenticated = () => {
         }
 
         const userapi = new UserAPI();
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        const user = await userapi.findOne({ _id: decoded.userId });
-
-        if (!user) {
-            throw new GraphQLError("User is not authenticated", {
-                extensions: {
-                    code: "UNAUTHENTICATED",
-                    http: { status: 401 }
-                }
-            });
-        } else return user;
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const user = await userapi.findOne({ _id: decoded.userId });
+            if (!user) {
+                throw new GraphQLError("User is not authenticated", {
+                    extensions: {
+                        code: "UNAUTHENTICATED",
+                        http: { status: 401 }
+                    }
+                });
+            } else {
+                return user;
+            }
+        } catch (err) {
+            if (err.name === "TokenExpiredError") {
+                throw new GraphQLError("Token has expired", {
+                    extensions: {
+                        code: "UNAUTHENTICATED",
+                        http: { status: 401 }
+                    }
+                });
+            } else {
+                throw new GraphQLError("Invalid token", {
+                    extensions: {
+                        code: "UNAUTHENTICATED",
+                        http: { status: 401 }
+                    }
+                });
+            }
+        }
     };
 };
 /*

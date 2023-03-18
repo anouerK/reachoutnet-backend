@@ -55,7 +55,6 @@ const user_mutation = {
     },
     activate: async (_, { activationCode }, { dataSources, req }) => {
         try {
-            console.log("zakeoak");
             const User = dataSources.userAPI;
             // Trouver l'utilisateur avec le code de confirmation donné
             const user = await User.findUserByConfirmationCode(activationCode);
@@ -65,7 +64,7 @@ const user_mutation = {
                 const updateduser = await User.updateUser(user.id, user);
                 return updateduser;
             } else {
-                console.log("User NOT FOUND");
+                throw new Error("User Not Found");
             }
         } catch (error) {
             console.error(error);
@@ -124,6 +123,11 @@ const user_mutation = {
 
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
                 expiresIn: "24h"
+            });
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict"
             });
             // console.log(res);
             // res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
