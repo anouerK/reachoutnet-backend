@@ -1,5 +1,4 @@
 const { isauthenticated, userpermission, authorize } = require("../../middleware/userpermission");
-
 const user_query = {
     users: async (_, __, { dataSources, req }) => {
         await authorize(userpermission.VIEW_USER_MODULE)(req);
@@ -11,6 +10,10 @@ const user_query = {
         await authorize(userpermission.VIEW_USER_MODULE)(req);
         const User = dataSources.userAPI;
         const user = await User.findOnebyId(id);
+        return user;
+    },
+    me: async (_, __, { dataSources, req }) => {
+        const user = await isauthenticated()(req);
         return user;
     },
 
