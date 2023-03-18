@@ -124,11 +124,6 @@ const user_mutation = {
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
                 expiresIn: "24h"
             });
-            res.cookie("token", token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "strict"
-            });
             // console.log(res);
             // res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
             return { user, token };
