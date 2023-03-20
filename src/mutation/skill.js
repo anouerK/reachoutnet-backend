@@ -65,8 +65,9 @@ const skill_mutation = {
             const existingSkill = user.skills.find((s) => {
                 return s.skill._id.toString() === skillToAdd.skill.toString();
             });
+
             if (existingSkill) {
-                throw new GraphQLError("Skill already exists");
+                throw new GraphQLError(`${existingSkill.skill.name} already exists`);
             }
             user.skills.push({
                 skill: skillToAdd.skill,
