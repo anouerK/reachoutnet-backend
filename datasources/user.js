@@ -22,7 +22,7 @@ const User = new Schema({
     last_name: { type: String, required: true },
     birthdate: { type: Date },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String },
     country: { type: String },
     permissions: { type: Number, default: 0 },
     creation_date: { type: Date, default: Date.now },
@@ -42,7 +42,12 @@ const User = new Schema({
     },
 
     activationCode: { type: String },
-    default: { skills: [], interests: [] }
+    default: { skills: [], interests: [] },
+    provider: {
+        type: String,
+        required: true,
+        enum: ["gmail", "linkedin", "simple"]
+    }
     // active: { type: Date },
 });
 

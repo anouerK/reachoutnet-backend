@@ -294,6 +294,43 @@ const user_mutation = {
         const updated_user = await dataSources.userAPI.updateUser(user._id, { password: hashed_password });
         if (!updated_user) { return new GraphQLError("Failed to update user"); }
         return true;
+    },
+    SignUPInGmail: async (_, { username, first_name, last_name, email, provider }, { dataSources, req }) => {
+        try {
+            const User = dataSources.userAPI;
+            const user = await User.findOne({ email });
+            if (!user) {
+                const userN = {
+                    username,
+                    first_name,
+                    last_name,
+                    email,
+                    permissions: 0,
+                    is_verified: true,
+                    provider
+                };
+
+                const user = await User.createUser(userN);
+
+                const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+                    expiresIn: "24h"
+                });
+                return { user, token }; // return user object
+            }
+            if (!user.is_verified) { throw new GraphQLError("Please Verify Your Email"); }
+            if (user.banned) { throw new GraphQLError("Your Account is Banned"); }
+            const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+                expiresIn: "24h"
+            });
+            return { user, token };
+        } catch (error) {
+            // console.error(error);
+            if (error.message === "Please Verify Your Email") {
+                throw new GraphQLError("Please Verify Your Email.");
+            } else if (error.message === "Your Account is Banned") { throw new GraphQLError("Your Account is Banned"); } else {
+                throw new GraphQLError("Authentication failed");
+            }
+        }
     }
 
 };
