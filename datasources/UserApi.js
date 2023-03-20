@@ -48,6 +48,9 @@ class UserAPI {
         return this.model_user.findByIdAndDelete(id);
     }
 
+    userPopulate (filed) {
+        return this.model_user.populate(filed);
+    }
     /// / ///////// follow section /////////
 
     createFollow (follow) {
@@ -118,6 +121,11 @@ class UserAPI {
     getAllSkills () {
         return this.model_skill.find();
     }
+
+    findOneUserandPopulateSkills (id) {
+        return this.model_user.findById(id).populate("skills.skill");
+    }
+
     /// / ///////// end Skill section /////////
 
     createInterest (interest) {

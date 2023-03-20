@@ -53,7 +53,7 @@ enum followTypeEnum  {
 
   type Skill {
   id: ID!
-  skill: String!
+  skill: skill!
   level: Int!
   verified: Boolean!
   }
@@ -85,6 +85,8 @@ enum followTypeEnum  {
     skillId(id: ID!): skill!
     skillName(name : String!): skill!
     skills: [skill]!
+    findUserSkills(id: ID!): [Skill]!
+   
   }
 
   type Mutation {
@@ -180,14 +182,12 @@ updatePersonal(
       id: ID!
      ): skill!
     #  findUserByConfirmationCode(activationCode: String!):User!
-     addUserSkill(
-      id: ID!
-      skillsToAdd: [SkillInput!]!): User!
+     addUserSkill(id:ID!,skillsToAdd: [SkillInput!]!): User!
       deleteUserSkill(id: ID!, skillId: ID!): User!
   }
 
   input SkillInput {
-  skill: String!,
+  skill: ID,
   level: Int,
   verified: Boolean
 }

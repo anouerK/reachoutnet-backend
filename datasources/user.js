@@ -45,5 +45,6 @@ const User = new Schema({
     default: { skills: [], interests: [] }
     // active: { type: Date },
 });
+
 // db name in lowercase only
 module.exports = mongoose.model("users", User);
