@@ -45,7 +45,6 @@ const User = new Schema({
     default: { skills: [], interests: [] },
     provider: {
         type: String,
-        required: true,
         enum: ["gmail", "linkedin", "simple"]
     }
     // active: { type: Date },
