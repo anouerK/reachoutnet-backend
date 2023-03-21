@@ -64,6 +64,10 @@ enum followTypeEnum  {
     description: String!
 
   }
+  type generatedOtp {
+    base32: String!
+    otpauth_url: String!
+  }
 
 
 
@@ -86,6 +90,7 @@ enum followTypeEnum  {
     skillName(name : String!): skill!
     skills: [skill]!
     findUserSkills(id: ID!): [Skill]!
+    findUserOtp: Otp!
    
   }
 
@@ -143,9 +148,9 @@ updatePersonal(
     deleteUser(id: ID!): User!
     login(email: String!, password: String!): Login!
     loginLinkedin(authorization: String!): Login!
-    generateOtp:Otp!
-    verifyOtp(id:ID!,token:String!): Otp!
-    validateOtp(id:ID!,token:String!): Otp!
+    generateOtp:generatedOtp!
+    verifyOtp(base32:String!,token:String!): Otp!
+    validateOtp(token:String!): Otp!
     disableOtp(id:ID!): User!
     deleteOtp(id:ID!): User!
 

@@ -79,7 +79,7 @@ class UserAPI {
         return this.model_otp.create({
             userId,
             enabled: true,
-            verified: false,
+            verified: true,
             base32
         });
     }
@@ -92,8 +92,12 @@ class UserAPI {
         return this.model_otp.findOneAndUpdate({ _id: id }, otp, { upsert: true, new: true });
     }
 
+    findUserOtp (userid) {
+        return this.model_otp.findOne({ userId: userid });
+    }
+
     deleteOtp (id) {
-        return this.model_otp.findOneAndDelete({ userId: id });
+        return this.model_otp.findOneAndDelete(id);
     }
 
     /// / ///////// Skill section /////////
