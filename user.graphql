@@ -6,8 +6,8 @@ type User  {
     username: String!
     first_name: String!
     last_name: String!
-    birthdate: String!
-    country: String!
+    birthdate: String
+    country: String
     email: String!
     permissions: Int!
     creation_date: String!
