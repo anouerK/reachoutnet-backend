@@ -114,7 +114,10 @@ const follow_query = {
             const follower = await Follow.getFollower(id, followingId);
             const followingRelation = await Follow.getFollowingRelation(followingId, id);
             if (!followingRelation && !follower) {
-                NotFollowing.push(followingId);
+                if (id.localeCompare(followingId._id)) {
+                    console.log(id + " " + followingId._id);
+                    NotFollowing.push(followingId);
+                }
             }
         }
         return NotFollowing;
