@@ -23,6 +23,25 @@ const user_query = {
         const User = dataSources.userAPI;
         const user = await User.findOnebyId(id);
         return user;
+    },
+    findUser: async (_, { value }, { dataSources, req }) => {
+        const User = dataSources.userAPI;
+        let user = null;
+        const regex = value.split(" "); // split into array of words
+        // construct regex to match any of the words
+
+        // eslint-disable-next-line no-unused-vars
+        if (regex[1] != null) {
+            user = await User.findFirstLastName1(regex);
+            console.log(user.length);
+            if (user.length === 0) {
+                user = await User.findLastFirstName1(regex);
+            }
+        } else {
+            user = await User.findFirstLastName2(regex);
+        }
+
+        return user;
     }
 };
 module.exports = user_query;
