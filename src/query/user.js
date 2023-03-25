@@ -33,12 +33,14 @@ const user_query = {
         // eslint-disable-next-line no-unused-vars
         if (regex[1] != null) {
             user = await User.findFirstLastName1(regex);
-            console.log(user.length);
             if (user.length === 0) {
                 user = await User.findLastFirstName1(regex);
             }
         } else {
             user = await User.findFirstLastName2(regex);
+        }
+        if (value === "") {
+            user = null;
         }
 
         return user;
