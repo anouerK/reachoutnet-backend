@@ -156,6 +156,33 @@ class UserAPI {
         const user = this.model_user.findOne({ activationCode });
         return user;
     }
+
+    findFirstLastName1 (regex) {
+        return this.model_user.find({
+            $and: [
+                { first_name: { $regex: "^" + regex[0], $options: "i" } },
+                { last_name: { $regex: "^" + regex[1], $options: "i" } }
+            ]
+        });
+    }
+
+    findLastFirstName1 (regex) {
+        return this.model_user.find({
+            $and: [
+                { first_name: { $regex: "^" + regex[1], $options: "i" } },
+                { last_name: { $regex: "^" + regex[0], $options: "i" } }
+            ]
+        });
+    }
+
+    findFirstLastName2 (regex) {
+        return this.model_user.find({
+            $or: [
+                { first_name: { $regex: "^" + regex[0], $options: "i" } },
+                { last_name: { $regex: "^" + regex[0], $options: "i" } }
+            ]
+        });
+    }
 }
 
 module.exports = UserAPI;
