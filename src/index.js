@@ -7,20 +7,24 @@ const interest_mutation = require("./mutation/interest");
 const skill_mutation = require("./mutation/skill");
 const user_mutation = require("./mutation/user");
 const otp_query = require("./query/otp");
+const event_query = require("./query/event");
+const event_mutation = require("./mutation/event");
 
 const resolvers = {
     Query: {
         ...follow_query,
         ...skill_query,
         ...user_query,
-        ...otp_query
+        ...otp_query,
+        ...event_query
     },
     Mutation: {
         ...otp_mutation,
         ...follow_mutation,
         ...interest_mutation,
         ...skill_mutation,
-        ...user_mutation
+        ...user_mutation,
+        ...event_mutation
     }
 };
 

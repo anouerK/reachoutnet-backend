@@ -1,0 +1,37 @@
+const { GraphQLError } = require("graphql");
+const { isValidObjectId } = require("mongoose");
+const Joi = require("joi");
+const { isauthenticated } = require("../../middleware/userpermission");
+const schema = Joi.object({
+    name: Joi.string().required(),
+    description: Joi.string().required().min(5),
+    start_date: Joi.date().required(),
+    end_date: Joi.date().required().greater(Joi.ref("start_date")),
+    location: Joi.string().required(),
+    attendees: Joi.array().items(Joi.custom((value, helper) => {
+        if (!isValidObjectId(value)) {
+            return helper.message("Invalid participants Id");
+        }
+        return value;
+    }).required())
+});
+
+const event_mutation = {
+    createEvent: async (_, { name, description, start_date, end_date, location, attendees }, { dataSources, req }) => {
+        const user = await isauthenticated()(req);
+        if (!user) throw new GraphQLError("User not authenticated");
+
+        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees });
+
+        if (error) throw new GraphQLError(error.message);
+
+        const newEvent = {
+            ...value,
+            created_by: user.id
+        };
+        const savedEvent = await dataSources.eventAPI.createEvent(newEvent);
+        return savedEvent;
+    }
+};
+
+module.exports = event_mutation;

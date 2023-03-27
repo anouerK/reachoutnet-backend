@@ -34,7 +34,17 @@ type Otp {
     last_modified: String!
     enabled: Boolean!
 }
-
+  type Event{
+    id:ID!
+    name: String!
+    description: String!
+    start_date: String!
+    end_date: String!
+    location: String!
+    attendees: [User]!
+    created_by: User!
+    last_modified: String!
+  }
   type Interest{
     id: ID!
     nameInterest: String!
@@ -92,10 +102,21 @@ enum followTypeEnum  {
     skills: [skill]!
     findUserSkills(id: ID!): [Skill]!
     findUserOtp: Otp!
+    events: [Event]
+    event(id: ID!): Event
    
   }
 
   type Mutation {
+    createEvent(
+      name: String!
+      description: String!
+      start_date: String!
+      end_date: String!
+      location: String!
+      attendees: [ID]!
+    ): Event!
+
     RequestResetPassword(email: String!):Boolean!
     ResetPassword(password: String!,token: String!):Boolean!
     addFollow(

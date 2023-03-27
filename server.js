@@ -9,6 +9,7 @@ require("dotenv").config();
 const typeDefs = gql(readFileSync("./user.graphql", { encoding: "utf-8" }));
 const resolvers = require("./src/index");
 const UserAPI = require("./datasources/UserApi");
+const EventAPI = require("./datasources/EventApi");
 const myPlugin = {
     // Fires whenever a GraphQL request is received from a client.
     async requestDidStart (requestContext) {
@@ -54,7 +55,8 @@ async function startApolloServer () {
             context: async ({ req }) => {
                 return {
                     dataSources: {
-                        userAPI: new UserAPI()
+                        userAPI: new UserAPI(),
+                        eventAPI: new EventAPI()
                     },
                     req
                 };
