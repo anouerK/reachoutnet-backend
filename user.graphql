@@ -114,7 +114,7 @@ enum followTypeEnum  {
       start_date: String!
       end_date: String!
       location: String!
-      attendees: [ID]!
+      attendees: [ID]
     ): Event!
 
     RequestResetPassword(email: String!):Boolean!
