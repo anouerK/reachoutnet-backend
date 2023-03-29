@@ -85,6 +85,7 @@ enum followTypeEnum  {
     findUser(value: String): [User]
     users: [User]!
     user(id: ID!): User
+    userProfile(id: ID!): User
     me: User
     getUserInfo: User
     follows(id: ID!): String
@@ -94,9 +95,9 @@ enum followTypeEnum  {
      OnlyFollowedBythisUser: [User]!
      NotFollowing: [User]!
     follow(
-      id1: ID!
       id2: ID!
-    ): String
+    ): String!
+
     skillId(id: ID!): skill!
     skillName(name : String!): skill!
     skills: [skill]!

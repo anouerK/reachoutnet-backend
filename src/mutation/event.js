@@ -19,7 +19,7 @@ const schema = Joi.object({
 const event_mutation = {
     createEvent: async (_, { name, description, start_date, end_date, location, attendees }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
-        if (!user) throw new GraphQLError("User not authenticated");
+        if (!user) throw new GraphQLError("Event not authenticated");
 
         const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees });
 
