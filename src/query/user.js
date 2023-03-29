@@ -12,6 +12,11 @@ const user_query = {
         const user = await User.findOnebyId(id);
         return user;
     },
+    userProfile: async (_, { id }, { dataSources, req }) => {
+        const User = dataSources.userAPI;
+        const user = await User.findOnebyId(id);
+        return user;
+    },
     me: async (_, __, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         return user;
