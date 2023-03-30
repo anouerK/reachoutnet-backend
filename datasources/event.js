@@ -31,6 +31,10 @@ const Event = new mongoose.Schema({
         ref: "users",
         required: true
     },
+    association: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "associations"
+    },
     last_modified: { type: Date, default: Date.now }
 }, { timestamps: true });
 
