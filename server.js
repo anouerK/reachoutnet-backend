@@ -10,6 +10,7 @@ const typeDefs = gql(readFileSync("./user.graphql", { encoding: "utf-8" }));
 const resolvers = require("./src/index");
 const UserAPI = require("./datasources/UserApi");
 const EventAPI = require("./datasources/EventApi");
+const AssociationApi = require("./datasources/AssociationApi");
 const myPlugin = {
     // Fires whenever a GraphQL request is received from a client.
     async requestDidStart (requestContext) {
@@ -56,7 +57,8 @@ async function startApolloServer () {
                 return {
                     dataSources: {
                         userAPI: new UserAPI(),
-                        eventAPI: new EventAPI()
+                        eventAPI: new EventAPI(),
+                        associationAPI: new AssociationApi()
                     },
                     req
                 };

@@ -80,8 +80,40 @@ enum followTypeEnum  {
   }
 
 
+  type Association {
+  id: ID!
+  name: String!
+  description: String!
+  email: String!
+  Creation_date: String
+  updated_at: [String]
+  verified: Boolean
+  status: Int
+  members: [AssociationMember]
+  address: Address!
+  phone: Int!
+}
+
+type Address {
+  street: String!
+  city: String!
+  state: String!
+  country: String!
+  zip: String!
+}
+
+type AssociationMember {
+  id: ID!
+  permissions: Int
+
+}
+
+
 
   type Query {
+    associations: [Association]!
+    association(id: ID!): Association!
+    associationByName(name: String!): [Association]!
     findUser(value: String): [User]
     users: [User]!
     user(id: ID!): User
@@ -108,7 +140,42 @@ enum followTypeEnum  {
    
   }
 
+  input AddressInput {
+  street: String!
+  city: String!
+  state: String!
+  country: String!
+  zip: String!
+}
+
+input AssociationMemberInput {
+  id: String!
+  permissions: Int
+}
+
   type Mutation {
+
+  addAssociation(
+  name: String!
+  description: String!
+  email: String!
+  members: [AssociationMemberInput]!
+  address: AddressInput!
+  phone: Int!
+):Association!
+
+updateAssociation(
+  id: ID!
+  name: String!
+  description: String!
+  email: String!
+  members: [AssociationMemberInput]
+  address: AddressInput!
+  phone: Int!
+):Association!
+deleteAssociation(id:ID!):Association!
+
+
     createEvent(
       name: String!
       description: String!
