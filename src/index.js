@@ -9,6 +9,8 @@ const user_mutation = require("./mutation/user");
 const otp_query = require("./query/otp");
 const event_query = require("./query/event");
 const event_mutation = require("./mutation/event");
+const association_query = require("./query/association");
+const association_mutation = require("./mutation/association");
 
 const resolvers = {
     Query: {
@@ -16,7 +18,8 @@ const resolvers = {
         ...skill_query,
         ...user_query,
         ...otp_query,
-        ...event_query
+        ...event_query,
+        ...association_query
     },
     Mutation: {
         ...otp_mutation,
@@ -24,7 +27,9 @@ const resolvers = {
         ...interest_mutation,
         ...skill_mutation,
         ...user_mutation,
-        ...event_mutation
+        ...event_mutation,
+        ...association_mutation
+
     }
 };
 

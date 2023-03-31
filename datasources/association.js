@@ -25,17 +25,18 @@ const Association = new mongoose.Schema({
     },
     Creation_date: {
         type: Date,
+        default: Date.now,
         required: true
     },
     updated_at: [{
-        type: Date, default: Date.now
+        type: Date
     }],
     verified: {
         type: Boolean,
         default: 0
     },
     status: {
-        type: Boolean,
+        type: Number,
         default: 0
     },
     members: [{

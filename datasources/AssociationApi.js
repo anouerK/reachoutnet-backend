@@ -1,4 +1,4 @@
-const { findByIdAndUpdate } = require("./association");
+// const { findByIdAndUpdate } = require("./association");
 const Association = require("./association");
 class AssociationApi {
     constructor () {
@@ -18,11 +18,17 @@ class AssociationApi {
     }
 
     updateAssociation (id, association) {
-        return findByIdAndUpdate(id, association, { upsert: true, new: true });
+        return this.model_association.findByIdAndUpdate(id, association, { upsert: true, new: true });
     }
 
     deleteAssociation (id) {
         return this.model_association.findByIdAndDelete(id);
+    }
+
+    findByName (name) {
+        return this.model_association.find(
+            { name: { $regex: "^" + name, $options: "i" } }
+        );
     }
 }
 
