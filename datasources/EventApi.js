@@ -10,7 +10,7 @@ class EventApi {
     }
 
     findOnebyId (id) {
-        return this.model_event.findById(id);
+        return this.model_event.findById(id).populate({ path: "attendees", model: "users" }).populate({ path: "created_by", model: "users" });
     }
 
     createEvent (event) {
