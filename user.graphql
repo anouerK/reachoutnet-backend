@@ -147,6 +147,9 @@ type AssociationMember {
   country: String!
   zip: String!
 }
+input UserInput{
+  id: String!
+}
 
 input AssociationMemberInput {
   id: String!
@@ -159,7 +162,7 @@ input AssociationMemberInput {
   name: String!
   description: String!
   email: String!
-  members: [AssociationMemberInput]!
+  members: [UserInput!]
   address: AddressInput!
   phone: Int!
 ):Association!
@@ -169,11 +172,27 @@ updateAssociation(
   name: String!
   description: String!
   email: String!
-  members: [AssociationMemberInput]
+  members: [UserInput!]
   address: AddressInput!
   phone: Int!
 ):Association!
 deleteAssociation(id:ID!):Association!
+addMember(
+  id:ID!
+users: [UserInput!]!
+):Association!
+removeMember(
+associationId:ID!
+memberId:ID!
+):String
+
+updateMemberPermissions(
+  id:ID!
+  memberId:ID!
+  permissions: Int!
+):String
+
+
 
 
     createEvent(

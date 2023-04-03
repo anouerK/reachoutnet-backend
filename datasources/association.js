@@ -40,9 +40,9 @@ const Association = new mongoose.Schema({
         default: 0
     },
     members: [{
-        _id: {
+        user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "users",
+            ref: "user",
             required: true
         },
         permissions: {
