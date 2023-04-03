@@ -30,6 +30,10 @@ class AssociationApi {
             { name: { $regex: "^" + name, $options: "i" } }
         );
     }
+
+    findOneAssociationandPopulateMembers (id) {
+        return this.model_association.findById(id).populate("members.user");
+    }
 }
 
 module.exports = AssociationApi;

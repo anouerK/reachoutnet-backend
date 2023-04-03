@@ -3,6 +3,15 @@
 const { GraphQLError } = require("graphql");
 const { isauthenticated } = require("../../middleware/userpermission");
 const { isValidObjectId } = require("mongoose");
+const Joi = require("joi");
+const schema = Joi.array().items(Joi.object({
+    id: Joi.string().required().custom((value, helper) => {
+        if (!isValidObjectId(value)) {
+            return helper.message("Invalid skill ObjectId");
+        }
+        return value;
+    })
+}));
 const association_mutation = {
     addAssociation: async (_, { name, description, email, members, address, phone }, { dataSources, req }) => {
         const Association = dataSources.associationAPI;
@@ -37,52 +46,69 @@ const association_mutation = {
             throw new GraphQLError("Association to delete user");
         }
     },
-    addMember: async (_, { id, skillsToAdd }, { dataSources, req }) => { // allow users to add a skill
-        if (!isValidObjectId(id)) throw new GraphQLError("Invalid user id");
+    addMember: async (_, { id, users }, { dataSources, req }) => { // allow users to add a skill
+        if (!isValidObjectId(id)) throw new GraphQLError("Invalid association id");
+        const Association = dataSources.associationAPI;
+        const User = dataSources.userAPI;
+        const association = await Association.findOnebyId(id);
+        if (!association) throw new GraphQLError("Association not found");
+        for (let i = 0; i < users.length; i++) {
+            const userId = users[i].id;
+            const userf = await User.findOnebyId(userId);
+            if (!userf) throw new GraphQLError("User not found");
+            // Check if the user is already in the association
+            const existingMemberIndex = association.members.findIndex(
+                (member) => member.user.toString() === userf.id
+            );
 
-        /* const { error, value } = schema.validate(skillsToAdd);
-        if (error) { return new GraphQLError(error.message); }; */
-        const association = await dataSources.AssociationApi.findOneAssociationandPopulateMembers(id);
-
-        if (!association) throw new GraphQLError("User not found");
-        return association;
-        /*
-        value.forEach((skillToAdd) => {
-            const existingSkill = user.skills.find((s) => {
-                return s.skill._id.toString() === skillToAdd.skill.toString();
-            });
-
-            if (existingSkill) {
-                throw new GraphQLError(`${existingSkill.skill.name} already exists`);
+            if (existingMemberIndex === -1) {
+                // Add the user to the association
+                association.members.push({ user: userId });
+            } else {
+                throw new GraphQLError("User already exist");
             }
-            user.skills.push({
-                skill: skillToAdd.skill,
-                level: skillToAdd.level,
-                verified: skillToAdd.verified,
-                last_modified: Date.now()
-            });
         }
-        ); */
-        /*
-        const updated_user = await user.save();
-        if (!updated_user) throw new GraphQLError("Failed to add skill");
-        const returned_user = await dataSources.userAPI.findOneUserandPopulateSkills(id);
-        if (!returned_user) throw new GraphQLError("Failed to get user skill");
-        return returned_user; */
-    }
-    /*
-    addMember: async (_, { ida, idm }, { dataSources, req }) => {
-        const Association = dataSources.associationAPI;
 
-        const user = await Association.updateAssociation(id, updateData, { new: true });
-        return user;
+        // Save the updated association to the database
+        const updated_association = await association.save();
+        return updated_association;
     },
-    updateMember: async (_, args, { dataSources, req }) => {
+    removeMember: async (_, { associationId, memberId }, { dataSources }) => {
+        if (!isValidObjectId(associationId)) throw new GraphQLError("Invalid association id");
+
         const Association = dataSources.associationAPI;
-        const { id, ...updateData } = args;
-        const user = await Association.updateAssociation(id, updateData, { new: true });
-        return user;
-    } */
+        const association = await Association.findOnebyId(associationId);
+
+        if (!association) throw new GraphQLError("Association not found");
+
+        const memberIndex = association.members.findIndex((member) => member.user.toString() === memberId);
+        if (memberIndex === -1) throw new GraphQLError("Member not found in association");
+
+        association.members.splice(memberIndex, 1);
+
+        await association.save();
+
+        return "Member removed successfully";
+    },
+    updateMemberPermissions: async (_, { id, memberId, permissions }, { dataSources }) => {
+        if (!isValidObjectId(id)) throw new GraphQLError("Invalid association id");
+
+        const Association = dataSources.associationAPI;
+        const association = await Association.findOnebyId(id);
+
+        if (!association) throw new GraphQLError("Association not found");
+
+        const memberIndex = association.members.findIndex((member) => member.user.toString() === memberId);
+
+        if (memberIndex === -1) throw new GraphQLError("Member not found in association");
+
+        association.members[memberIndex].permissions = permissions;
+
+        const updated_association = await association.save();
+        if (updated_association) { return "Member permissions updated successfully"; } else {
+            return "updating failed";
+        }
+    }
 
 };
 
