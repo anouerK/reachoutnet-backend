@@ -44,7 +44,14 @@ type Otp {
     attendees: [User]!
     created_by: User!
     last_modified: String!
+    requests:[EventRequest]
   }
+type EventRequest {
+  id: ID!
+  state: Int
+}
+
+
   type Interest{
     id: ID!
     nameInterest: String!
@@ -203,6 +210,11 @@ updateMemberPermissions(
       location: String!
       attendees: [ID]
     ): Event!
+
+    sendRequest(id:ID! userId:ID!):Event!
+    acceptRequest(id:ID! userId:ID!):Event!
+    refuseRequest(id:ID! userId:ID!):Event!
+
 
     RequestResetPassword(email: String!):Boolean!
     ResetPassword(password: String!,token: String!):Boolean!

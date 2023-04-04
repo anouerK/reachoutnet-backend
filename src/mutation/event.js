@@ -31,6 +31,60 @@ const event_mutation = {
         };
         const savedEvent = await dataSources.eventAPI.createEvent(newEvent);
         return savedEvent;
+    },
+    sendRequest: async (_, { id, userId }, { dataSources, req }) => {
+        const event = await dataSources.eventAPI.findOnebyId(id);
+        if (!event) throw new GraphQLError("Event not found");
+
+        const existingRequestIndex = event.requests.findIndex(
+            (request) => request.user === userId
+        );
+
+        if (existingRequestIndex === -1) {
+            // Add the user to the association
+            event.requests.push({ user: userId });
+        } else {
+            throw new GraphQLError("User already exist");
+        }
+
+        const updated_event = await event.save();
+        return updated_event;
+    },
+    acceptRequest: async (_, { id, userId }, { dataSources, req }) => {
+        const event = await dataSources.eventAPI.findOnebyId(id);
+        if (!event) throw new GraphQLError("Event not found");
+
+        const existingRequestIndex = event.requests.findIndex(
+            (request) => request.user === userId
+        );
+
+        if (existingRequestIndex !== -1) {
+            // Add the user to the association
+            event.requests[existingRequestIndex].state = 1;
+        } else {
+            throw new GraphQLError("User dosen't exist");
+        }
+
+        const updated_event = await event.save();
+        return updated_event;
+    },
+    refuseRequest: async (_, { id, userId }, { dataSources, req }) => {
+        const event = await dataSources.eventAPI.findOnebyId(id);
+        if (!event) throw new GraphQLError("Event not found");
+
+        const existingRequestIndex = event.requests.findIndex(
+            (request) => request.user === userId
+        );
+
+        if (existingRequestIndex !== -1) {
+            // Add the user to the association
+            event.requests[existingRequestIndex].state = 2;
+        } else {
+            throw new GraphQLError("User dosen't exist");
+        }
+
+        const updated_event = await event.save();
+        return updated_event;
     }
 };
 
