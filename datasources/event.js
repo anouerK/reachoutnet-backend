@@ -26,6 +26,16 @@ const Event = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"
     }],
+    requests: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user"
+        },
+        state: {
+            type: Number,
+            default: 0
+        }
+    }],
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
