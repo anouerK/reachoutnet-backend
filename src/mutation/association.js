@@ -46,6 +46,17 @@ const association_mutation = {
             throw new GraphQLError("Association to delete user");
         }
     },
+    verifyAssociation: async (_, { id }, { dataSources, req }) => {
+        const Association = dataSources.associationAPI;
+
+        const association = await Association.findOnebyId(id);
+        if (!association) {
+            throw new GraphQLError("Associationr not found");
+        }
+        association.verified = 1;
+        const updated_association = await association.save();
+        return updated_association;
+    },
     addMember: async (_, { id, users }, { dataSources, req }) => { // allow users to add a skill
         if (!isValidObjectId(id)) throw new GraphQLError("Invalid association id");
         const Association = dataSources.associationAPI;
