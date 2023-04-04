@@ -184,6 +184,8 @@ updateAssociation(
   phone: Int!
 ):Association!
 deleteAssociation(id:ID!):Association!
+verifyAssociation(id:ID!):Association!
+
 addMember(
   id:ID!
 users: [UserInput!]!
