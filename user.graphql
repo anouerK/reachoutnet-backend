@@ -15,6 +15,7 @@ type User  {
     is_verified: Boolean!
     has_otp:Boolean!
     skills: [Skill]
+    profile_picture: String
     activationCode: String!
   }
 
@@ -154,7 +155,7 @@ input AssociationMemberInput {
 }
 
   type Mutation {
-
+  updateUserProfilePicture(picture:String!): User!
   addAssociation(
   name: String!
   description: String!

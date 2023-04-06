@@ -51,6 +51,10 @@ class UserAPI {
     userPopulate (filed) {
         return this.model_user.populate(filed);
     }
+
+    updateUserProfilePicture (id, picture) {
+        return this.model_user.findByIdAndUpdate(id, { profile_picture: picture }, { upsert: true, new: true });
+    }
     /// / ///////// follow section /////////
 
     createFollow (follow) {
