@@ -144,6 +144,7 @@ type AssociationMember {
     findUserOtp: Otp!
     events: [Event]
     event(id: ID!): Event
+    checkRequest(id:ID!):Boolean!
    
   }
 
@@ -212,10 +213,11 @@ updateMemberPermissions(
       location: String!
       attendees: [ID]
     ): Event!
-
-    sendRequest(id:ID! userId:ID!):Event!
+   
+    sendRequest(id:ID!):Event!
     acceptRequest(id:ID! userId:ID!):Event!
     refuseRequest(id:ID! userId:ID!):Event!
+    cancelRequest(id:ID!):Event!
 
 
     RequestResetPassword(email: String!):Boolean!
