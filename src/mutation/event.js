@@ -32,17 +32,19 @@ const event_mutation = {
         const savedEvent = await dataSources.eventAPI.createEvent(newEvent);
         return savedEvent;
     },
-    sendRequest: async (_, { id, userId }, { dataSources, req }) => {
+    sendRequest: async (_, { id }, { dataSources, req }) => {
+        const user = await isauthenticated()(req);
+        const userId = user.id;
         const event = await dataSources.eventAPI.findOnebyId(id);
         if (!event) throw new GraphQLError("Event not found");
 
         const existingRequestIndex = event.requests.findIndex(
-            (request) => request.user === userId
+            (request) => request.user.toString() === userId
         );
 
         if (existingRequestIndex === -1) {
             // Add the user to the association
-            event.requests.push({ user: userId });
+            event.requests.push({ user: userId, state: 1 });
         } else {
             throw new GraphQLError("User already exist");
         }
@@ -79,6 +81,26 @@ const event_mutation = {
         if (existingRequestIndex !== -1) {
             // Add the user to the association
             event.requests[existingRequestIndex].state = 2;
+        } else {
+            throw new GraphQLError("User dosen't exist");
+        }
+
+        const updated_event = await event.save();
+        return updated_event;
+    },
+    cancelRequest: async (_, { id }, { dataSources, req }) => {
+        const user = await isauthenticated()(req);
+        const userId = user.id;
+        const event = await dataSources.eventAPI.findOnebyId(id);
+        if (!event) throw new GraphQLError("Event not found");
+
+        const existingRequestIndex = event.requests.findIndex(
+            (request) => request.user.toString() === userId
+        );
+
+        if (existingRequestIndex !== -1) {
+            // Add the user to the association
+            event.requests.splice(existingRequestIndex, 1);
         } else {
             throw new GraphQLError("User dosen't exist");
         }
