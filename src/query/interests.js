@@ -1,6 +1,7 @@
-const { GraphQLError } = require("graphql");
+/* const { GraphQLError } = require("graphql");
 const { authorize, userpermission } = require("../../middleware/userpermission");
-const { isValidObjectId } = require("mongoose");
+const { isValidObjectId } = require("mongoose"); */
+const { isauthenticated } = require("../../middleware/userpermission");
 const interest_query = {
     interestId: async (_, { id }, { dataSources, req }) => {
         const Interest = dataSources.userAPI;
@@ -17,13 +18,14 @@ const interest_query = {
         const interests = await Interest.getAllInterest();
         return interests;
     },
-    findUserInterests: async (_, { id }, { dataSources, req }) => {
-        if (!isValidObjectId(id)) throw new GraphQLError("Invalid user id");
-        await authorize(userpermission.POST_MODULE_CRUDS)(req);
+    findUserInterests: async (_, __, { dataSources, req }) => {
+        // if (!isValidObjectId(id)) throw new GraphQLError("Invalid user id");
+        // await authorize(userpermission.POST_MODULE_CRUDS)(req);
 
-        const user = await dataSources.userAPI.findOneUserandPopulateInterests(id);
+        // const user = await dataSources.userAPI.findOneUserandPopulateInterests(id);
 
-        if (!user) throw new GraphQLError("User not found");
+        // if (!user) throw new GraphQLError("User not found");
+        const user = await isauthenticated()(req);
         return user.interests;
     }
 };
