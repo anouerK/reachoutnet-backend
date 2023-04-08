@@ -6,9 +6,11 @@ const user_query = {
         const users = await dataSources.userAPI.getAllUsers();
         return users;
     },
-    usersRecommendation: async (_, { id }, { dataSources, req }) => {
+    usersRecommendation: async (_, __, { dataSources, req }) => {
         // await authorize(userpermission.VIEW_USER_MODULE)(req);
-        const result = await graphLookup(id);
+        const user = await isauthenticated()(req);
+        // console.log(user);
+        const result = await graphLookup(user._id);
 
         return result;
     },
