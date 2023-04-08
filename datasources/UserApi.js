@@ -152,6 +152,22 @@ class UserAPI {
         return this.model_interest.findOneAndUpdate(id);
     }
 
+    getInterestById (id) {
+        return this.model_interest.findById(id);
+    }
+
+    getInterestByName (nom) {
+        return this.model_interest.findOne({ name: nom });
+    }
+
+    getAllInterest () {
+        return this.model_interest.find();
+    }
+
+    findOneUserandPopulateInterests (id) {
+        return this.model_user.findById(id).populate("interests.interest");
+    }
+
     sendConfirmationEmail (email, activationCode) {
         return this.model_nodmailer.sendConfirmationEmail(email, activationCode);
     }

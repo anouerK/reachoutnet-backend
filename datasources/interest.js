@@ -8,7 +8,8 @@ const Schema = mongoose.Schema;
 mongoose.set("strictQuery", false);
 
 const Interest = new Schema({
-    id: { type: mongoose.Schema.Types.ObjectId, required: true },
-    nameInterest: { type: String, required: true }
+    // id: { type: mongoose.Schema.Types.ObjectId, required: true },
+    nameInterest: { type: String, required: true },
+    description: String
 });
 module.exports = mongoose.model("interests", Interest);
