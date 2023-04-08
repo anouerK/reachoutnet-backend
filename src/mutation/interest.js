@@ -23,13 +23,12 @@ const interest_mutation = {
                 if (interestIndex === -1) {
                     user.interests.push(interest);
                     newInterests.push(interest);
+                } else {
+                    user.interests.splice(interestIndex, 1);
+                    newInterests.splice(interestIndex, 1);
                 }
             });
-            if (newInterests.length > 0) {
-                return await user.save();
-            } else {
-                throw new Error("interests not added");
-            }
+            return await user.save();
         } catch (error) {
             return error;
         }
