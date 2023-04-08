@@ -9,16 +9,16 @@ const follow_query = {
         const follower1 = await Follow.getFollower(id1, id2);
         const followingRelation1 = await Follow.getFollowingRelation(id2, id1);
         if (follower1 && followingRelation1) {
-            console.log("User 1 and User 2 are following each other");
+            // console.log("User 1 and User 2 are following each other");
             return "Following";
         } else if (follower1 && !followingRelation1) {
-            console.log("User 1 is following User 2, but User 2 is not following User 1");
+            // console.log("User 1 is following User 2, but User 2 is not following User 1");
             return "Waiting";
         } else if (followingRelation1 && !follower1) {
-            console.log("User 2 is following User 1, but User 1 is not following User 2");
+            // console.log("User 2 is following User 1, but User 1 is not following User 2");
             return "Follow Back";
         } else {
-            console.log("User 1 and User 2 are not following each other");
+            // console.log("User 1 and User 2 are not following each other");
             return "Follow";
         }
     },
@@ -122,7 +122,7 @@ const follow_query = {
             const followingRelation = await Follow.getFollowingRelation(followingId, id);
             if (!followingRelation && !follower) {
                 if (id.localeCompare(followingId._id)) {
-                    console.log(id + " " + followingId._id);
+                    // console.log(id + " " + followingId._id);
                     NotFollowing.push(followingId);
                 }
             }

@@ -23,6 +23,7 @@ async function calculateScores (userId) {
                 last_name: 1,
                 username: 1,
                 country: 1,
+                profile_picture: 1,
                 countryScore: {
                     $cond: [
                         { $eq: ["$country", user.country] },
@@ -98,6 +99,7 @@ async function calculateScores (userId) {
                 countryScore: 1,
                 skillsScore: 1,
                 interestsScore: 1,
+                profile_picture: 1,
                 score: {
                     $add: ["$countryScore", "$skillsScore", "$interestsScore"]
                 }
@@ -118,9 +120,10 @@ async function calculateScores (userId) {
         country: user.country,
         email: user.email,
         username: user.username,
+        profile_picture: user.profile_picture,
         score: user.score
     }));
-    console.log(userList);
+    // console.log(userList);
     return userList;
 }
 

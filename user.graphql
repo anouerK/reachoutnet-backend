@@ -126,6 +126,15 @@ type AssociationMember {
   permissions: Int
 
 }
+type UserRecommendation{
+username: String
+email: String
+first_name: String
+last_name: String
+country: String
+profile_picture: String
+
+}
 
 
 
@@ -135,7 +144,7 @@ type AssociationMember {
     associationByName(name: String!): [Association]!
     findUser(value: String): [User]
     users: [User]!
-    usersRecommendation(id: ID!): [User]
+    usersRecommendation: [UserRecommendation]
     user(id: ID!): User
     userProfile(id: ID!): User
     me: User
