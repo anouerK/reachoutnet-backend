@@ -33,13 +33,13 @@ const follow_query = {
 
             if (follower && followingRelation) {
                 // followbacks.push(followingId);
-                console.log("2 users are following");
+
             } else if (follower && !followingRelation) {
                 // following.push(followingId);
-                console.log("this user only following + unfollow");
+
             } else if (followingRelation && !follower) {
                 // followed.push(followingId);
-                console.log("followback");
+
             } else {
                 // The two users are not following each other
                 console.log("no follow relation between 2 users");

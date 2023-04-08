@@ -22,12 +22,27 @@ const event_query = {
             (request) => request.user.toString() === userId
         );
         if (existingRequestIndex !== -1) {
-            console.log("true");
-            return true;
+            if (event.requests[existingRequestIndex].state === 1) {
+                return true;
+            }
         } else {
-            console.log("false");
             return false;
         }
+    },
+    GetRequests: async (_, { id }, { dataSources, req }) => {
+        const usersInRequests = [];
+        const event = await dataSources.eventAPI.findOnebyId(id);
+        if (!event) {
+            throw new Error(`Event with ID ${id} not found`);
+        }
+        for (const request of event.requests) {
+            if (request.user && request.state === 1) {
+                usersInRequests.push(request.user.toString());
+            }
+        }
+        const users = await dataSources.userAPI.getAllUsers();
+        const filteredUsers = users.filter(user => usersInRequests.includes(user.id.toString()));
+        return filteredUsers;
     }
 };
 

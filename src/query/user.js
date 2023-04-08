@@ -49,6 +49,24 @@ const user_query = {
         }
 
         return user;
+    },
+    userSkills: async (_, { __ }, { dataSources, req }) => {
+        // const users = await isauthenticated()(req);
+        const id = "641a1b478a97c4b099dfdbc5";
+        const User = dataSources.userAPI;
+        const user = await User.findOnebyId(id);
+        const skillsId = [];
+        for (const skills of user.skills) {
+            skillsId.push(skills.skill.toString());
+        }
+
+        const Skill = dataSources.userAPI;
+        const skills = await Skill.getAllSkills();
+
+        const findSkills = skills.filter(skill => skillsId.includes(skill.id.toString()));
+
+        return { findSkills, user };
     }
+
 };
 module.exports = user_query;

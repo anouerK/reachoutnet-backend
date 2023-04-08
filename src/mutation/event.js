@@ -53,16 +53,17 @@ const event_mutation = {
         return updated_event;
     },
     acceptRequest: async (_, { id, userId }, { dataSources, req }) => {
+        await isauthenticated()(req);
         const event = await dataSources.eventAPI.findOnebyId(id);
         if (!event) throw new GraphQLError("Event not found");
 
         const existingRequestIndex = event.requests.findIndex(
-            (request) => request.user === userId
+            (request) => request.user.toString() === userId
         );
 
         if (existingRequestIndex !== -1) {
             // Add the user to the association
-            event.requests[existingRequestIndex].state = 1;
+            event.requests[existingRequestIndex].state = 2;
         } else {
             throw new GraphQLError("User dosen't exist");
         }
@@ -71,16 +72,17 @@ const event_mutation = {
         return updated_event;
     },
     refuseRequest: async (_, { id, userId }, { dataSources, req }) => {
+        await isauthenticated()(req);
         const event = await dataSources.eventAPI.findOnebyId(id);
         if (!event) throw new GraphQLError("Event not found");
 
         const existingRequestIndex = event.requests.findIndex(
-            (request) => request.user === userId
+            (request) => request.user.toString() === userId
         );
 
         if (existingRequestIndex !== -1) {
             // Add the user to the association
-            event.requests[existingRequestIndex].state = 2;
+            event.requests[existingRequestIndex].state = 3;
         } else {
             throw new GraphQLError("User dosen't exist");
         }

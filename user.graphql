@@ -146,7 +146,13 @@ type AssociationMember {
     events: [Event]
     event(id: ID!): Event
     checkRequest(id:ID!):Boolean!
-   
+    GetRequests(id: ID!): [User]!
+    userSkills : userSkill
+  }
+
+  type userSkill{
+    user:User!
+    findSkills:[skill]!
   }
 
   input AddressInput {
