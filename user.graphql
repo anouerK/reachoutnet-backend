@@ -146,6 +146,7 @@ profile_picture: String
     users: [User]!
     usersRecommendation: [UserRecommendation]
     activeusers: Int
+    newusers: Int
     user(id: ID!): User
     userProfile(id: ID!): User
     me: User

@@ -126,5 +126,19 @@ async function calculateScores (userId) {
     // console.log(userList);
     return userList;
 }
+async function Newusers () {
+    const result = await User.aggregate([
+        {
+            $match: {
+                creation_date: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } // filter logs for the last month
+            }
+        }
+    ]);
+    // console.log(result);
+    return result;
+}
 
-module.exports = calculateScores;
+module.exports = {
+    calculateScores,
+    Newusers
+};
