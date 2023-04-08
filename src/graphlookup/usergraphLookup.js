@@ -118,7 +118,6 @@ async function calculateScores (userId) {
         country: user.country,
         email: user.email,
         username: user.username,
-
         score: user.score
     }));
     console.log(userList);

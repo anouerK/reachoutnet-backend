@@ -2,7 +2,7 @@ const { GraphQLError } = require("graphql");
 const { authorize, userpermission } = require("../../middleware/userpermission");
 const { isValidObjectId } = require("mongoose");
 const Joi = require("joi");
-
+const { isauthenticated } = require("../../middleware/userpermission");
 const schema = Joi.array().items(Joi.object({
     interest: Joi.string().required().custom((value, helper) => {
         if (!isValidObjectId(value)) {
@@ -14,16 +14,25 @@ const schema = Joi.array().items(Joi.object({
     verified: Joi.boolean().required()
 }));
 const interest_mutation = {
-    addInterest: async (_, { nameInterest, description }, { dataSources, req }) => {
-        // await authorize(userpermission.POST_MODULE_CRUDS)(req);
-        const Interest = dataSources.userAPI;
-        const interest = {
-            nameInterest,
-            description
-        };
-        const savedInterest = await Interest.createInterest(interest);
-
-        return savedInterest;
+    addInterest: async (_, { nameInterest }, { dataSources, req }) => {
+        try {
+            const user = await isauthenticated()(req);
+            const newInterests = [];
+            nameInterest.forEach(interest => {
+                const interestIndex = user.interests.indexOf(interest);
+                if (interestIndex === -1) {
+                    user.interests.push(interest);
+                    newInterests.push(interest);
+                }
+            });
+            if (newInterests.length > 0) {
+                return await user.save();
+            } else {
+                throw new Error("interests not added");
+            }
+        } catch (error) {
+            return error;
+        }
     },
     deleteInterest: async (_, { id }, { dataSources, req }) => {
         try {

@@ -65,6 +65,10 @@ type EventRequest {
   level: Int!
   verified: Boolean!
   }
+  type interestf{
+
+    type: String
+  }
 
 enum followTypeEnum  {
   users 
@@ -161,7 +165,7 @@ type AssociationMember {
     interestId(id: ID!): Interest!
     nameInterest(name : String!): Interest!
     interests: [Interest]!
-    findUserInterests(id: ID!): [interest]!
+    findUserInterests: [String]!
   }
 
   type userSkill{
@@ -310,10 +314,8 @@ updatePersonal(
       link: String!): Boolean!
 
     addInterest(
-      id: ID!
-      nameInterest: String!
-      description: String!
-      ): Interest!
+      nameInterest: [String!]
+      ): interestf!
     deleteInterest(id: ID!): Interest
     updateInterest(
       id: ID!
