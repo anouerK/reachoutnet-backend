@@ -11,12 +11,14 @@ const event_query = require("./query/event");
 const event_mutation = require("./mutation/event");
 const association_query = require("./query/association");
 const association_mutation = require("./mutation/association");
+const interest_query = require("./query/interests");
 
 const resolvers = {
     Query: {
         ...follow_query,
         ...skill_query,
         ...user_query,
+        ...interest_query,
         ...otp_query,
         ...event_query,
         ...association_query
