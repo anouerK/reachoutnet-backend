@@ -187,7 +187,7 @@ const user_mutation = {
                 });
                 res.on("end", () => {
                     const parsedData = JSON.parse(data);
-                    console.log(parsedData);
+                    // console.log(parsedData);
                     resolve(parsedData);
                 });
             });
@@ -295,7 +295,7 @@ const user_mutation = {
         if (!updated_user) { return new GraphQLError("Failed to update user"); }
         return true;
     },
-    SignUPInGmail: async (_, { username, first_name, last_name, email, provider }, { dataSources, req }) => {
+    SignUPInGmail: async (_, { username, first_name, last_name, email, provider, image }, { dataSources, req }) => {
         try {
             const User = dataSources.userAPI;
             const user = await User.findOne({ email });
@@ -307,7 +307,8 @@ const user_mutation = {
                     email,
                     permissions: 0,
                     is_verified: true,
-                    provider
+                    provider,
+                    profile_picture: image
                 };
 
                 const user = await User.createUser(userN);

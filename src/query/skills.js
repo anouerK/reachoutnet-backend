@@ -1,5 +1,5 @@
 const { GraphQLError } = require("graphql");
-const { authorize, userpermission } = require("../../middleware/userpermission");
+const { isauthenticated } = require("../../middleware/userpermission");
 const { isValidObjectId } = require("mongoose");
 const skill_query = {
     skillId: async (_, { id }, { dataSources, req }) => {
@@ -19,8 +19,8 @@ const skill_query = {
     },
     findUserSkills: async (_, { id }, { dataSources, req }) => {
         if (!isValidObjectId(id)) throw new GraphQLError("Invalid user id");
-        await authorize(userpermission.POST_MODULE_CRUDS)(req);
-
+        // await authorize(userpermission.POST_MODULE_CRUDS)(req);
+        await isauthenticated()(req);
         const user = await dataSources.userAPI.findOneUserandPopulateSkills(id);
 
         if (!user) throw new GraphQLError("User not found");

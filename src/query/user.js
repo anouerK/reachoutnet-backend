@@ -1,9 +1,16 @@
 const { isauthenticated, userpermission, authorize } = require("../../middleware/userpermission");
+const graphLookup = require("../graphlookup/usergraphLookup");
 const user_query = {
     users: async (_, __, { dataSources, req }) => {
         await authorize(userpermission.VIEW_USER_MODULE)(req);
         const users = await dataSources.userAPI.getAllUsers();
         return users;
+    },
+    usersRecommendation: async (_, { id }, { dataSources, req }) => {
+        // await authorize(userpermission.VIEW_USER_MODULE)(req);
+        const result = await graphLookup(id);
+
+        return result;
     },
 
     user: async (_, { id }, { dataSources, req }) => {

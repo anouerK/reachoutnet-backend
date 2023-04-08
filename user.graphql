@@ -59,6 +59,13 @@ type EventRequest {
     description: String!  
   }
 
+  type interest {
+  id: ID!
+  interest: interest!
+  level: Int!
+  verified: Boolean!
+  }
+
 enum followTypeEnum  {
   users 
   associations
@@ -124,6 +131,7 @@ type AssociationMember {
     associationByName(name: String!): [Association]!
     findUser(value: String): [User]
     users: [User]!
+    usersRecommendation(id: ID!): [User]
     user(id: ID!): User
     userProfile(id: ID!): User
     me: User
@@ -146,14 +154,24 @@ type AssociationMember {
     events: [Event]
     event(id: ID!): Event
     checkRequest(id:ID!):Boolean!
+
     GetRequests(id: ID!): [User]!
     userSkills : userSkill
+    
+    interestId(id: ID!): Interest!
+    nameInterest(name : String!): Interest!
+    interests: [Interest]!
+    findUserInterests(id: ID!): [interest]!
   }
 
   type userSkill{
     user:User!
     findSkills:[skill]!
-  }
+}
+
+
+
+  
 
   input AddressInput {
   street: String!
@@ -302,7 +320,9 @@ updatePersonal(
       nameInterest: String!
       description: String!
       ): Interest
-    
+    addUserInterest(id:ID!,interestsToAdd: [InterestInput!]!): User!
+      deleteUserInterest(id: ID!, interestId: ID!): User!
+
     
     addSkill(
       name: String!
@@ -328,6 +348,7 @@ updatePersonal(
           last_name: String!
           email: String!
           provider: String!
+          image: String
       ): Login!
   }
 
@@ -336,4 +357,10 @@ updatePersonal(
   level: Int,
   verified: Boolean
 }
+  input InterestInput {
+    interest: ID,
+    level: Int,
+    verified: Boolean
+}
+
 
