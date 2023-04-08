@@ -155,11 +155,23 @@ type AssociationMember {
     event(id: ID!): Event
     checkRequest(id:ID!):Boolean!
 
+    GetRequests(id: ID!): [User]!
+    userSkills : userSkill
+    
     interestId(id: ID!): Interest!
     nameInterest(name : String!): Interest!
     interests: [Interest]!
     findUserInterests(id: ID!): [interest]!
   }
+
+  type userSkill{
+    user:User!
+    findSkills:[skill]!
+}
+
+
+
+  
 
   input AddressInput {
   street: String!

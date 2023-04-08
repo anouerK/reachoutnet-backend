@@ -203,6 +203,10 @@ class UserAPI {
             ]
         });
     }
+
+    searchUserRequests (usersInRequests) {
+        return this.model_user.find({ id: { $in: usersInRequests } });
+    }
 }
 
 module.exports = UserAPI;
