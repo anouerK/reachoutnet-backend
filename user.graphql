@@ -131,6 +131,7 @@ type AssociationMember {
     associationByName(name: String!): [Association]!
     findUser(value: String): [User]
     users: [User]!
+    usersRecommendation(id: ID!): [User]
     user(id: ID!): User
     userProfile(id: ID!): User
     me: User
@@ -335,6 +336,7 @@ updatePersonal(
           last_name: String!
           email: String!
           provider: String!
+          image: String
       ): Login!
   }
 
