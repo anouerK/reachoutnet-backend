@@ -1,5 +1,5 @@
 const { GraphQLError } = require("graphql");
-const { authorize, userpermission } = require("../../middleware/userpermission");
+const { isauthenticated } = require("../../middleware/userpermission");
 const { isValidObjectId } = require("mongoose");
 const Joi = require("joi");
 
@@ -52,7 +52,8 @@ const skill_mutation = {
     },
 
     addUserSkill: async (_, { id, skillsToAdd }, { dataSources, req }) => { // allow users to add a skill
-        await authorize(userpermission.POST_MODULE_CRUDS)(req);
+        // await authorize(userpermission.POST_MODULE_CRUDS)(req);
+        await isauthenticated()(req);
         if (!isValidObjectId(id)) throw new GraphQLError("Invalid user id");
 
         const { error, value } = schema.validate(skillsToAdd);
