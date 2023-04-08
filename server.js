@@ -65,11 +65,9 @@ async function startApolloServer () {
             },
             listen: { port }
         });
-
         console.log(`🚀 🌑 Subgraph ${subgraphName} running at ${url}`);
     } catch (err) {
         console.error(err);
     }
 }
-
 startApolloServer();
