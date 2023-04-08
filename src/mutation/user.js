@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const send_email = require("../../middleware/send_email");
 const { sendConfirmationEmail } = require("../../datasources/nodemailer.config");
-
+const AuthLog = require("../../datasources/authlog");
 const user_mutation = {
 
     addUser: async (_, { username, first_name, last_name, birthdate, email, password, skills, permissions, country }, { dataSources, req }) => {
@@ -106,7 +106,7 @@ const user_mutation = {
             throw new GraphQLError("Failed to delete user");
         }
     },
-    async login (_, { email, password }, { res, dataSources }) {
+    async login (_, { email, password }, { dataSources, req }) {
         try {
             const User = dataSources.userAPI;
 
@@ -124,6 +124,12 @@ const user_mutation = {
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
                 expiresIn: "24h"
             });
+            // Retrieve the userAgent from the headers
+            const userAgent = req.headers["user-agent"];
+            // Retrieve the IP address from the request object
+            const ip = req.ip;
+            // Add the auth log to the database
+            await AuthLog.create({ user: user._id, userAgent, ip, action: "login" });
             // console.log(res);
             // res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
             return { user, token };

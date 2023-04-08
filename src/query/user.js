@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 const { isauthenticated, userpermission, authorize } = require("../../middleware/userpermission");
 const graphLookup = require("../graphlookup/usergraphLookup");
+const activeusers = require("../graphlookup/authlookup");
 const user_query = {
     users: async (_, __, { dataSources, req }) => {
         await authorize(userpermission.VIEW_USER_MODULE)(req);
@@ -13,6 +15,11 @@ const user_query = {
         const result = await graphLookup(user._id);
 
         return result;
+    },
+    activeusers: async (_, __, { dataSources, req }) => {
+        const result = await activeusers();
+
+        return result.length;
     },
 
     user: async (_, { id }, { dataSources, req }) => {

@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-
+const Schema = mongoose.Schema;
 // eslint-disable-next-line no-unused-vars
 const userpermission = require("../middleware/userpermission");
 require("dotenv").config();
 const fs = require("fs");
 const csv = require("csv-parser");
-const Schema = mongoose.Schema;
+
 mongoose.set("strictQuery", false);
 const preferences = [];
 
