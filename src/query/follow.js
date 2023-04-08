@@ -131,4 +131,3 @@ const follow_query = {
     }
 };
 module.exports = follow_query;
-
