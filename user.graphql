@@ -145,6 +145,7 @@ profile_picture: String
     findUser(value: String): [User]
     users: [User]!
     usersRecommendation: [UserRecommendation]
+    activeusers: Int
     user(id: ID!): User
     userProfile(id: ID!): User
     me: User
