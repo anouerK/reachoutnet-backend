@@ -5,7 +5,7 @@ const { isValidObjectId } = require("mongoose");
 const { isauthenticated } = require("../../middleware/userpermission");
 const Joi = require("joi");
 const otp_mutation = {
-    generateOtp: async (_, __, { dataSources, req }) => {
+    generateOtp: async (_, __, { req }) => {
         const user = await isauthenticated()(req);
 
         if (user.has_otp) { return new GraphQLError("OTP already exists for this user"); }
@@ -15,13 +15,6 @@ const otp_mutation = {
             name: "ReachOutNet",
             length: 20
         });
-
-        // const otp = await dataSources.userAPI.createOtp(user._id, base32);
-
-        // if (!otp) { return new GraphQLError("Failed to create OTP"); }
-        // const updated_user = await dataSources.userAPI.updateUser(user._id, { has_otp: true });
-
-        // if (!updated_user) { return new GraphQLError("Failed to update user"); }
         return { base32, otpauth_url };
     },
     validateOtp: async (_, { token }, { dataSources, req }) => {
