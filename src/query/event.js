@@ -23,10 +23,16 @@ const event_query = {
         );
         if (existingRequestIndex !== -1) {
             if (event.requests[existingRequestIndex].state === 1) {
-                return true;
+                return 1;
+            }
+            if (event.requests[existingRequestIndex].state === 2) {
+                return 2;
+            }
+            if (event.requests[existingRequestIndex].state === 3) {
+                return 3;
             }
         } else {
-            return false;
+            return 0;
         }
     },
     GetRequests: async (_, { id }, { dataSources, req }) => {
