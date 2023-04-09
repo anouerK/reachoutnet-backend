@@ -168,7 +168,7 @@ profile_picture: String
     findUserOtp: Otp!
     events: [Event]
     event(id: ID!): Event
-    checkRequest(id:ID!):Boolean!
+    checkRequest(id:ID!):Int!
 
     GetRequests(id: ID!): [User]!
     userSkills : userSkill
