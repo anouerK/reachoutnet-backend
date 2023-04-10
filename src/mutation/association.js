@@ -13,7 +13,7 @@ const schema = Joi.array().items(Joi.object({
     })
 }));
 const association_mutation = {
-    addAssociation: async (_, { name, description, email, members, address, phone }, { dataSources, req }) => {
+    createAssociation: async (_, { name, description, email, members, address, phone }, { dataSources, req }) => {
         const Association = dataSources.associationAPI;
         const association = {
             name,
