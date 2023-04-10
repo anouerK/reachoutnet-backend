@@ -206,13 +206,13 @@ input AssociationMemberInput {
 
   type Mutation {
   updateUserProfilePicture(picture:String!): User!
-  addAssociation(
+  createAssociation(
   name: String!
   description: String!
   email: String!
   members: [UserInput!]
   address: AddressInput!
-  phone: Int!
+  phone: String!
 ):Association!
 
 updateAssociation(
