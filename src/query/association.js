@@ -5,6 +5,11 @@ const association_query = {
         const associations = await dataSources.associationAPI.getAllAssociations();
         return associations;
     },
+    associations_byowner: async (_, __, { dataSources, req }) => {
+        const user = await isauthenticated()(req);
+        const associations = await dataSources.associationAPI.findByOwner(user._id);
+        return associations;
+    },
     association: async (_, { id }, { dataSources, req }) => {
         const Association = dataSources.associationAPI;
         const association = await Association.findOnebyId(id);
