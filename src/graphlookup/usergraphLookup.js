@@ -106,6 +106,11 @@ async function calculateScores (userId) {
             }
         },
         {
+            $match: {
+                score: { $gt: 0 }
+            }
+        },
+        {
             $sort: {
                 score: -1
             }

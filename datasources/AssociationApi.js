@@ -9,6 +9,10 @@ class AssociationApi {
         return this.model_association.find({});
     }
 
+    findByOwner (owner) {
+        return this.model_association.find({ owner });
+    }
+
     findOnebyId (id) {
         return this.model_association.findById(id);
     }

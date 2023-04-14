@@ -140,6 +140,7 @@ profile_picture: String
 
   type Query {
     associations: [Association]!
+    associations_byowner: [Association]!
     association(id: ID!): Association!
     associationByName(name: String!): [Association]!
     findUser(value: String): [User]

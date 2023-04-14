@@ -11,6 +11,11 @@ const AddressSchema = new mongoose.Schema({
 });
 
 const Association = new mongoose.Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+        required: true
+    },
     name: {
         type: String,
         required: true
@@ -21,7 +26,7 @@ const Association = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: false
     },
     Creation_date: {
         type: Date,
