@@ -110,7 +110,7 @@ enum followTypeEnum  {
   status: Int
   members: [AssociationMember]
   address: Address!
-  phone: Int!
+  phone: String!
 }
 
 type Address {
@@ -223,7 +223,7 @@ updateAssociation(
   email: String!
   members: [UserInput!]
   address: AddressInput!
-  phone: Int!
+  phone: String!
 ):Association!
 deleteAssociation(id:ID!):Association!
 verifyAssociation(id:ID!):Association!
