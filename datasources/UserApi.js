@@ -4,7 +4,6 @@ const Otp = require("./otp.js");
 const Skill = require("./skill.js");
 const interest = require("./interest.js");
 const nodemailer = require("../datasources/nodemailer.config");
-
 class UserAPI {
     constructor () {
         this.model_user = User;
@@ -132,6 +131,19 @@ class UserAPI {
 
     findOneUserandPopulateSkills (id) {
         return this.model_user.findById(id).populate("skills.skill");
+    }
+
+    findAvailableSkills (id) {
+        const user_skills = this.model_user.findById(id).populate("skills.skill");
+        const all_skills = this.model_skill.find().exec();
+        return Promise.all([user_skills, all_skills]).then(([user_skills, all_skills]) => {
+            const available_skills = all_skills.filter(skill => {
+                return !user_skills.skills.some(user_skill => {
+                    return user_skill.skill._id.toString() === skill._id.toString();
+                });
+            });
+            return available_skills;
+        });
     }
 
     /// / ///////// end Skill section /////////
