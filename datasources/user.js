@@ -52,4 +52,5 @@ const User = new Schema({
 });
 
 // db name in lowercase only
-module.exports = mongoose.model("users", User);
+const user = mongoose.model("users", User);
+module.exports = user;
