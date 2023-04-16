@@ -2,6 +2,8 @@
 const { isauthenticated, userpermission, authorize } = require("../../middleware/userpermission");
 const { calculateScores, Newusers } = require("../graphlookup/usergraphLookup");
 const activeusers = require("../graphlookup/authlookup");
+const montlyActiveUsers = require("../graphlookup/montlyActiveusers");
+const maxCount = require("../graphlookup/maxCount");
 // const newusers = require("../graphlookup/usergraphLookup");
 const user_query = {
     users: async (_, __, { dataSources, req }) => {
@@ -21,6 +23,29 @@ const user_query = {
         const result = await activeusers();
 
         return result.length;
+    },
+    montlyActiveusers: async (_, __, { dataSources, req }) => {
+        const monthNames = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ];
+        const result1 = await montlyActiveUsers();
+        const resultMax = await maxCount();
+        result1.forEach((obj) => {
+            obj.month = monthNames[Number(obj.month) - 1];
+        });
+        const result2 = resultMax[0].max_count;
+        return { result1, result2 };
     },
     newusers: async (_, __, { dataSources, req }) => {
         const result = await Newusers();
