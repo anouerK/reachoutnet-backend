@@ -65,5 +65,5 @@ const Association = new mongoose.Schema({
     }
 
 });
-
-module.exports = mongoose.model("associations", Association);
+const association = mongoose.model("associations", Association);
+module.exports = association;

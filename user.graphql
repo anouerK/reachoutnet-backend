@@ -23,8 +23,8 @@ input PostInput {
   content: String!
   attachments: [String]
   tags: [String]
-  author: ID!
-  authorType: String!
+  author: ID
+  authorType: String
   viewers: [ID]
   comments: [CommentInput]
 }
@@ -60,12 +60,38 @@ type Author {
   association: Association
 }
 type Post {
-  id: ID!
+  _id: ID!
   title: String!
   content: String!
   attachments: [String]
   tags: [String]
   author: Author!
+  viewers: [User!]
+  likes: [Like!]
+  comments: [Comment!]
+  createdAt: String!
+  updatedAt: String!
+}
+type PostViewUser {
+  _id: ID!
+  title: String!
+  content: String!
+  attachments: [String]
+  tags: [String]
+  author: User!
+  viewers: [User!]
+  likes: [Like!]
+  comments: [Comment!]
+  createdAt: String!
+  updatedAt: String!
+}
+type PostViewAssociation {
+  _id: ID!
+  title: String!
+  content: String!
+  attachments: [String]
+  tags: [String]
+  author: Association!
   viewers: [User!]
   likes: [Like!]
   comments: [Comment!]
@@ -206,7 +232,9 @@ type usersStat{
 
   type Query {
     post(id: ID!): Post
-    posts: [Post]
+    users_posts: [PostViewUser]
+    get_user_posts: [PostViewUser]
+    # associations_posts: [PostViewAssociation]
     associations: [Association]!
     associations_byowner: [Association]!
     association(id: ID!): Association!

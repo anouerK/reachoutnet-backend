@@ -24,11 +24,11 @@ const Post = new mongoose.Schema({
     authorType: {
         type: String,
         required: true,
-        enum: ["User", "Association"]
+        enum: ["users", "associations"]
     },
     viewers: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "users"
     }],
     likes: [{
         author: {
@@ -39,7 +39,7 @@ const Post = new mongoose.Schema({
         authorType: {
             type: String,
             required: true,
-            enum: ["User", "Association"]
+            enum: ["users", "associations"]
         },
         createdAt: {
             type: Date,
@@ -59,7 +59,7 @@ const Post = new mongoose.Schema({
         authorType: {
             type: String,
             required: true,
-            enum: ["User", "Association"]
+            enum: ["users", "associations"]
         },
         createdAt: {
             type: Date,
@@ -74,7 +74,7 @@ const Post = new mongoose.Schema({
             authorType: {
                 type: String,
                 required: true,
-                enum: ["User", "Association"]
+                enum: ["users", "associations"]
             },
             createdAt: {
                 type: Date,
