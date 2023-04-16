@@ -11,7 +11,6 @@ const resolvers = require("./src/index");
 const UserAPI = require("./datasources/UserApi");
 const EventAPI = require("./datasources/EventApi");
 const AssociationApi = require("./datasources/AssociationApi");
-
 const PostApi = require("./datasources/PostApi");
 
 async function startApolloServer () {
