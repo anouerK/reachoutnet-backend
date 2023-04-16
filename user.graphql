@@ -216,7 +216,7 @@ profile_picture: String
     follow(
       id2: ID!
     ): String!
-
+    findAvailbleSkills: [skill]
     skillId(id: ID!): skill!
     skillName(name : String!): skill!
     skills: [skill]!

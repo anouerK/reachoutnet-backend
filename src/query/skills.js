@@ -25,6 +25,14 @@ const skill_query = {
 
         if (!user) throw new GraphQLError("User not found");
         return user.skills;
+    },
+    findAvailbleSkills: async (_, __, { dataSources, req }) => {
+        const user = await isauthenticated()(req);
+        if (!user) throw new GraphQLError("User not found");
+        const skills = await dataSources.userAPI.findAvailableSkills(user._id);
+        if (!skills) throw new GraphQLError("couldn't find skills to add");
+        if (skills.length === 0) throw new GraphQLError("No more skills to add");
+        return skills;
     }
 };
 module.exports = skill_query;
