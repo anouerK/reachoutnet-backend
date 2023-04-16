@@ -13,11 +13,6 @@ const EventAPI = require("./datasources/EventApi");
 const AssociationApi = require("./datasources/AssociationApi");
 
 const PostApi = require("./datasources/PostApi");
-const myPlugin = {
-    // Fires whenever a GraphQL request is received from a client.
-    async requestDidStart (requestContext) {
-        // console.log("Request started! Query:\n" + requestContext.request.query);
-
 
 async function startApolloServer () {
     const server = new ApolloServer({
@@ -58,4 +53,5 @@ async function startApolloServer () {
         console.error(err);
     }
 }
+
 startApolloServer();

@@ -1,4 +1,4 @@
-name: Docker
+name: eslint
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -39,8 +39,4 @@ jobs:
 
       - name: Run ESLint
         run: npx eslint --ext .js .
-
-      # # Build the Docker image
-      # - name: Build Docker image
-      #   run: docker compose build
 
