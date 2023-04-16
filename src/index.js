@@ -12,7 +12,8 @@ const event_mutation = require("./mutation/event");
 const association_query = require("./query/association");
 const association_mutation = require("./mutation/association");
 const interest_query = require("./query/interests");
-
+const post_query = require("./query/post");
+const post_mutation = require("./mutation/post");
 const resolvers = {
     Query: {
         ...follow_query,
@@ -21,7 +22,8 @@ const resolvers = {
         ...interest_query,
         ...otp_query,
         ...event_query,
-        ...association_query
+        ...association_query,
+        ...post_query
     },
     Mutation: {
         ...otp_mutation,
@@ -30,7 +32,8 @@ const resolvers = {
         ...skill_mutation,
         ...user_mutation,
         ...event_mutation,
-        ...association_mutation
+        ...association_mutation,
+        ...post_mutation
 
     }
 };

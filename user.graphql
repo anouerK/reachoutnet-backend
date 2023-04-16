@@ -18,7 +18,60 @@ type User  {
     profile_picture: String
     activationCode: String!
   }
+input PostInput {
+  title: String!
+  content: String!
+  attachments: [String]
+  tags: [String]
+  author: ID!
+  authorType: String!
+  viewers: [ID]
+  comments: [CommentInput]
+}
+type Like {
+  id: ID!
+  author: Author!
+  createdAt: String!
+}
 
+type Comment {
+  id: ID!
+  content: String!
+  author: Author!
+  createdAt: String!
+  likes: [Like!]
+}
+
+input CommentInput {
+  content: String!
+  author: ID!
+  authorType: String!
+  likes: [LikeInput]
+}
+
+input LikeInput {
+  author: ID!
+  authorType: String!
+}
+type Author {
+  id: ID!
+  type: String!
+  user: User
+  association: Association
+}
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  attachments: [String]
+  tags: [String]
+  author: Author!
+  viewers: [User!]
+  likes: [Like!]
+  comments: [Comment!]
+  createdAt: String!
+  updatedAt: String!
+}
   type Follow {
   id: ID!
   followerId: ID!
@@ -139,6 +192,8 @@ profile_picture: String
 
 
   type Query {
+    post(id: ID!): Post
+    posts: [Post]
     associations: [Association]!
     associations_byowner: [Association]!
     association(id: ID!): Association!
@@ -206,6 +261,9 @@ input AssociationMemberInput {
 }
 
   type Mutation {
+     createPost(input: PostInput!): Post
+  updatePost(id: ID!, input: PostInput!): Post
+  deletePost(id: ID!): Post
   updateUserProfilePicture(picture:String!): User!
   createAssociation(
   name: String!
