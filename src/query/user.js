@@ -42,9 +42,13 @@ const user_query = {
         const result1 = await montlyActiveUsers();
         const resultMax = await maxCount();
         result1.forEach((obj) => {
-            obj.month = monthNames[Number(obj.month) - 1];
+            obj.months.forEach((month) => {
+                month.month = monthNames[Number(month.month) - 1];
+            });
         });
-        const result2 = resultMax[0].max_count;
+        console.log(resultMax);
+        const result2 = resultMax.max_count;
+        console.log(result2);
         return { result1, result2 };
     },
     newusers: async (_, __, { dataSources, req }) => {
