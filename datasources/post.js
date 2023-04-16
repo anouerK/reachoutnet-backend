@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+
+mongoose.set("strictQuery", false);
 const Post = new mongoose.Schema({
     title: {
         type: String,
@@ -24,6 +26,10 @@ const Post = new mongoose.Schema({
         required: true,
         enum: ["User", "Association"]
     },
+    viewers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
     likes: [{
         author: {
             type: mongoose.Schema.Types.ObjectId,
@@ -58,7 +64,23 @@ const Post = new mongoose.Schema({
         createdAt: {
             type: Date,
             default: Date.now
-        }
+        },
+        likes: [{
+            author: {
+                type: mongoose.Schema.Types.ObjectId,
+                required: true,
+                refPath: "authorType"
+            },
+            authorType: {
+                type: String,
+                required: true,
+                enum: ["User", "Association"]
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
+        }]
     }],
     createdAt: {
         type: Date,
