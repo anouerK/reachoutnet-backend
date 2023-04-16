@@ -136,6 +136,19 @@ profile_picture: String
 
 }
 
+type statsM{
+  result1:[result],
+  result2:Int
+}
+
+type result{
+ month:String,
+ users: [usersStat],
+}
+type usersStat{
+  name:String,
+  count:Int
+}
 
 
   type Query {
@@ -147,6 +160,7 @@ profile_picture: String
     users: [User]!
     usersRecommendation: [UserRecommendation]
     activeusers: Int
+    montlyActiveusers: statsM
     newusers: Int
     user(id: ID!): User
     userProfile(id: ID!): User
