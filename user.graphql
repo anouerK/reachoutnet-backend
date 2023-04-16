@@ -195,11 +195,11 @@ type statsM{
 }
 
 type result{
- month:String,
- users: [usersStat],
+name:String
+months: [usersStat],
 }
 type usersStat{
-  name:String,
+  month:String,
   count:Int
 }
 

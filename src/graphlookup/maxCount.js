@@ -96,7 +96,11 @@ async function maxCount () {
         }
     ]);
 
-    return result;
+    if (result.length === 0) {
+        return { max_count: 0 };
+    }
+
+    return result[0];
 }
 
 module.exports = maxCount;

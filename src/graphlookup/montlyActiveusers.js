@@ -16,18 +16,9 @@ async function montlyActiveUsers () {
             }
         },
         {
-            $group: {
-                _id: {
-                    user: "$user",
-                    month: { $dateToString: { format: "%Y-%m", date: "$timestamp" } }
-                },
-                count: { $sum: 1 }
-            }
-        },
-        {
             $lookup: {
                 from: "users",
-                localField: "_id.user",
+                localField: "user",
                 foreignField: "_id",
                 as: "user"
             }
@@ -36,9 +27,18 @@ async function montlyActiveUsers () {
             $unwind: "$user"
         },
         {
+            $group: {
+                _id: {
+                    name: { $concat: ["$user.first_name", " ", "$user.last_name"] },
+                    month: { $dateToString: { format: "%Y-%m", date: "$timestamp" } }
+                },
+                count: { $sum: 1 }
+            }
+        },
+        {
             $project: {
                 _id: 0,
-                name: { $concat: ["$user.first_name", " ", "$user.last_name"] },
+                name: "$_id.name",
                 month: { $substr: ["$_id.month", 6, -1] },
                 year: { $substr: ["$_id.month", 0, 4] },
                 count: 1
@@ -46,17 +46,16 @@ async function montlyActiveUsers () {
         },
         {
             $sort: {
-                "_id.month": 1,
+                month: 1,
                 count: -1
             }
         },
         {
             $group: {
-                _id: "$month",
-                year: { $first: "$year" },
-                users: {
+                _id: "$name",
+                months: {
                     $push: {
-                        name: "$name",
+                        month: "$month",
                         count: "$count"
                     }
                 }
@@ -65,19 +64,11 @@ async function montlyActiveUsers () {
         {
             $project: {
                 _id: 0,
-                month: "$_id",
-                year: 1,
-                users: { $slice: ["$users", 3] }
-            }
-        },
-        {
-            $sort: {
-                year: -1,
-                month: 1
+                name: "$_id",
+                months: 1
             }
         }
     ]);
-
     return result;
 }
 
