@@ -18,6 +18,7 @@ async function calculateScores (userId) {
         },
         {
             $project: {
+                id: 1,
                 email: 1,
                 first_name: 1,
                 last_name: 1,
@@ -91,6 +92,7 @@ async function calculateScores (userId) {
         },
         {
             $project: {
+                id: 1,
                 username: 1,
                 email: 1,
                 first_name: 1,
@@ -119,7 +121,7 @@ async function calculateScores (userId) {
     ]);
 
     const userList = result.map(user => ({
-        _id: user._id,
+        id: user._id,
         first_name: user.first_name,
         last_name: user.last_name,
         country: user.country,
