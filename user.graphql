@@ -183,6 +183,7 @@ enum followTypeEnum  {
   name: String!
   description: String!
   email: String!
+  category: String
   Creation_date: String
   updated_at: [String]
   verified: Boolean
@@ -195,7 +196,6 @@ enum followTypeEnum  {
 type Address {
   street: String!
   city: String!
-  state: String!
   country: String!
   zip: String!
 }
@@ -289,7 +289,6 @@ type usersStat{
   input AddressInput {
   street: String!
   city: String!
-  state: String!
   country: String!
   zip: String!
 }
@@ -314,6 +313,7 @@ input AssociationMemberInput {
   members: [UserInput!]
   address: AddressInput!
   phone: String!
+  category: String!
 ):Association!
 
 updateAssociation(

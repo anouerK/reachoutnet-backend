@@ -5,7 +5,6 @@ mongoose.set("strictQuery", false);
 const AddressSchema = new mongoose.Schema({
     street: { type: String, required: true },
     city: { type: String, required: true },
-    state: { type: String, required: true },
     country: { type: String, required: true },
     zip: { type: String, required: true }
 });
@@ -14,6 +13,10 @@ const Association = new mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
+        required: true
+    },
+    category: {
+        type: String,
         required: true
     },
     name: {
