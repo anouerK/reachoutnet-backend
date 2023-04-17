@@ -46,9 +46,8 @@ const user_query = {
                 month.month = monthNames[Number(month.month) - 1];
             });
         });
-        console.log(resultMax);
         const result2 = resultMax.max_count;
-        console.log(result2);
+
         return { result1, result2 };
     },
     newusers: async (_, __, { dataSources, req }) => {

@@ -13,7 +13,7 @@ const schema = Joi.array().items(Joi.object({
     })
 }));
 const association_mutation = {
-    createAssociation: async (_, { name, description, email, members, address, phone, category }, { dataSources, req }) => {
+    createAssociation: async (_, { name, description, email, members, address, phone, category, img }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         const Association = dataSources.associationAPI;
         const association = {
@@ -24,6 +24,7 @@ const association_mutation = {
             address,
             phone,
             category,
+            img,
             owner: user._id
         };
         const savedassociation = await Association.createAssociation(association);

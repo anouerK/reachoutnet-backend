@@ -19,6 +19,7 @@ const Association = new mongoose.Schema({
         type: String,
         required: true
     },
+    img: { type: String, default: null },
     name: {
         type: String,
         required: true

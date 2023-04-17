@@ -191,6 +191,7 @@ enum followTypeEnum  {
   members: [AssociationMember]
   address: Address!
   phone: String!
+  img: String
 }
 
 type Address {
@@ -212,6 +213,7 @@ first_name: String
 last_name: String
 country: String
 profile_picture: String
+id: ID!
 
 }
 
@@ -234,6 +236,7 @@ type usersStat{
     post(id: ID!): Post
     users_posts: [PostViewUser]
     get_user_posts: [PostViewUser]
+    get_user_posts_by_id(id: ID!): [PostViewUser]
     # associations_posts: [PostViewAssociation]
     associations: [Association]!
     associations_byowner: [Association]!
@@ -314,6 +317,7 @@ input AssociationMemberInput {
   address: AddressInput!
   phone: String!
   category: String!
+  img: String!
 ):Association!
 
 updateAssociation(
