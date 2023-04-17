@@ -269,7 +269,7 @@ type usersStat{
     checkRequest(id:ID!):Int!
 
     GetRequests(id: ID!): [User]!
-    userSkills : userSkill
+    userSkills(id: ID!) : userSkill
     
     interestId(id: ID!): Interest!
     nameInterest(name : String!): Interest!
@@ -278,8 +278,8 @@ type usersStat{
   }
 
   type userSkill{
-    user:User!
-    findSkills:[skill]!
+    user:User
+    findSkills:[skill]
 }
 
 

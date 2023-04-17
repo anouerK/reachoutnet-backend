@@ -46,9 +46,7 @@ const user_query = {
                 month.month = monthNames[Number(month.month) - 1];
             });
         });
-        console.log(resultMax);
         const result2 = resultMax.max_count;
-        console.log(result2);
         return { result1, result2 };
     },
     newusers: async (_, __, { dataSources, req }) => {
@@ -101,9 +99,8 @@ const user_query = {
 
         return user;
     },
-    userSkills: async (_, { __ }, { dataSources, req }) => {
+    userSkills: async (_, { id }, { dataSources, req }) => {
         // const users = await isauthenticated()(req);
-        const id = "641a1b478a97c4b099dfdbc5";
         const User = dataSources.userAPI;
         const user = await User.findOnebyId(id);
         const skillsId = [];
@@ -115,7 +112,6 @@ const user_query = {
         const skills = await Skill.getAllSkills();
 
         const findSkills = skills.filter(skill => skillsId.includes(skill.id.toString()));
-
         return { findSkills, user };
     }
 
