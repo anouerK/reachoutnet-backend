@@ -32,8 +32,7 @@ const Event = new mongoose.Schema({
             ref: "user"
         },
         state: {
-            type: Number,
-            default: 0
+            type: Number
         }
     }],
     created_by: {
