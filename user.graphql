@@ -305,6 +305,7 @@ input AssociationMemberInput {
 }
 
   type Mutation {
+    userlikepost(postId: ID!): Boolean
      createPost(input: PostInput!): Post
   updatePost(id: ID!, input: PostInput!): Post
   deletePost(id: ID!): Post

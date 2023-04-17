@@ -15,6 +15,10 @@ class PostApi {
         return this.model_post.find({});
     }
 
+    getPost (id) {
+        return this.model_post.findOne({ _id: id });
+    }
+
     createPost (Post) {
         return this.model_post.create(Post);
     }
