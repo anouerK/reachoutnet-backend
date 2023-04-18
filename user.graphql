@@ -60,6 +60,20 @@ type Author {
   user: User
   association: Association
 }
+type Messager {
+  id: ID!
+  type: String!
+  user: User
+  association: Association
+
+}
+type Message {
+  id: ID!
+  sender: Messager!
+  receiver: Messager!
+  content: String!
+  createdAt: String!
+}
 type Post {
   _id: ID!
   title: String!
@@ -234,6 +248,7 @@ type usersStat{
 
 
   type Query {
+    messages(id1: ID!,id2: ID!): [Message]
     post(id: ID!): Post
     users_posts: [PostViewUser]
     get_user_posts: [PostViewUser]
@@ -304,10 +319,17 @@ input AssociationMemberInput {
   id: String!
   permissions: Int
 }
-
-  type Mutation {
-    userlikepost(postId: ID!): Boolean
-     createPost(input: PostInput!): Post
+input MessageInput {
+  sender: ID!
+  senderType: String!
+  receiver: ID!
+  receiverType: String!
+  content: String!
+}
+type Mutation {
+  createMessage(msg: MessageInput!): Message
+  userlikepost(postId: ID!): Boolean
+  createPost(input: PostInput!): Post
   updatePost(id: ID!, input: PostInput!): Post
   deletePost(id: ID!): Post
   updateUserProfilePicture(picture:String!): User!
@@ -473,6 +495,8 @@ updatePersonal(
       ): Login!
   }
 
+
+
   input SkillInput {
   skill: ID,
   level: Int,
@@ -485,3 +509,6 @@ updatePersonal(
 }
 
 
+type Subscription {
+  messageSent(receiverId: ID!, receiverType: String!): Message!
+}

@@ -14,6 +14,10 @@ const association_mutation = require("./mutation/association");
 const interest_query = require("./query/interests");
 const post_query = require("./query/post");
 const post_mutation = require("./mutation/post");
+const message_query = require("./query/message");
+const message_mutation = require("./mutation/message");
+const message_subscription = require("./subscription/message");
+const message_message = require("./message/message");
 const resolvers = {
     Query: {
         ...follow_query,
@@ -23,7 +27,8 @@ const resolvers = {
         ...otp_query,
         ...event_query,
         ...association_query,
-        ...post_query
+        ...post_query,
+        ...message_query
     },
     Mutation: {
         ...otp_mutation,
@@ -33,8 +38,15 @@ const resolvers = {
         ...user_mutation,
         ...event_mutation,
         ...association_mutation,
-        ...post_mutation
+        ...post_mutation,
+        ...message_mutation
 
+    },
+    Subscription: {
+        ...message_subscription
+    },
+    Message: {
+        ...message_message
     }
 };
 

@@ -20,7 +20,7 @@ const post_query = {
         if (!user) { throw new GraphQLError("User Not FOUND."); }
 
         const posts = await dataSources.postAPI.findPostsbyAuthor("users", id);
-        console.log(posts);
+        // console.log(posts);
         return posts;
     },
     post: async (_, { id }, { dataSources, req }) => {
