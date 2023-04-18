@@ -30,6 +30,7 @@ const User = new Schema({
     is_verified: { type: Boolean, default: 0 },
     banned: { type: Boolean, default: 0 },
     profile_picture: { type: String, default: null },
+    profile_cover_picture: { type: String, default: null },
     has_otp: { type: Boolean, default: false },
     skills: [{
         skill: { type: mongoose.Schema.Types.ObjectId, ref: "skill", required: true },

@@ -354,6 +354,22 @@ const user_mutation = {
         if (!updated_picture) { throw new GraphQLError("Failed to update user profile image"); }
 
         return updated_picture;
+    },
+    updateUserProfileCoverPicture: async (_, { picture }, { dataSources, req }) => {
+        const user = await isauthenticated()(req);
+        const joischema = Joi.object({
+            picture: Joi.string().required()
+        });
+
+        const { error, value } = joischema.validate({ picture });
+
+        if (error) { return new GraphQLError(error); }
+        if (!user) { throw new GraphQLError("User not found"); }
+
+        const updated_picture = await dataSources.userAPI.updateUserProfileCoverPicture(user._id, value.picture);
+        if (!updated_picture) { throw new GraphQLError("Failed to update user profile image"); }
+
+        return updated_picture;
     }
 
 };

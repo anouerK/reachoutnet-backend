@@ -54,6 +54,10 @@ class UserAPI {
     updateUserProfilePicture (id, picture) {
         return this.model_user.findByIdAndUpdate(id, { profile_picture: picture }, { upsert: true, new: true });
     }
+
+    updateUserProfileCoverPicture (id, picture) {
+        return this.model_user.findByIdAndUpdate(id, { profile_cover_picture: picture }, { upsert: true, new: true });
+    }
     /// / ///////// follow section /////////
 
     createFollow (follow) {
