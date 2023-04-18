@@ -1,13 +1,9 @@
-// const { GraphQLError } = require("graphql");
-// const { isauthenticated } = require("../../middleware/userpermission");
-
 const message_mutation = {
-    createMessage: async (_, { msg }, { dataSources, req, wsServer }) => {
+    createMessage: async (_, { msg }, { dataSources, req, pubsub }) => {
         const Message = dataSources.messageAPI;
         // const user = await isauthenticated()(req);
         const saved_message = await Message.createMessage(msg);
-        console.log(wsServer);
-        wsServer.publish("MESSAGE_SENT", {
+        pubsub.publish("MESSAGE_CREATED", {
             messageSent: saved_message,
             receiverId: saved_message.receiverId,
             receiverType: saved_message.receiverType

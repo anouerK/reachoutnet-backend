@@ -17,7 +17,7 @@ const post_mutation = require("./mutation/post");
 const message_query = require("./query/message");
 const message_mutation = require("./mutation/message");
 const message_subscription = require("./subscription/message");
-const message_message = require("./message/message");
+// const message_message = require("./message/message");
 const resolvers = {
     Query: {
         ...follow_query,
@@ -44,10 +44,10 @@ const resolvers = {
     },
     Subscription: {
         ...message_subscription
-    },
+    }/*
     Message: {
         ...message_message
-    }
+    } */
 };
 
 module.exports = resolvers;

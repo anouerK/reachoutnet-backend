@@ -2,17 +2,18 @@
 const message_message = {
 
     sender: async (parent, __, { dataSources, req }) => {
-        if (parent.senderType === "USER") {
-            return await dataSources.userAPI.findById(parent.senderId);
+        console.log(parent.sender._id);
+        if (parent.senderType === "users") {
+            return await dataSources.userAPI.findOnebyId(parent.sender._id);
         } else {
-            return await dataSources.associationAPI.findById(parent.senderId);
+            return await dataSources.associationAPI.findById(parent.sender._id);
         }
     },
     receiver: async (parent, __, { dataSources, req }) => {
-        if (parent.receiverType === "USER") {
-            return await dataSources.userAPI.findById(parent.receiverId);
+        if (parent.receiverType === "users") {
+            return await dataSources.userAPI.findOnebyId(parent.receiver._id);
         } else {
-            return await dataSources.associationAPI.findById(parent.receiverId);
+            return await dataSources.associationAPI.findById(parent.receiver._id);
         }
     }
 

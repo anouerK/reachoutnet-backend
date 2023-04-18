@@ -1,19 +1,11 @@
+
 const message_subscription = {
 
     messageSent: {
-        subscribe: (_, { receiverId, receiverType }, { dataSources, req, pubsub }) => {
-            return pubsub.asyncIterator("MESSAGE_SENT");
-        },
-        resolve: (payload) => {
-            // Filter messages based on subscription arguments
-            const { messageSent, receiverId, receiverType } = payload;
-            if (
-                messageSent.receiverId.toString() === receiverId &&
-              messageSent.receiverType === receiverType
-            ) {
-                return messageSent;
-            }
-            return null;
+
+        subscribe: (_, __, { dataSources, req, pubsub }) => {
+            console.log("New client subscribed to MESSAGE_CREATED"); // <-- add this line
+            return pubsub.asyncIterator(["MESSAGE_CREATED"]);
         }
     }
 
