@@ -19,6 +19,24 @@ type User  {
     profile_cover_picture: String
     activationCode: String!
   }
+  type User_O  {
+    _id: ID!
+    username: String!
+    first_name: String!
+    last_name: String!
+    birthdate: String
+    country: String
+    email: String!
+    permissions: Int!
+    creation_date: String!
+    last_login: String
+    is_verified: Boolean!
+    has_otp:Boolean!
+    skills: [Skill]
+    profile_picture: String
+    profile_cover_picture: String
+    activationCode: String!
+  }
 input PostInput {
   title: String!
   content: String!
@@ -63,12 +81,12 @@ type Author {
 type Messager {
   id: ID!
   type: String!
-  user: User
+  user: User_O
   association: Association
 
 }
 type Message {
-  id: ID!
+  _id: ID!
   sender: Messager!
   receiver: Messager!
   content: String!
@@ -517,5 +535,5 @@ updatePersonal(
 
 
 type Subscription {
-  messageSent(receiverId: ID!, receiverType: String!): Message!
+  messageSent: Message
 }

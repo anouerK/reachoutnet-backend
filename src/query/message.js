@@ -6,7 +6,6 @@ const message_query = {
         // const user = isauthenticated();
 
         const messages = await dataSources.messageAPI.findMessages(id1, id2, "users", "users");
-        console.log(messages);
         return messages;
     }
 };
