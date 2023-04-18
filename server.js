@@ -1,38 +1,50 @@
 const { ApolloServer } = require("@apollo/server");
-const { startStandaloneServer } = require("@apollo/server/standalone");
-const { InMemoryLRUCache } = require("@apollo/utils.keyvaluecache");
-const { readFileSync } = require("fs");
+const { expressMiddleware } = require("@apollo/server/express4");
+const { ApolloServerPluginDrainHttpServer } = require("@apollo/server/plugin/drainHttpServer");
+const express = require("express");
+// const http = require("http");
 const gql = require("graphql-tag");
-const mongoose = require("mongoose");
-const WebSocket = require("ws"); // import the ws library
-require("dotenv").config();
-
+const bodyParser = require("body-parser");
+const { readFileSync } = require("fs");
 const typeDefs = gql(readFileSync("./user.graphql", { encoding: "utf-8" }));
 const resolvers = require("./src/index");
+const mongoose = require("mongoose");
+const cors = require("cors");
 const UserAPI = require("./datasources/UserApi");
 const MessageAPI = require("./datasources/messageApi");
 const EventAPI = require("./datasources/EventApi");
 const AssociationApi = require("./datasources/AssociationApi");
 const PostApi = require("./datasources/PostApi");
+
 const { createServer } = require("http");
-const { ApolloServerPluginDrainHttpServer } = require("@apollo/server/plugin/drainHttpServer");
-const express = require("express");
-const app = express();
-const { useServer } = require("graphql-ws/lib/use/ws");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
-const { PubSub } = require("graphql-subscriptions");
-async function startApolloServer () {
+const WebSocket = require("ws");
+const { useServer } = require("graphql-ws/lib/use/ws");
+// Required logic for integrating with Express
+async function startServer () {
+    const app = express();
     const httpServer = createServer(app);
-    // const schema = new ApolloServer({ typeDefs, resolvers }).schema;
+    // Our httpServer handles incoming requests to our Express app.
+    // Below, we tell Apollo Server to "drain" this httpServer,
+    // enabling our servers to shut down gracefully.
+    // const httpServer = http.createServer(app);
     const schema = makeExecutableSchema({ typeDefs, resolvers });
-    const pubsub = new PubSub();
-    // start the WebSocket server
-    const wsServer = new WebSocket.Server({ port: 4002 });
+    // Creating the WebSocket server
+    const wsServer = new WebSocket.Server({ server: httpServer });
+
+    // Hand in the schema we just created and have the
+    // WebSocketServer start listening.
     const serverCleanup = useServer({ schema }, wsServer);
+    mongoose.connect(process.env.MONGO_URI)
+        .then(() => {
+            console.log("MongoDB connected!");
+        })
+        .catch(err => console.log(err));
+    // Same ApolloServer initialization as before, plus the drain plugin
+    // for our httpServer.
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        cache: new InMemoryLRUCache(),
         plugins: [
             // Proper shutdown for the HTTP server.
             ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -53,32 +65,18 @@ async function startApolloServer () {
             Credentials: true
         }
     });
-    console.log("WebSocket server started on port 4002");
+    // Ensure we wait for our server to start
+    await server.start();
 
-    wsServer.on("connection", (socket) => {
-        console.log("WebSocket client connected");
-
-        socket.on("message", (data) => {
-            console.log("Received WebSocket message:", data);
-            // handle incoming messages from clients
-        });
-
-        socket.on("close", () => {
-            console.log("WebSocket client disconnected");
-            // handle client disconnection
-        });
-    });
-
-    mongoose.connect(process.env.MONGO_URI)
-        .then(() => {
-            console.log("MongoDB connected!");
-        })
-        .catch(err => console.log(err));
-    const port = 4001;
-    const subgraphName = "user";
-
-    try {
-        const { url } = await startStandaloneServer(server, {
+    // Set up our Express middleware to handle CORS, body parsing,
+    // and our expressMiddleware function.
+    app.use(
+        "/",
+        cors(),
+        bodyParser.json(),
+        // expressMiddleware accepts the same arguments:
+        // an Apollo Server instance and optional configuration options
+        expressMiddleware(server, {
             context: async ({ req }) => {
                 return {
                     dataSources: {
@@ -88,17 +86,15 @@ async function startApolloServer () {
                         postAPI: new PostApi(),
                         messageAPI: new MessageAPI()
                     },
-                    req,
-                    pubsub,
-                    wsServer // add the WebSocket server instance to the Apollo server context
+                    req
                 };
-            },
-            listen: { port }
-        });
-        console.log(`🚀 🌑 Subgraph ${subgraphName} running at ${url}`);
-    } catch (err) {
-        console.error(err);
-    }
+            }
+        })
+    );
+
+    // Modified server startup
+    await new Promise((resolve) => httpServer.listen({ port: 4001 }, resolve));
+    console.log("🚀 Server ready at http://localhost:4001/");
 }
 
-startApolloServer();
+startServer();
