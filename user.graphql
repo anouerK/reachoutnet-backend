@@ -16,6 +16,7 @@ type User  {
     has_otp:Boolean!
     skills: [Skill]
     profile_picture: String
+    profile_cover_picture: String
     activationCode: String!
   }
 input PostInput {
@@ -310,6 +311,7 @@ input AssociationMemberInput {
   updatePost(id: ID!, input: PostInput!): Post
   deletePost(id: ID!): Post
   updateUserProfilePicture(picture:String!): User!
+  updateUserProfileCoverPicture(picture:String!): User!
   createAssociation(
   name: String!
   description: String!
