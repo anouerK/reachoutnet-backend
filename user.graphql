@@ -270,7 +270,11 @@ type usersStat{
   month:String,
   count:Int
 }
-
+ 
+ type ResultFind{
+  users:[User],
+  associations:[Association]
+ }
 
   type Query {
     messages(id1: ID!,id2: ID!): [MessageViewUser]
@@ -283,7 +287,7 @@ type usersStat{
     associations_byowner: [Association]!
     association(id: ID!): Association!
     associationByName(name: String!): [Association]!
-    findUser(value: String): [User]
+    findUser(value: String): ResultFind
     users: [User]!
     usersRecommendation: [UserRecommendation]
     activeusers: Int
