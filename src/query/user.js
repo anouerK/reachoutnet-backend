@@ -80,7 +80,13 @@ const user_query = {
     },
     findUser: async (_, { value }, { dataSources, req }) => {
         const User = dataSources.userAPI;
+        const Association = dataSources.associationAPI;
         let user = null;
+        // eslint-disable-next-line prefer-const
+        let association = null;
+
+        association = await Association.findByNameLike(value);
+
         const regex = value.split(" "); // split into array of words
         // construct regex to match any of the words
 
@@ -95,9 +101,13 @@ const user_query = {
         }
         if (value === "") {
             user = null;
+            association = null;
         }
-
-        return user;
+        const result = {
+            users: user,
+            associations: association
+        };
+        return result;
     },
     userSkills: async (_, { id }, { dataSources, req }) => {
         // const users = await isauthenticated()(req);
