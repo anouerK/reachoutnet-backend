@@ -51,7 +51,7 @@ const Association = new mongoose.Schema({
     members: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "user",
+            ref: "users",
             required: true
         },
         permissions: {
