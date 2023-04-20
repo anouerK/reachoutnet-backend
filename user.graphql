@@ -220,6 +220,7 @@ enum followTypeEnum  {
 
   type Association {
   id: ID!
+  owner: User
   name: String!
   description: String!
   email: String!
