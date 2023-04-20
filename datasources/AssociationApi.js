@@ -6,15 +6,15 @@ class AssociationApi {
     }
 
     getAllAssociations () {
-        return this.model_association.find({}).populate("owner");
+        return this.model_association.find({}).populate("owner").populate("members.user");
     }
 
     findByOwner (owner) {
-        return this.model_association.find({ owner }).populate("owner");
+        return this.model_association.find({ owner }).populate("owner").populate("members.user");
     }
 
     findOnebyId (id) {
-        return this.model_association.findById(id).populate("owner");
+        return this.model_association.findById(id).populate("owner").populate("members.user");
     }
 
     createAssociation (association) {
@@ -36,7 +36,7 @@ class AssociationApi {
     }
 
     findOneAssociationandPopulateMembers (id) {
-        return this.model_association.findById(id).populate("members.user");
+        return this.model_association.findById(id).populate("members.users");
     }
 
     findByNameLike (value) {

@@ -245,6 +245,7 @@ type Address {
 type AssociationMember {
   id: ID!
   permissions: Int
+  user: User
 
 }
 type UserRecommendation{
@@ -321,7 +322,7 @@ type usersStat{
     userSkills(id: ID!) : userSkill
     
     interestId(id: ID!): Interest!
-    nameInterest(name : String!): Interest!
+    nameInterest(name: String!): Interest!
     interests: [Interest]!
     findUserInterests: [String]!
   }
