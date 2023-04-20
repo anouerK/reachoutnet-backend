@@ -6,15 +6,15 @@ class AssociationApi {
     }
 
     getAllAssociations () {
-        return this.model_association.find({});
+        return this.model_association.find({}).populate("owner");
     }
 
     findByOwner (owner) {
-        return this.model_association.find({ owner });
+        return this.model_association.find({ owner }).populate("owner");
     }
 
     findOnebyId (id) {
-        return this.model_association.findById(id);
+        return this.model_association.findById(id).populate("owner");
     }
 
     createAssociation (association) {
