@@ -7,7 +7,11 @@ const schema = Joi.object({
     description: Joi.string().required().min(5),
     start_date: Joi.date().required(),
     end_date: Joi.date().required().greater(Joi.ref("start_date")),
-    location: Joi.string().required(),
+    location: Joi.object({
+        address: Joi.string().required(),
+        x: Joi.number().optional(),
+        y: Joi.number().optional()
+    }).required(),
     attendees: Joi.array().items(Joi.custom((value, helper) => {
         if (!isValidObjectId(value)) {
             return helper.message("Invalid participants Id");

@@ -160,11 +160,16 @@ type Otp {
     description: String!
     start_date: String!
     end_date: String!
-    location: String!
+    location: Location!
     attendees: [User]!
     created_by: User!
     last_modified: String!
     requests:[EventRequest]
+  }
+  type Location{
+    address: String!
+    x: Float
+    y: Float
   }
 type EventRequest {
   id: ID!
@@ -357,6 +362,11 @@ input MessageInput {
   receiverType: String!
   content: String!
 }
+input LocationInput{
+  address: String!
+  x: Float
+  y: Float
+}
 type Mutation {
   createMessage(msg: MessageInput!): Message
   userlikepost(postId: ID!): Boolean
@@ -411,7 +421,7 @@ updateMemberPermissions(
       description: String!
       start_date: String!
       end_date: String!
-      location: String!
+      location: LocationInput!
       attendees: [ID]
     ): Event!
    
