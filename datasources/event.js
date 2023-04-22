@@ -19,8 +19,18 @@ const Event = new mongoose.Schema({
         required: true
     },
     location: {
-        type: String,
-        required: true
+        address: {
+            type: String,
+            required: true
+        },
+        x: {
+            type: Number,
+            required: false
+        },
+        y: {
+            type: Number,
+            required: false
+        }
     },
     attendees: [{
         type: mongoose.Schema.Types.ObjectId,
