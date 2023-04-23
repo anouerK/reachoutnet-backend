@@ -50,7 +50,38 @@ const post_mutation = {
         // Save the post
         await post.save();
         return true;
+    },
+    addComment: async (_, { postId, content }, { dataSources, req }) => {
+        const Post = dataSources.postAPI;
+        const user = await isauthenticated()(req);
+        const post = await Post.getPost(postId);
+        if (!post) {
+            throw new Error("Post not found.");
+        }
+        const comment = {
+            content,
+            author: user.id,
+            authorType: "users",
+            createdAt: new Date()
+        };
+        post.comments.push(comment);
+        await post.save();
+        return post;
+    },
+    deleteCommment: async (_, { postId, commentId }, { dataSources, req }) => {
+        const Post = dataSources.postAPI;
+        await isauthenticated()(req);
+        const post = await Post.getPost(postId);
+        if (!post) {
+            throw new Error("Post not found.");
+        }
+        const comment = post.comments.id(commentId);
+        if (!comment) {
+            throw new Error("Comment not found");
+        }
+        comment.remove();
+        await post.save();
+        return post;
     }
-
 };
 module.exports = post_mutation;
