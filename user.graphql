@@ -368,6 +368,8 @@ input LocationInput{
   y: Float
 }
 type Mutation {
+  addComment(postId: ID! , content:String!): Post
+  deleteCommment(postId: ID!,commentId: ID!): Post
   createMessage(msg: MessageInput!): Message
   userlikepost(postId: ID!): Boolean
   createPost(input: PostInput!): Post
