@@ -18,6 +18,8 @@ type User  {
     profile_picture: String
     profile_cover_picture: String
     activationCode: String!
+    banned: Boolean
+  
   }
   type User_O  {
     _id: ID!
@@ -471,6 +473,9 @@ updateMemberPermissions(
       birthdate: String
       country: String
       skills: [SkillInput]
+      is_verified: Boolean
+      banned: Boolean
+      has_otp: Boolean
       permissions: Int
     ): User!
 
