@@ -33,6 +33,10 @@ const user_mutation = {
     },
     Signup: async (_, { username, first_name, last_name, birthdate, email, password, skills, country }, { dataSources, req }) => {
         const User = dataSources.userAPI;
+        const existing_user = await User.findOne({ email });
+        if (existing_user) {
+            throw new Error("Email already used");
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
         const activationCode = uuidv4(); // generate activation code
         const user = {
