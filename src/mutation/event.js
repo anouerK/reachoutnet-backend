@@ -12,6 +12,7 @@ const schema = Joi.object({
         x: Joi.number().optional(),
         y: Joi.number().optional()
     }).required(),
+    eventImage: Joi.string().optional(),
     attendees: Joi.array().items(Joi.custom((value, helper) => {
         if (!isValidObjectId(value)) {
             return helper.message("Invalid participants Id");
@@ -21,11 +22,11 @@ const schema = Joi.object({
 });
 
 const event_mutation = {
-    createEvent: async (_, { name, description, start_date, end_date, location, attendees }, { dataSources, req }) => {
+    createEvent: async (_, { name, description, start_date, end_date, location, attendees, eventImage }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         if (!user) throw new GraphQLError("Event not authenticated");
 
-        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees });
+        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees, eventImage });
 
         if (error) throw new GraphQLError(error.message);
 

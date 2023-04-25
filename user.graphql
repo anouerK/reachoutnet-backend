@@ -163,6 +163,7 @@ type Otp {
     start_date: String!
     end_date: String!
     location: Location!
+    eventImage: String
     attendees: [User]!
     created_by: User!
     last_modified: String!
@@ -426,6 +427,7 @@ updateMemberPermissions(
       start_date: String!
       end_date: String!
       location: LocationInput!
+      eventImage:String
       attendees: [ID]
     ): Event!
    
