@@ -134,18 +134,7 @@ const isauthenticated = () => {
         }
     };
 };
-/*
-const authorize = (permission) => {
-  // eslint-disable-next-line complexity
-  return async (req) => {
-    // Check if the user has the required permission
-    console.log("\n 1: "+permission);
-    if (!req.user || ((!req.user.permissions & permission)!== permission) ) {
-      throw new Error("Forbidden");
-    }
-  };
-};
-*/
+
 Object.freeze(userpermission);
 
 module.exports.userpermission = userpermission;

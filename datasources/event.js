@@ -49,6 +49,12 @@ const Event = new mongoose.Schema({
             type: Number
         }
     }],
+    skills: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "skill"
+        }
+    ],
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",

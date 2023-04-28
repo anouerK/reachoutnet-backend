@@ -49,6 +49,21 @@ const event_query = {
         const users = await dataSources.userAPI.getAllUsers();
         const filteredUsers = users.filter(user => usersInRequests.includes(user.id.toString()));
         return filteredUsers;
+    },
+    eventAvailbleSkills: async (_, { id }, { dataSources }) => {
+        if (!isValidObjectId(id)) {
+            throw new GraphQLError("Event  not found");
+        }
+        const event = await dataSources.eventAPI.findOnebyId(id);
+
+        if (!event) {
+            throw new GraphQLError("Event not found");
+        }
+        const available_skills = await dataSources.eventAPI.findAvailbleEventSkills(id);
+        if (!available_skills) {
+            throw new GraphQLError("No skills found");
+        }
+        return available_skills;
     }
 };
 

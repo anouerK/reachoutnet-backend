@@ -13,6 +13,12 @@ const schema = Joi.object({
         y: Joi.number().optional()
     }).required(),
     eventImage: Joi.string().optional(),
+    skills: Joi.array().items(Joi.custom((value, helper) => {
+        if (!isValidObjectId(value)) {
+            return helper.message("Invalid skill Id");
+        }
+        return value;
+    }).optional()),
     attendees: Joi.array().items(Joi.custom((value, helper) => {
         if (!isValidObjectId(value)) {
             return helper.message("Invalid participants Id");
@@ -20,13 +26,26 @@ const schema = Joi.object({
         return value;
     }).required())
 });
-
+const addSkillSchema = Joi.object({
+    id: Joi.string().custom((value, helper) => {
+        if (!isValidObjectId(value)) {
+            return helper.message("Invalid user Id");
+        }
+        return value;
+    }).required(),
+    skills: Joi.array().items(Joi.string().custom((value, helper) => {
+        if (!isValidObjectId(value)) {
+            return helper.message("Invalid skill Id");
+        }
+        return value;
+    }))
+});
 const event_mutation = {
-    createEvent: async (_, { name, description, start_date, end_date, location, attendees, eventImage }, { dataSources, req }) => {
+    createEvent: async (_, { name, description, start_date, end_date, location, attendees, eventImage, skills }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         if (!user) throw new GraphQLError("Event not authenticated");
 
-        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees, eventImage });
+        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees, eventImage, skills });
 
         if (error) throw new GraphQLError(error.message);
 
@@ -113,6 +132,16 @@ const event_mutation = {
         }
 
         const updated_event = await event.save();
+        return updated_event;
+    },
+    addEventSkills: async (_, { id, skills }, { dataSources, req }) => {
+        await isauthenticated()(req);
+        console.log("id", id);
+        const { error, value } = addSkillSchema.validate({ id, skills });
+        if (error) throw new GraphQLError(error.message);
+
+        const updated_event = await dataSources.eventAPI.addEventSkills(value.id, value.skills);
+        if (!updated_event) throw new GraphQLError("Event not found");
         return updated_event;
     }
 };
