@@ -82,6 +82,21 @@ const post_mutation = {
         comment.remove();
         await post.save();
         return post;
+    },
+    moderateComment: async (_, { comment }, { dataSources, req }) => {
+        try {
+            // eslint-disable-next-line no-unused-vars
+            const response = await dataSources.myAPI.createModeration(comment);
+            return "";
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    },
+    analyzeCommentGoogle: async (_, { comment }, { dataSources }) => {
+        // eslint-disable-next-line no-unused-vars
+        const valid = await dataSources.googlePerspectiveAPI.analyzeComment(comment);
+        return true;
     }
 };
 module.exports = post_mutation;

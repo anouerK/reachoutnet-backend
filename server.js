@@ -20,6 +20,9 @@ const { createServer } = require("http");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const WebSocket = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
+
+const MyAPI = require("./datasources/RESTDataSource");
+const GooglePerspectiveAPI = require("./datasources/GoogleDataSource");
 // Required logic for integrating with Express
 async function startServer () {
     const app = express();
@@ -84,7 +87,9 @@ async function startServer () {
                         eventAPI: new EventAPI(),
                         associationAPI: new AssociationApi(),
                         postAPI: new PostApi(),
-                        messageAPI: new MessageAPI()
+                        messageAPI: new MessageAPI(),
+                        myAPI: new MyAPI(),
+                        googlePerspectiveAPI: new GooglePerspectiveAPI()
                     },
                     req
                 };
