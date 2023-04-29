@@ -370,7 +370,14 @@ input LocationInput{
   x: Float
   y: Float
 }
+
+
+
+
+
 type Mutation {
+  analyzeCommentGoogle(comment: String!): Boolean
+  moderateComment(comment: String!): String
   addComment(postId: ID! , content:String!): Post
   deleteCommment(postId: ID!,commentId: ID!): Post
   createMessage(msg: MessageInput!): Message
