@@ -286,7 +286,15 @@ type usersStat{
   associations:[Association]
  }
 
+
+type authors{
+  userr:User,
+  associationn:Association,
+  comment:String
+  createdAt:String
+}
   type Query {
+    postById(Postid:ID!):[authors]!
     messages(id1: ID!,id2: ID!): [MessageViewUser]
     post(id: ID!): Post
     users_posts: [PostViewUser]
