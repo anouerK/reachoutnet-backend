@@ -29,7 +29,7 @@ class GooglePerspectiveAPI extends DataSource {
                         if (err) {
                             reject(err);
                         } else {
-                            resolve(JSON.stringify(response.data, null, 2));
+                            resolve(response);
                         }
                     });
                 })

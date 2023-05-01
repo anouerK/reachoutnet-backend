@@ -292,6 +292,7 @@ type authors{
   associationn:Association,
   comment:String
   createdAt:String
+  commentId: ID
 }
   type Query {
     postById(Postid:ID!):[authors]!
@@ -386,7 +387,7 @@ input LocationInput{
 type Mutation {
   analyzeCommentGoogle(comment: String!): Boolean
   moderateComment(comment: String!): String
-  addComment(postId: ID! , content:String!): Post
+  addComment(postId: ID! , content:String!): Boolean
   deleteCommment(postId: ID!,commentId: ID!): Post
   createMessage(msg: MessageInput!): Message
   userlikepost(postId: ID!): Boolean
