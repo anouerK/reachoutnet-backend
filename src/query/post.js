@@ -46,7 +46,8 @@ const post_query = {
                     const author = {
                         userr: user,
                         comment: comment.content,
-                        createdAt: comment.createdAt
+                        createdAt: comment.createdAt,
+                        commentId: comment.id
                     };
                     authors.push(author);
                 } else if (comment.authorType === "associations") {
@@ -54,7 +55,8 @@ const post_query = {
                     const author = {
                         associationn: association,
                         comment: comment.content,
-                        createdAt: comment.createdAt
+                        createdAt: comment.createdAt,
+                        commentId: comment.id
                     };
                     authors.push(author);
                 }

@@ -58,15 +58,23 @@ const post_mutation = {
         if (!post) {
             throw new Error("Post not found.");
         }
-        const comment = {
-            content,
-            author: user.id,
-            authorType: "users",
-            createdAt: new Date()
-        };
-        post.comments.push(comment);
-        await post.save();
-        return post;
+        // eslint-disable-next-line no-unused-vars
+        const valid = await dataSources.googlePerspectiveAPI.analyzeComment(content);
+        const toxicity = JSON.stringify(valid.data.attributeScores.TOXICITY.spanScores[0].score.value, null, 2);
+        const insult = JSON.stringify(valid.data.attributeScores.INSULT.spanScores[0].score.value, null, 2);
+        if (toxicity > 0.5 || insult > 0.5) {
+            return false;
+        } else {
+            const comment = {
+                content,
+                author: user.id,
+                authorType: "users",
+                createdAt: new Date()
+            };
+            post.comments.push(comment);
+            await post.save();
+            return true;
+        }
     },
     deleteCommment: async (_, { postId, commentId }, { dataSources, req }) => {
         const Post = dataSources.postAPI;
@@ -96,6 +104,13 @@ const post_mutation = {
     analyzeCommentGoogle: async (_, { comment }, { dataSources }) => {
         // eslint-disable-next-line no-unused-vars
         const valid = await dataSources.googlePerspectiveAPI.analyzeComment(comment);
+        const toxicity = JSON.stringify(valid.data.attributeScores.TOXICITY.spanScores[0].score.value, null, 2);
+        const insult = JSON.stringify(valid.data.attributeScores.INSULT.spanScores[0].score.value, null, 2);
+        const threat = JSON.stringify(valid.data.attributeScores.THREAT.spanScores[0].score.value, null, 2);
+        if (toxicity > 0.5 || insult > 0.5) {
+            console.log(toxicity, insult, threat);
+        }
+
         return true;
     }
 };
