@@ -10,9 +10,9 @@ const post_mutation = {
         const saved_post = await Post.createPost(input);
         return saved_post;
     },
-    deletePost: async (_, { postId }, { dataSources, req }) => {
+    deletePost: async (_, { id }, { dataSources, req }) => {
         const Post = dataSources.postAPI;
-        const post = await Post.findByIdAndDelete(postId);
+        const post = await Post.deletePost(id);
         if (!post) throw new Error("Post not found.");
         return post;
     },

@@ -95,7 +95,7 @@ type Message {
   createdAt: String!
 }
 type Post {
-  _id: ID!
+  id: ID!
   title: String!
   content: String!
   attachments: [String]
