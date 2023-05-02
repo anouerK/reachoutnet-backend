@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 const { isauthenticated, userpermission, authorize } = require("../../middleware/userpermission");
+const statsCategoryAssociation = require("../graphlookup/statsCategoryAssociation");
+
 const association_query = {
     associations: async (_, __, { dataSources, req }) => {
         const associations = await dataSources.associationAPI.getAllAssociations();
@@ -19,6 +21,10 @@ const association_query = {
         const Association = dataSources.associationAPI;
         const association = await Association.findByName(name);
         return association;
+    },
+    statsCategoryassociation: async (_, __, { dataSources, req }) => {
+        const resultat = await statsCategoryAssociation();
+        return resultat;
     }
 };
 
