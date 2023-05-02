@@ -318,6 +318,7 @@ type authors{
     users: [User]!
     usersRecommendation: [UserRecommendation]
     activeusers: Int
+    statsCategoryassociation: CategoryStats
     montlyActiveusers: statsM
     newusers: Int
     user(id: ID!): User
