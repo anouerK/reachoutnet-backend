@@ -281,6 +281,14 @@ type usersStat{
   count:Int
 }
  
+type CategoryStats {
+  category: String
+  count: Int
+}
+type resultCategory{
+  categoryStats: [CategoryStats]
+}
+
  type ResultFind{
   users:[User],
   associations:[Association]
