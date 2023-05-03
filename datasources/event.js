@@ -34,7 +34,8 @@ const Event = new mongoose.Schema({
     },
     eventImage: {
         type: String,
-        required: false
+        required: false,
+        allowNull: true
     },
     attendees: [{
         type: mongoose.Schema.Types.ObjectId,

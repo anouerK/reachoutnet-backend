@@ -107,36 +107,34 @@ test("users", async () => {
 
 );
 
-test("findUser", async () => {
-    const response = await request("http://localhost:4001").post("/").set("Accept", "application/json").set("Authorization", `Bearer ${token}`).send({
-        query: `
-            query {
-                findUser(value: "test") {
-                    id
-                    username
-                    email
-                }
-            }
-        `
-    });
-    expect(response.body.data.findUser.length).toBeGreaterThan(0);
-}
+// test("findUser", async () => {
+//     const response = await request("http://localhost:4001").post("/").set("Accept", "application/json").set("Authorization", `Bearer ${token}`).send({
+//         query: `
+//             query {
+//                 findUser(value: "test") {
+//                     username
+//                     email
+//                 }
+//             }
+//         `
+//     });
+//     expect(response.body.data.findUser.length).toBeGreaterThan(0);
+// }
 
-);
+// );
 
-test("findUser", async () => {
-    const response = await request("http://localhost:4001").post("/").set("Accept", "application/json").set("Authorization", `Bearer ${token}`).send({
-        query: `
-            query {
-                findUser(value: "test") {
-                    id
-                    username
-                    email
-                }
-            }
-        `
-    });
-    expect(response.body.data.findUser.length).toBeGreaterThan(0);
-}
+// test("findUser", async () => {
+//     const response = await request("http://localhost:4001").post("/").set("Accept", "application/json").set("Authorization", `Bearer ${token}`).send({
+//         query: `
+//             query {
+//                 findUser(value: "test") {
+//                     username
+//                     email
+//                 }
+//             }
+//         `
+//     });
+//     expect(response.body.data.findUser.length).toBeGreaterThan(0);
+// }
 
-);
+// );

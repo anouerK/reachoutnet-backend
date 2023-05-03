@@ -329,7 +329,7 @@ type usersStat{
     eventAvailbleSkills(id: ID!): [skill]
     GetRequests(id: ID!): [User]!
     userSkills(id: ID!) : userSkill
-    
+    eventSkills(id: ID!): [skill]
     interestId(id: ID!): Interest!
     nameInterest(name: String!): Interest!
     interests: [Interest]!
@@ -433,7 +433,7 @@ updateMemberPermissions(
     ): Event!
    addEventSkills(
       id: ID!
-      skills: [ID]
+      skillToAdd: [ID]
     ): Event
 
     sendRequest(id:ID!):Event!

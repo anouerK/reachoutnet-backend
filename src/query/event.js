@@ -64,6 +64,21 @@ const event_query = {
             throw new GraphQLError("No skills found");
         }
         return available_skills;
+    },
+    eventSkills: async (_, { id }, { dataSources }) => {
+        if (!isValidObjectId(id)) {
+            throw new GraphQLError("Event  not found");
+        }
+        const event = await dataSources.eventAPI.findOnebyId(id);
+
+        if (!event) {
+            throw new GraphQLError("Event not found");
+        }
+        const event_skills = await dataSources.eventAPI.findOneEventandPopulateSkills(id);
+        if (!event_skills.skills) {
+            throw new GraphQLError("No skills found");
+        }
+        return event_skills?.skills;
     }
 };
 

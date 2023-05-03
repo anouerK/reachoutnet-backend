@@ -15,24 +15,30 @@ class EventApi {
         return this.model_event.findById(id).populate({ path: "attendees", model: "users" }).populate({ path: "created_by", model: "users" });
     }
 
+    findEventSkills (id) {
+        return this.model_event.findById(id).populate({ path: "skills", model: "skill" });
+    }
+
+    findOneEventandPopulateSkills (id) {
+        return this.model_event.findById(id).populate({ path: "skills", model: "skill" });
+    }
+
     createEvent (event) {
         return this.model_event.create(event);
     }
 
     addEventSkills (id, skills) {
         const options = { new: true };
-        return this.model_event.findByIdAndUpdate(
-            id,
-            { $push: { skills: { $each: skills } } },
-            options,
-            (err, updatedEvent) => {
-                if (err) {
-                    console.error(err);
-                    throw new Error("Error adding event skills");
-                }
-                return updatedEvent;
-            }
-        );
+        try {
+            return this.model_event.findByIdAndUpdate(
+                id,
+                { $push: { skills: { $each: skills } } },
+                options
+            );
+        } catch (err) {
+            console.error(err);
+            throw new Error("Error adding event skills");
+        }
     }
 
     updateEvent (id, event) {
@@ -45,11 +51,19 @@ class EventApi {
 
     findAvailbleEventSkills (id) {
         const all_skills = this.model_skill.find().exec();
-        const event_skills = this.model_event.findById(id).populate("skills.skill").exec();
-        return Promise.all([event_skills, all_skills]).then(([event_skills, all_skills]) => {
+        const event = this.model_event.findById(id).populate("skills.skill").exec();
+
+        // eslint-disable-next-line no-unused-vars
+        const user_skills = event.then((event) => {
+            // eslint-disable-next-line array-callback-return
+            return event.skills.map((skill) => {
+                return skill.toString();
+            });
+        });
+        return Promise.all([user_skills, all_skills]).then(([user_skills, all_skills]) => {
             const available_skills = all_skills.filter(skill => {
-                return !event_skills.skills.some(event_skill => {
-                    return event_skill.skill._id.toString() === skill._id.toString();
+                return !user_skills.some(user_skill => {
+                    return user_skill === skill._id.toString();
                 });
             });
             return available_skills;

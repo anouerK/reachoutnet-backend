@@ -33,7 +33,7 @@ const addSkillSchema = Joi.object({
         }
         return value;
     }).required(),
-    skills: Joi.array().items(Joi.string().custom((value, helper) => {
+    skillToAdd: Joi.array().required().items(Joi.string().custom((value, helper) => {
         if (!isValidObjectId(value)) {
             return helper.message("Invalid skill Id");
         }
@@ -134,15 +134,32 @@ const event_mutation = {
         const updated_event = await event.save();
         return updated_event;
     },
-    addEventSkills: async (_, { id, skills }, { dataSources, req }) => {
-        await isauthenticated()(req);
-        console.log("id", id);
-        const { error, value } = addSkillSchema.validate({ id, skills });
-        if (error) throw new GraphQLError(error.message);
 
-        const updated_event = await dataSources.eventAPI.addEventSkills(value.id, value.skills);
-        if (!updated_event) throw new GraphQLError("Event not found");
-        return updated_event;
+    addEventSkills: async (_, { id, skillToAdd }, { dataSources, req }) => {
+        await isauthenticated()(req);
+        const { error, value } = addSkillSchema.validate({ id, skillToAdd });
+        if (error) return new GraphQLError(error.message);
+
+        const event = await dataSources.eventAPI.findOneEventandPopulateSkills(id);
+
+        if (!event) throw new GraphQLError("User not found");
+
+        value.skillToAdd.forEach((skillToAdd) => {
+            const existingSkill = event.skills.find((s) => {
+                return s._id.toString() === skillToAdd.toString();
+            });
+
+            if (existingSkill) {
+                throw new GraphQLError(`${existingSkill.skill.name} already exists`);
+            }
+            event.skills.push(skillToAdd);
+        });
+
+        const updated_event = await event.save();
+        if (!updated_event) throw new GraphQLError("Failed to add skill");
+        const returned_user = await dataSources.eventAPI.findOneEventandPopulateSkills(id);
+        if (!returned_user) throw new GraphQLError("Failed to get user skill");
+        return returned_user;
     }
 };
 
