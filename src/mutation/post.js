@@ -60,6 +60,18 @@ const post_mutation = {
         }
         // eslint-disable-next-line no-unused-vars
         const valid = await dataSources.googlePerspectiveAPI.analyzeComment(content);
+
+        if (valid === false) {
+            const comment = {
+                content,
+                author: user.id,
+                authorType: "users",
+                createdAt: new Date()
+            };
+            post.comments.push(comment);
+            await post.save();
+            return true;
+        }
         const toxicity = JSON.stringify(valid.data.attributeScores.TOXICITY.spanScores[0].score.value, null, 2);
         const insult = JSON.stringify(valid.data.attributeScores.INSULT.spanScores[0].score.value, null, 2);
         if (toxicity > 0.5 || insult > 0.5) {

@@ -27,7 +27,7 @@ class GooglePerspectiveAPI extends DataSource {
                         resource: analyzeRequest
                     }, (err, response) => {
                         if (err) {
-                            reject(err);
+                            resolve(false);
                         } else {
                             resolve(response);
                         }
