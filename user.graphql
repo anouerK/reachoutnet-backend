@@ -162,6 +162,7 @@ type Otp {
     description: String!
     start_date: String!
     end_date: String!
+    skills:[skill]
     location: Location!
     eventImage: String
     attendees: [User]!
@@ -343,10 +344,10 @@ type authors{
     events: [Event]
     event(id: ID!): Event
     checkRequest(id:ID!):Int!
-
+    eventAvailbleSkills(id: ID!): [skill]
     GetRequests(id: ID!): [User]!
     userSkills(id: ID!) : userSkill
-    
+    eventSkills(id: ID!): [skill]
     interestId(id: ID!): Interest!
     nameInterest(name: String!): Interest!
     interests: [Interest]!
@@ -455,12 +456,16 @@ updateMemberPermissions(
       eventImage:String
       attendees: [ID]
     ): Event!
-   
+   addEventSkills(
+      id: ID!
+      skillToAdd: [ID]
+    ): Event
+
     sendRequest(id:ID!):Event!
     acceptRequest(id:ID! userId:ID!):Event!
     refuseRequest(id:ID! userId:ID!):Event!
     cancelRequest(id:ID!):Event!
-
+    
 
     RequestResetPassword(email: String!):Boolean!
     ResetPassword(password: String!,token: String!):Boolean!

@@ -99,33 +99,3 @@ const skill_mutation = {
     }
 };
 module.exports = skill_mutation;
-
-// const User = dataSources.userAPI;
-// try {
-//     const user = await User.findOnebyId(id).populate("skills.skill");
-//     if (!user) {
-//         throw new Error("User not found");
-//     }
-//     skillsToAdd.forEach((skillToAdd) => {
-//         if (skillToAdd.skill != null) {
-//             // eslint-disable-next-line no-unused-vars
-//             const existingSkill = user.skills.find(
-//                 (skill) => skill.skill._id.toString() === skillToAdd.skill);
-
-//             /* if (existingSkill) {
-//            existingSkill.level = skillToAdd.level;
-//             existingSkill.verified = skillToAdd.verified;
-//             existingSkill.last_modified = new Date(); */
-//             if (!existingSkill) {
-//                 user.skills.push({
-//                     skill: skillToAdd.skill
-//                 });
-//             }
-//         }
-//     });
-//     await user.save();
-//     return user;
-// } catch (error) {
-//     console.error(error);
-//     throw error;
-// }

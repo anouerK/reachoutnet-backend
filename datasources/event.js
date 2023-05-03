@@ -34,7 +34,8 @@ const Event = new mongoose.Schema({
     },
     eventImage: {
         type: String,
-        required: false
+        required: false,
+        allowNull: true
     },
     attendees: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -49,6 +50,12 @@ const Event = new mongoose.Schema({
             type: Number
         }
     }],
+    skills: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "skill"
+        }
+    ],
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
