@@ -282,7 +282,7 @@ type usersStat{
 }
  
 type CategoryStats {
-  category: String
+  _id: String
   count: Int
 }
 type resultCategory{

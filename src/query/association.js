@@ -24,7 +24,7 @@ const association_query = {
     },
     statsCategoryassociation: async (_, __, { dataSources, req }) => {
         const resultat = await statsCategoryAssociation();
-        return resultat;
+        return resultat[1];
     }
 };
 

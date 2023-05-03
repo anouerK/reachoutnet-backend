@@ -6,6 +6,6 @@ async function statsCategoryAssociation () {
         { $group: { _id: "$category", count: { $sum: 1 } } },
         { $sort: { count: -1 } }
     ]);
-    return stats.map((stat) => ({ category: stat._id, count: stat.count }));
+    return stats;
 }
 module.exports = statsCategoryAssociation;
