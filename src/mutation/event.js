@@ -2,6 +2,7 @@ const { GraphQLError } = require("graphql");
 const { isValidObjectId } = require("mongoose");
 const Joi = require("joi");
 const { isauthenticated } = require("../../middleware/userpermission");
+// --> En commentaire parce qu'il y a nbr maximum 100 Sms pour cette api
 // const Twilio = require("twilio");
 
 // const accountSid = "ACc79adb5644808323ab55a74b2164a648";
@@ -50,6 +51,7 @@ const event_mutation = {
             created_by: user.id
         };
         const savedEvent = await dataSources.eventAPI.createEvent(newEvent);
+        // --> En commentaire parce qu'il y a nbr maximum 100 Sms pour cette api
         // sendSMS(name, description, start_date, end_date, location);
         return savedEvent;
     },
