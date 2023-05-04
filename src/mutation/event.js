@@ -2,6 +2,21 @@ const { GraphQLError } = require("graphql");
 const { isValidObjectId } = require("mongoose");
 const Joi = require("joi");
 const { isauthenticated } = require("../../middleware/userpermission");
+// const Twilio = require("twilio");
+
+// const accountSid = "ACc79adb5644808323ab55a74b2164a648";
+// const authToken = "99cc434de42cc7ad6e415d276489ad3f";
+// const client = new Twilio(accountSid, authToken);
+// function sendSMS (name, description, start_date, end_date, location) {
+//     client.messages
+//         .create({
+//             body: `ReachOutNet added a new event: ${name}}\nDescription: ${description}\n start Date ${start_date} \n and end date ${end_date} `,
+//             from: "+13204338754",
+//             to: "+21629868544"
+//         })
+//         .then(message => console.log(message.sid))
+//         .catch(error => console.error(error));
+// }
 const schema = Joi.object({
     name: Joi.string().required(),
     description: Joi.string().required().min(5),
@@ -13,12 +28,6 @@ const schema = Joi.object({
         y: Joi.number().optional()
     }).required(),
     eventImage: Joi.string().optional(),
-    skills: Joi.array().items(Joi.custom((value, helper) => {
-        if (!isValidObjectId(value)) {
-            return helper.message("Invalid skill Id");
-        }
-        return value;
-    }).optional()),
     attendees: Joi.array().items(Joi.custom((value, helper) => {
         if (!isValidObjectId(value)) {
             return helper.message("Invalid participants Id");
@@ -26,26 +35,13 @@ const schema = Joi.object({
         return value;
     }).required())
 });
-const addSkillSchema = Joi.object({
-    id: Joi.string().custom((value, helper) => {
-        if (!isValidObjectId(value)) {
-            return helper.message("Invalid user Id");
-        }
-        return value;
-    }).required(),
-    skillToAdd: Joi.array().required().items(Joi.string().custom((value, helper) => {
-        if (!isValidObjectId(value)) {
-            return helper.message("Invalid skill Id");
-        }
-        return value;
-    }))
-});
+
 const event_mutation = {
-    createEvent: async (_, { name, description, start_date, end_date, location, attendees, eventImage, skills }, { dataSources, req }) => {
+    createEvent: async (_, { name, description, start_date, end_date, location, attendees, eventImage }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         if (!user) throw new GraphQLError("Event not authenticated");
 
-        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees, eventImage, skills });
+        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees, eventImage });
 
         if (error) throw new GraphQLError(error.message);
 
@@ -54,6 +50,7 @@ const event_mutation = {
             created_by: user.id
         };
         const savedEvent = await dataSources.eventAPI.createEvent(newEvent);
+        // sendSMS(name, description, start_date, end_date, location);
         return savedEvent;
     },
     sendRequest: async (_, { id }, { dataSources, req }) => {
@@ -133,33 +130,6 @@ const event_mutation = {
 
         const updated_event = await event.save();
         return updated_event;
-    },
-
-    addEventSkills: async (_, { id, skillToAdd }, { dataSources, req }) => {
-        await isauthenticated()(req);
-        const { error, value } = addSkillSchema.validate({ id, skillToAdd });
-        if (error) return new GraphQLError(error.message);
-
-        const event = await dataSources.eventAPI.findOneEventandPopulateSkills(id);
-
-        if (!event) throw new GraphQLError("User not found");
-
-        value.skillToAdd.forEach((skillToAdd) => {
-            const existingSkill = event.skills.find((s) => {
-                return s._id.toString() === skillToAdd.toString();
-            });
-
-            if (existingSkill) {
-                throw new GraphQLError(`${existingSkill.skill.name} already exists`);
-            }
-            event.skills.push(skillToAdd);
-        });
-
-        const updated_event = await event.save();
-        if (!updated_event) throw new GraphQLError("Failed to add skill");
-        const returned_user = await dataSources.eventAPI.findOneEventandPopulateSkills(id);
-        if (!returned_user) throw new GraphQLError("Failed to get user skill");
-        return returned_user;
     }
 };
 
