@@ -1,4 +1,5 @@
 const User = require("../../datasources/user");
+const mongoose = require("mongoose");
 async function calculateScores (userId) {
     const user = await User.findById(userId);
     const weights = {
@@ -14,6 +15,30 @@ async function calculateScores (userId) {
         {
             $match: {
                 _id: { $ne: user._id }
+            }
+        },
+        {
+            $lookup: {
+                from: "follows",
+                let: { followingId: "$_id" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$followerId", mongoose.Types.ObjectId(userId)] },
+                                    { $eq: ["$followingId", "$$followingId"] }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                as: "followed"
+            }
+        },
+        {
+            $match: {
+                followed: { $size: 0 }
             }
         },
         {
