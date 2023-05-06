@@ -430,7 +430,7 @@ deleteAssociation(id:ID!):Association!
 verifyAssociation(id:ID!):Association!
 
 addMember(
-  id:ID!
+associationId:ID!
 users: [UserInput!]!
 ):Association!
 removeMember(
