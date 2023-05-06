@@ -61,11 +61,11 @@ const association_mutation = {
         const updated_association = await association.save();
         return updated_association;
     },
-    addMember: async (_, { id, users }, { dataSources, req }) => { // allow users to add a skill
-        if (!isValidObjectId(id)) throw new GraphQLError("Invalid association id");
+    addMember: async (_, { associationId, users }, { dataSources, req }) => { // allow users to add a skill
+        if (!isValidObjectId(associationId)) throw new GraphQLError("Invalid association id");
         const Association = dataSources.associationAPI;
         const User = dataSources.userAPI;
-        const association = await Association.findOnebyId(id);
+        const association = await Association.findOnebyId(associationId);
         if (!association) throw new GraphQLError("Association not found");
         for (let i = 0; i < users.length; i++) {
             const userId = users[i].id;
@@ -73,7 +73,8 @@ const association_mutation = {
             if (!userf) throw new GraphQLError("User not found");
             // Check if the user is already in the association
             const existingMemberIndex = association.members.findIndex(
-                (member) => member.user.toString() === userf.id
+                (member) => member.user.id === userId
+                // member.user._id === userf._id
             );
 
             if (existingMemberIndex === -1) {
@@ -96,7 +97,7 @@ const association_mutation = {
 
         if (!association) throw new GraphQLError("Association not found");
 
-        const memberIndex = association.members.findIndex((member) => member.user.toString() === memberId);
+        const memberIndex = association.members.findIndex((member) => member.user.id === memberId);
         if (memberIndex === -1) throw new GraphQLError("Member not found in association");
 
         association.members.splice(memberIndex, 1);
