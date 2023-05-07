@@ -346,6 +346,7 @@ type authors{
     checkRequest(id:ID!):Int!
     eventAvailbleSkills(id: ID!): [skill]
     GetRequests(id: ID!): [User]!
+    GetEventPart(id: ID!): [UserWithSkills]
     userSkills(id: ID!) : userSkill
     eventSkills(id: ID!): [skill]
     interestId(id: ID!): Interest!
@@ -353,6 +354,11 @@ type authors{
     interests: [Interest]!
     findUserInterests: [String]!
   }
+
+ type UserWithSkills{
+  user : User
+  skillss: [skill]
+ }
 
   type userSkill{
     user:User

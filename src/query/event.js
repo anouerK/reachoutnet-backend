@@ -50,6 +50,33 @@ const event_query = {
         const filteredUsers = users.filter(user => usersInRequests.includes(user.id.toString()));
         return filteredUsers;
     },
+    GetEventPart: async (_, { id }, { dataSources, req }) => {
+        const usersInRequests = [];
+        const event = await dataSources.eventAPI.findOnebyId(id);
+        if (!event) {
+            throw new Error(`Event with ID ${id} not found`);
+        }
+        for (const request of event.requests) {
+            if (request.user && request.state === 2) {
+                usersInRequests.push(request.user.toString());
+            }
+        }
+        const users = await dataSources.userAPI.getAllUsers();
+        const filteredUsers = users.filter(user => usersInRequests.includes(user.id.toString()));
+        const skillss = [];
+        const usersWithSkills = [];
+        for (const user of filteredUsers) {
+            const skillsId = user.skills.map(skill => skill.skill.toString());
+            const skills = await dataSources.userAPI.getSkillById(skillsId);
+            skillss.push(skills);
+            usersWithSkills.push({
+                user,
+                skillss
+            });
+        }
+
+        return usersWithSkills;
+    },
     eventAvailbleSkills: async (_, { id }, { dataSources }) => {
         if (!isValidObjectId(id)) {
             throw new GraphQLError("Event  not found");
