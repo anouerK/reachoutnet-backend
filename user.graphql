@@ -477,7 +477,7 @@ updateMemberPermissions(
       eventImage:String
       attendees: [ID]
     ): Event!
-   addEventSkills(
+   addEventSkill(
       id: ID!
       skillToAdd: [ID]
     ): Event

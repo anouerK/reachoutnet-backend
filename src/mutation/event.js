@@ -55,6 +55,10 @@ const event_mutation = {
         // sendSMS(name, description, start_date, end_date, location);
         return savedEvent;
     },
+    addEventSkill: async (_, { id, skillToAdd }, { dataSources, req }) => {
+        await isauthenticated()(req);
+        return dataSources.eventAPI.addEventSkills(id, skillToAdd);
+    },
     sendRequest: async (_, { id }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         const userId = user.id;

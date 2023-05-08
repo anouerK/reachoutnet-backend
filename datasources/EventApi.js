@@ -27,12 +27,13 @@ class EventApi {
         return this.model_event.create(event);
     }
 
-    addEventSkills (id, skills) {
+    addEventSkills (id, skillToAdd) {
         const options = { new: true };
+
         try {
             return this.model_event.findByIdAndUpdate(
                 id,
-                { $push: { skills: { $each: skills } } },
+                { $push: { skills: { $each: skillToAdd } } },
                 options
             );
         } catch (err) {
