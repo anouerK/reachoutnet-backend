@@ -120,6 +120,19 @@ type PostViewUser {
   createdAt: String!
   updatedAt: String!
 }
+type PostViewAssociation {
+  _id: ID!
+  title: String!
+  content: String!
+  attachments: [String]
+  tags: [String]
+  author: Association!
+  viewers: [User!]
+  likes: [Like!]
+  comments: [Comment!]
+  createdAt: String!
+  updatedAt: String!
+}
 type MessageViewUser {
   _id: ID
   content: String
@@ -310,6 +323,7 @@ type authors{
     users_posts: [PostViewUser]
     get_user_posts: [PostViewUser]
     get_user_posts_by_id(id: ID!): [PostViewUser]
+    get_association_posts_by_id(id: ID!): [PostViewAssociation]
     # associations_posts: [PostViewAssociation]
     associations: [Association]!
     associations_byowner: [Association]!
@@ -408,6 +422,7 @@ type Mutation {
   createMessage(msg: MessageInput!): Message
   userlikepost(postId: ID!): Boolean
   createPost(input: PostInput!): Post
+  createPostAssociation(input: PostInput!): Post
   updatePost(id: ID!, input: PostInput!): Post
   deletePost(id: ID!): Post
   updateUserProfilePicture(picture:String!): User!
