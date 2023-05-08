@@ -26,6 +26,17 @@ const post_query = {
         // console.log(posts);
         return posts;
     },
+    get_association_posts_by_id: async (_, { id }, { dataSources, req }) => {
+        // await isauthenticated()(req);
+
+        const association = await dataSources.associationAPI.findOnebyId(id);
+
+        if (!association) { throw new GraphQLError("Association Not FOUND."); }
+
+        const posts = await dataSources.postAPI.findPostsbyAuthor("associations", id);
+        // console.log(posts);
+        return posts;
+    },
     post: async (_, { id }, { dataSources, req }) => {
         const post = await dataSources.postAPI.findOnebyId(id);
         return post;

@@ -1,12 +1,24 @@
+/* eslint-disable no-unused-vars */
 // const { GraphQLError } = require("graphql");
 const { isauthenticated } = require("../../middleware/userpermission");
-
+const { GraphQLError } = require("graphql");
 const post_mutation = {
     createPost: async (_, { input }, { dataSources, req }) => {
         const Post = dataSources.postAPI;
         const user = await isauthenticated()(req);
         input.authorType = "users";
         input.author = user.id;
+        const saved_post = await Post.createPost(input);
+        return saved_post;
+    },
+    createPostAssociation: async (_, { input }, { dataSources, req }) => {
+        const Post = dataSources.postAPI;
+        // const user = await isauthenticated()(req);
+        input.authorType = "associations";
+        const association = await dataSources.associationAPI.findOnebyId(input.author);
+        if (!association) {
+            throw new GraphQLError("Association not found");
+        }
         const saved_post = await Post.createPost(input);
         return saved_post;
     },
