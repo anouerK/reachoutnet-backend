@@ -349,6 +349,9 @@ type authors{
     follow(
       id2: ID!
     ): String!
+    followAssociation(
+      id2: ID!
+    ): String!
     findAvailbleSkills: [skill]
     skillId(id: ID!): skill!
     skillName(name : String!): skill!

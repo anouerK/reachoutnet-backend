@@ -8,6 +8,7 @@ const follow_query = {
         const Follow = dataSources.userAPI;
         const follower1 = await Follow.getFollower(id1, id2);
         const followingRelation1 = await Follow.getFollowingRelation(id2, id1);
+
         if (follower1 && followingRelation1) {
             // console.log("User 1 and User 2 are following each other");
             return "Following";
@@ -17,6 +18,20 @@ const follow_query = {
         } else if (followingRelation1 && !follower1) {
             // console.log("User 2 is following User 1, but User 1 is not following User 2");
             return "Follow Back";
+        } else {
+            // console.log("User 1 and User 2 are not following each other");
+            return "Follow";
+        }
+    },
+    followAssociation: async (_, { id2 }, { dataSources, req }) => {
+        const user = await isauthenticated()(req);
+        const id1 = user.id;
+        const Follow = dataSources.userAPI;
+        const follower1 = await Follow.getFollower(id1, id2);
+
+        if (follower1) {
+            // console.log("User 1 and User 2 are following each other");
+            return "Following";
         } else {
             // console.log("User 1 and User 2 are not following each other");
             return "Follow";

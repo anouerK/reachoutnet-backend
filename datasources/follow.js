@@ -22,7 +22,7 @@ const Follow = new Schema({
     followerType: {
         type: String,
         required: true,
-        enum: ["users", "associations"]
+        enum: ["users", ""]
     },
 
     followingType: {
