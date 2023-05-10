@@ -12,6 +12,12 @@ const event_query = {
 
         return event;
     },
+    eventassociation: async (_, { associationId }, { dataSources }) => {
+        if (!isValidObjectId(associationId)) { throw new GraphQLError("Invalid Object Id"); }
+        const event = await dataSources.eventAPI.getAllEventsbyassociation(associationId);
+
+        return event;
+    },
     checkRequest: async (_, { id }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         const userId = user.id;

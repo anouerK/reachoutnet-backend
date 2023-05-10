@@ -11,9 +11,14 @@ class EventApi {
         return this.model_event.find({});
     }
 
+    getAllEventsbyassociation (association) {
+        return this.model_event.find({ association });
+    }
+
     findOnebyId (id) {
         return this.model_event.findById(id).populate({ path: "attendees", model: "users" }).populate({ path: "created_by", model: "users" });
     }
+    // { owner }
 
     findEventSkills (id) {
         return this.model_event.findById(id).populate({ path: "skills", model: "skill" });
