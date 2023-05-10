@@ -360,6 +360,7 @@ type authors{
     findUserOtp: Otp!
     events: [Event]
     event(id: ID!): Event
+    eventassociation(associationId: ID!): [Event]
     checkRequest(id:ID!):Int!
     eventAvailbleSkills(id: ID!): [skill]
     GetRequests(id: ID!): [User]!
@@ -477,6 +478,7 @@ updateMemberPermissions(
       start_date: String!
       end_date: String!
       location: LocationInput!
+      associationId:ID!
       eventImage:String
       attendees: [ID]
     ): Event!

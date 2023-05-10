@@ -34,15 +34,24 @@ const schema = Joi.object({
             return helper.message("Invalid participants Id");
         }
         return value;
-    }).required())
+    }).required()),
+    association: Joi.string().required().custom((value, helper) => {
+        if (!isValidObjectId(value)) {
+            return helper.message("Invalid association Id");
+        }
+        return value;
+    }).messages({
+        "any.required": "Association is required",
+        "string.empty": "Association is required"
+    })
 });
 
 const event_mutation = {
-    createEvent: async (_, { name, description, start_date, end_date, location, attendees, eventImage }, { dataSources, req }) => {
+    createEvent: async (_, { name, description, associationId, start_date, end_date, location, attendees, eventImage }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
-        if (!user) throw new GraphQLError("Event not authenticated");
+        if (!user) throw new GraphQLError("not authenticated");
 
-        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees, eventImage });
+        const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees, eventImage, association: associationId });
 
         if (error) throw new GraphQLError(error.message);
 
@@ -102,7 +111,6 @@ const event_mutation = {
         await isauthenticated()(req);
         const event = await dataSources.eventAPI.findOnebyId(id);
         if (!event) throw new GraphQLError("Event not found");
-
         const existingRequestIndex = event.requests.findIndex(
             (request) => request.user.toString() === userId
         );
@@ -111,7 +119,7 @@ const event_mutation = {
             // Add the user to the association
             event.requests[existingRequestIndex].state = 3;
         } else {
-            throw new GraphQLError("User dosen't exist");
+            throw new GraphQLError("Event dosen't exist");
         }
 
         const updated_event = await event.save();
