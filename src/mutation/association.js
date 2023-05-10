@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 const { GraphQLError } = require("graphql");
-const { isauthenticated } = require("../../middleware/userpermission");
+const { isauthenticated, authorize_association } = require("../../middleware/userpermission");
 const { isValidObjectId } = require("mongoose");
+const { association_permission } = require("../../middleware/userpermission");
 const Joi = require("joi");
 const schema = Joi.array().items(Joi.object({
     id: Joi.string().required().custom((value, helper) => {
@@ -33,13 +34,14 @@ const association_mutation = {
     updateAssociation: async (_, args, { dataSources, req }) => {
         const Association = dataSources.associationAPI;
         const { id, ...updateData } = args;
+        await authorize_association(association_permission.ASSOCIATION_MANAGEMENT, id)(req);
         const user = await Association.updateAssociation(id, updateData, { new: true });
         return user;
     },
     deleteAssociation: async (_, { id }, { dataSources, req }) => {
         try {
             const Association = dataSources.associationAPI;
-
+            await authorize_association(association_permission.ASSOCIATION_MANAGEMENT, id)(req);
             const association = await Association.deleteAssociation(id);
             if (!association) {
                 throw new GraphQLError("Associationr not found");
@@ -65,6 +67,7 @@ const association_mutation = {
         if (!isValidObjectId(associationId)) throw new GraphQLError("Invalid association id");
         const Association = dataSources.associationAPI;
         const User = dataSources.userAPI;
+        await authorize_association(association_permission.MEMBERS_MANAGEMENT, associationId)(req);
         const association = await Association.findOnebyId(associationId);
         if (!association) throw new GraphQLError("Association not found");
         for (let i = 0; i < users.length; i++) {
@@ -89,9 +92,9 @@ const association_mutation = {
         const updated_association = await association.save();
         return updated_association;
     },
-    removeMember: async (_, { associationId, memberId }, { dataSources }) => {
+    removeMember: async (_, { associationId, memberId }, { dataSources, req }) => {
         if (!isValidObjectId(associationId)) throw new GraphQLError("Invalid association id");
-
+        await authorize_association(association_permission.MEMBERS_MANAGEMENT, associationId)(req);
         const Association = dataSources.associationAPI;
         const association = await Association.findOnebyId(associationId);
 
@@ -106,9 +109,9 @@ const association_mutation = {
 
         return "Member removed successfully";
     },
-    updateMemberPermissions: async (_, { id, memberId, permissions }, { dataSources }) => {
+    updateMemberPermissions: async (_, { id, memberId, permissions }, { dataSources, req }) => {
         if (!isValidObjectId(id)) throw new GraphQLError("Invalid association id");
-
+        await authorize_association(association_permission.MEMBERS_MANAGEMENT, id)(req);
         const Association = dataSources.associationAPI;
         const association = await Association.findOnebyId(id);
 
