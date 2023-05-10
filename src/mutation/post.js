@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 // const { GraphQLError } = require("graphql");
-const { isauthenticated } = require("../../middleware/userpermission");
+const { isauthenticated, authorize_association } = require("../../middleware/userpermission");
 const { GraphQLError } = require("graphql");
+const { association_permission } = require("../../middleware/userpermission");
 const post_mutation = {
     createPost: async (_, { input }, { dataSources, req }) => {
         const Post = dataSources.postAPI;
@@ -14,6 +15,7 @@ const post_mutation = {
     createPostAssociation: async (_, { input }, { dataSources, req }) => {
         const Post = dataSources.postAPI;
         // const user = await isauthenticated()(req);
+        await authorize_association(association_permission.ASSOCIATION_MANAGEMENT, input.author)(req);
         input.authorType = "associations";
         const association = await dataSources.associationAPI.findOnebyId(input.author);
         if (!association) {
