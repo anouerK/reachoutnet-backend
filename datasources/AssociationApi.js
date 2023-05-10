@@ -9,6 +9,12 @@ class AssociationApi {
         return this.model_association.find({}).populate("owner").populate("members.user");
     }
 
+    getUserPermission (userid, associationid) {
+        return this.model_association.findOne(
+            { "members.user": userid, _id: associationid }
+        ).populate("members.user");
+    }
+
     findByOwner (owner) {
         return this.model_association.find({ owner }).populate("owner").populate("members.user");
     }

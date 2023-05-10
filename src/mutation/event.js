@@ -1,7 +1,8 @@
 const { GraphQLError } = require("graphql");
 const { isValidObjectId } = require("mongoose");
 const Joi = require("joi");
-const { isauthenticated } = require("../../middleware/userpermission");
+const { isauthenticated, authorize_association } = require("../../middleware/userpermission");
+const { association_permission } = require("../../middleware/userpermission");
 // --> En commentaire parce qu'il y a nbr maximum 100 Sms pour cette api
 // const Twilio = require("twilio");
 
@@ -50,6 +51,7 @@ const event_mutation = {
     createEvent: async (_, { name, description, associationId, start_date, end_date, location, attendees, eventImage }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         if (!user) throw new GraphQLError("not authenticated");
+        await authorize_association(association_permission.EVENT_MANAGEMENT, associationId)(req);
 
         const { error, value } = schema.validate({ name, description, start_date, end_date, location, attendees, eventImage, association: associationId });
 
@@ -101,7 +103,7 @@ const event_mutation = {
             // Add the user to the association
             event.requests[existingRequestIndex].state = 2;
         } else {
-            throw new GraphQLError("User dosen't exist");
+            throw new GraphQLError("Event dosen't exist");
         }
 
         const updated_event = await event.save();
