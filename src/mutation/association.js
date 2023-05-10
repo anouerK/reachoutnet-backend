@@ -52,12 +52,13 @@ const association_mutation = {
     },
     verifyAssociation: async (_, { id }, { dataSources, req }) => {
         const Association = dataSources.associationAPI;
-
         const association = await Association.findOnebyId(id);
         if (!association) {
             throw new GraphQLError("Associationr not found");
         }
-        association.verified = 1;
+
+        association.verified = !association.verified;
+        console.log(association.verified);
         const updated_association = await association.save();
         return updated_association;
     },
