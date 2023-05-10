@@ -117,6 +117,25 @@ const event_mutation = {
         const updated_event = await event.save();
         return updated_event;
     },
+    removeVolunteers: async (_, { id, userId }, { dataSources, req }) => {
+        await isauthenticated()(req);
+        const event = await dataSources.eventAPI.findOnebyId(id);
+        if (!event) throw new GraphQLError("Event not found");
+
+        const existingRequestIndex = event.requests.findIndex(
+            (request) => request.user.toString() === userId
+        );
+
+        if (existingRequestIndex !== -1) {
+            // Add the user to the association
+            event.requests[existingRequestIndex].state = 4;
+        } else {
+            throw new GraphQLError("User dosen't exist");
+        }
+
+        const updated_event = await event.save();
+        return updated_event;
+    },
     cancelRequest: async (_, { id }, { dataSources, req }) => {
         const user = await isauthenticated()(req);
         const userId = user.id;

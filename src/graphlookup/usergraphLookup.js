@@ -1,5 +1,6 @@
 const User = require("../../datasources/user");
 const mongoose = require("mongoose");
+
 async function calculateScores (userId) {
     const user = await User.findById(userId);
     const weights = {
