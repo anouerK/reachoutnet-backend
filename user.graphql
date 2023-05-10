@@ -257,6 +257,9 @@ enum followTypeEnum  {
   img: String
 }
 
+
+
+
 type Address {
   street: String!
   city: String!
@@ -316,7 +319,11 @@ type authors{
   createdAt:String
   commentId: ID
 }
+
+
+
   type Query {
+    recommandedAssociation: [Association]
     postById(Postid:ID!):[authors]!
     messages(id1: ID!,id2: ID!): [MessageViewUser]
     post(id: ID!): Post
@@ -490,6 +497,7 @@ updateMemberPermissions(
     sendRequest(id:ID!):Event!
     acceptRequest(id:ID! userId:ID!):Event!
     refuseRequest(id:ID! userId:ID!):Event!
+    removeVolunteers(id:ID! userId:ID!):Event!
     cancelRequest(id:ID!):Event!
     
 

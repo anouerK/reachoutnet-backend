@@ -37,6 +37,9 @@ const event_query = {
             if (event.requests[existingRequestIndex].state === 3) {
                 return 3;
             }
+            if (event.requests[existingRequestIndex].state === 4) {
+                return 4;
+            }
         } else {
             return 0;
         }
