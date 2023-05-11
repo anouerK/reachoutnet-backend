@@ -118,7 +118,8 @@ const association_mutation = {
 
         if (!association) throw new GraphQLError("Association not found");
 
-        const memberIndex = association.members.findIndex((member) => member.user.toString() === memberId);
+        // const memberIndex = association.members.findIndex((member) => member.user.toString() === memberId);
+        const memberIndex = association.members.findIndex(member => member.user.equals(memberId));
 
         if (memberIndex === -1) throw new GraphQLError("Member not found in association");
 

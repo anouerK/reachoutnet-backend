@@ -137,7 +137,7 @@ const authorize_association = (permission, associationid) => {
         const searched_association = await associationapi.findOnebyId(associationid);
         if (searched_association) {
             // eslint-disable-next-line eqeqeq
-            if (!(searched_association.owner == decoded.userId)) {
+            if (!(searched_association.owner._id == decoded.userId)) {
                 const association_user = await associationapi.getUserPermission(decoded.userId, associationid);
                 if (association_user) {
                     const member = association_user.members.find(member => member.user.equals(decoded.userId));
@@ -160,6 +160,7 @@ const authorize_association = (permission, associationid) => {
                 }
             }
         } else {
+            console.log("???");
             throw new GraphQLError("NOT FOUND", {
                 extensions: {
                     code: "NOT FOUND",
